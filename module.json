@@ -2,11 +2,16 @@
     "name": "better-roll-tables",
     "title": "Better Roll Tables - Do more with your roll tables",
     "description": "A simple module to add functionality to roll tables, especially to roll treasure and magic items",
-    "author": "Samir Hadi",
     "version": "0.0.1",
-    "minimumCoreVersion": "0.5.0",
-    "compatibleCoreVersion": "0.5.5",
+    "author": "Samir Hadi",
     "scripts": [
         "./scripts/better-table.js"
-    ]
+    ],
+    "styles": [],
+    "packs": [],
+    "minimumCoreVersion": "0.5.0",
+    "compatibleCoreVersion": "0.5.5",
+    "manifest": "https://github.com/ultrakorne/better-rolltables/blob/master/module.json",
+    "download": "https://github.com/ultrakorne/better-rolltables/archive/master.zip"
 }
+  

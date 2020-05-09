@@ -1,0 +1,12 @@
+{
+    "name": "better-roll-tables",
+    "title": "Better Roll Tables - Do more with your roll tables",
+    "description": "A simple module to add functionality to roll tables, especially to roll treasure and magic items",
+    "author": "Samir Hadi",
+    "version": "0.0.1",
+    "minimumCoreVersion": "0.5.0",
+    "compatibleCoreVersion": "0.5.5",
+    "scripts": [
+        "./scripts/better-table.js"
+    ]
+}

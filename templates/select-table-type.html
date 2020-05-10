@@ -1,7 +1,9 @@
 <!-- <div class="form-group" id="BTR-div"> -->
 <label>{{localize 'BRT.TypeLabel'}}</label>
 <select>
+    {{#select data.flags.better-rolltables.table-type}}
     <option value="none">{{localize 'BRT.TypeDefault'}}</option>
     <option value="loot">{{localize 'BRT.TypeLoot'}}</option>
+    {{/select}}
 </select>
 <!-- </div> -->

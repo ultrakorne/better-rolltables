@@ -9,6 +9,7 @@ Hooks.on("init", function () {
 
 Hooks.on("ready", function () {
   console.log("BRT: This code runs once core initialization is ready and game data is available.");
+  console.log("game system " , game.system);
 });
 
 class BetterRT {
@@ -46,7 +47,8 @@ class BetterRT {
     divBetterTableType = document.createElement("div");
     divBetterTableType.setAttribute("class", "form-group");
 
-    let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.html");
+    let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.html", tableEntity);
+    console.log("rendered html ", selectTypeHtml);
     divBetterTableType.innerHTML = selectTypeHtml;
     /*
     divBetterTableType.innerHTML = `<label>Advanced Table Type</label>
@@ -61,7 +63,7 @@ class BetterRT {
     const selectTypeElement = divBetterTableType.getElementsByTagName("select")[0];
     console.log("selectTypeElement ", selectTypeElement);
 
-    selectTypeElement.value = selectedTableType;
+    // selectTypeElement.value = selectedTableType;
     selectTypeElement.onchange = async function () { await BetterRT.onOptionTypeChanged(selectTypeElement.value, tableEntity.id); };
 
 

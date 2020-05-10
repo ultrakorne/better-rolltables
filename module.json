@@ -5,12 +5,12 @@
     "version": "0.0.1",
     "author": "Ultrakorne#6240",
     "esmodules": [
-        "./scripts/better-table.js"
+        "./scripts/brt-main.js"
     ],
     "styles": [],
     "packs": [],
-    "minimumCoreVersion": "0.5.0",
-    "compatibleCoreVersion": "0.5.5",
+    "minimumCoreVersion": "0.5.5",
+    "compatibleCoreVersion": "0.5.6",
     "languages": [
         {
           "lang": "en",

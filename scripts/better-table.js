@@ -5,11 +5,15 @@ CONFIG.debug.hooks = true;
 
 Hooks.on("init", function () {
   console.log("BRT: initialized.");
+  Handlebars.registerHelper('ifeq', function (a, b, options) {
+    if (a == b) { return options.fn(this); }
+    return options.inverse(this);
+  });
 });
 
 Hooks.on("ready", function () {
   console.log("BRT: This code runs once core initialization is ready and game data is available.");
-  console.log("game system " , game.system);
+  console.log("game system ", game.system);
 });
 
 class BetterRT {
@@ -26,6 +30,7 @@ class BetterRT {
 
     let tableViewClass = html[0].getElementsByClassName(tableClassName)[0];
 
+    //re-renders
     if (tableViewClass) {
       html[0].style.display = 'none';
       html[0].style.display = 'block';
@@ -45,7 +50,7 @@ class BetterRT {
     //console.log("divBetterTableType ", divBetterTableType);
 
     divBetterTableType = document.createElement("div");
-    divBetterTableType.setAttribute("class", "form-group");
+    // divBetterTableType.setAttribute("class", "form-group");
 
     let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.html", tableEntity);
     console.log("rendered html ", selectTypeHtml);
@@ -61,7 +66,23 @@ class BetterRT {
     tableViewClass.insertBefore(divBetterTableType, tableViewClass.children[2]);
 
     const selectTypeElement = divBetterTableType.getElementsByTagName("select")[0];
-    console.log("selectTypeElement ", selectTypeElement);
+
+
+    const allInputs = divBetterTableType.getElementsByTagName("input");
+
+    // const currencyInput = allInputs.namedItem("currency-input");
+    let currencyInput;
+    for (let inputs of allInputs) {
+      console.log(inputs.id);
+      if (inputs.id === "currency-input") {
+        currencyInput = inputs;
+      }
+    }
+    
+    if (currencyInput) {
+      console.log("currencyInput value ", currencyInput.value);
+      currencyInput.oninput = async function () { await BetterRT.onCurrencyInput(currencyInput.value, tableEntity); };
+    }
 
     // selectTypeElement.value = selectedTableType;
     selectTypeElement.onchange = async function () { await BetterRT.onOptionTypeChanged(selectTypeElement.value, tableEntity.id); };
@@ -101,6 +122,12 @@ class BetterRT {
     await table.setFlag("better-rolltables", "table-type", value);
   }
 
+  static async onCurrencyInput(value, tableEntity) {
+    console.log("onCurrencyInput table ", tableEntity);
+
+  }
 }
+
+
 
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);

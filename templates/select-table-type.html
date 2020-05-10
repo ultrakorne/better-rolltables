@@ -1,9 +1,16 @@
-<!-- <div class="form-group" id="BTR-div"> -->
-<label>{{localize 'BRT.TypeLabel'}}</label>
-<select>
-    {{#select data.flags.better-rolltables.table-type}}
-    <option value="none">{{localize 'BRT.TypeDefault'}}</option>
-    <option value="loot">{{localize 'BRT.TypeLoot'}}</option>
-    {{/select}}
-</select>
-<!-- </div> -->
+<div class="form-group">
+    <label>{{localize 'BRT.TypeLabel'}}</label>
+    <select>
+        {{#select data.flags.better-rolltables.table-type}}
+        <option value="none">{{localize 'BRT.TypeDefault'}}</option>
+        <option value="loot">{{localize 'BRT.TypeLoot'}}</option>
+        {{/select}}
+    </select>
+</div>
+
+{{#ifeq data.flags.better-rolltables.table-type "loot"}}
+<div class="form-group">
+    <label>{{localize 'BRT.CurrencyLoot'}}</label>
+    <input type="text" placeholder="add comma separated formulas like this: 1d4[gp], (1d4+1)*10[sp]" id="currency-input">
+</div>
+{{/ifeq}}

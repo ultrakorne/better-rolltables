@@ -2,6 +2,7 @@
     "BRT.TypeLabel": "Better Table Type",
     "BRT.TypeDefault": "Default Table",
     "BRT.TypeLoot": "Loot Table",
-
+    "BRT.CurrencyLoot": "Currency Loot",
+    
     "BRT.GenerateLoot.Button": " Generate Loot"
 }

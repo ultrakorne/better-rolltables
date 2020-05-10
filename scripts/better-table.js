@@ -1,8 +1,10 @@
-// console.log("Hello World! Better roll table");
+import { i18n } from './utils.js'
+
 CONFIG.debug.hooks = true;
 
+
 Hooks.on("init", function () {
-  console.log("BRT: This code runs once the Foundry VTT software begins it's initialization workflow.");
+  console.log("BRT: initialized.");
 });
 
 Hooks.on("ready", function () {
@@ -17,12 +19,15 @@ class BetterRT {
     console.log("rollTable ", rollTable);
 
     const tableClassName = rollTable.cssClass;// "editable";
-    const tableEntity = rollTable.entity;
+    const tableEntity = rollTableConfig.object;
+
+    const selectedTableType = tableEntity.getFlag("better-rolltables", "table-type") || "none";
+
     let tableViewClass = html[0].getElementsByClassName(tableClassName)[0];
+
     if (tableViewClass) {
       html[0].style.display = 'none';
       html[0].style.display = 'block';
-      // html[0].style.resize = "vertical";
     }
 
     // console.log("tableViewClass ", htmlclass[0].getElementsByClassName("editable"));
@@ -33,7 +38,6 @@ class BetterRT {
         console.log(`cannot find table class element ${tableClassName}`);
       }
     }
-    console.log("my class ", html[0].getAttribute("class"));
 
     let divBetterTableType;
     //divBetterTableType = await renderTemplate("modules/better-rolltables/templates/select-table-type.html");
@@ -41,45 +45,58 @@ class BetterRT {
 
     divBetterTableType = document.createElement("div");
     divBetterTableType.setAttribute("class", "form-group");
-    divBetterTableType.setAttribute("id", "BTR-div");
 
-    // let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.html")
-    // divBetterTableType.innerHTML = selectTypeHtml;
+    let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.html");
+    divBetterTableType.innerHTML = selectTypeHtml;
+    /*
     divBetterTableType.innerHTML = `<label>Advanced Table Type</label>
       <select id="BTR-select-type" name="BTR-select-type">
           <option value="none"></option>
           <option value="loot">Loot Table</option>
       </select>`;
-
+*/
 
     tableViewClass.insertBefore(divBetterTableType, tableViewClass.children[2]);
 
     const selectTypeElement = divBetterTableType.getElementsByTagName("select")[0];
     console.log("selectTypeElement ", selectTypeElement);
-    selectTypeElement.onchange = () => { BetterRT.onOptionTypeChanged(selectTypeElement.value, tableEntity); };
+
+    selectTypeElement.value = selectedTableType;
+    selectTypeElement.onchange = async function () { await BetterRT.onOptionTypeChanged(selectTypeElement.value, tableEntity.id); };
 
 
     //create generate loot button
-    const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
-    console.log("footer ", footer);
+    if (selectedTableType === "loot") {
+      const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
+      console.log("footer ", footer);
 
-    let generateLootBtn;
-    console.log("adding button");
-    generateLootBtn = document.createElement("button");
-    generateLootBtn.setAttribute("class", "generate");
-    generateLootBtn.setAttribute("type", "button");
-    generateLootBtn.innerHTML = `<i id="BRT-gen-loot" class="fas fa-coins"></i> Generate Loot`;
-    generateLootBtn.onclick = () => { BetterRT.generateLoot(tableEntity); };
-    footer.insertBefore(generateLootBtn, footer.firstChild);
+      let generateLootBtn;
+      console.log("adding button");
+      generateLootBtn = document.createElement("button");
+      generateLootBtn.setAttribute("class", "generate");
+      generateLootBtn.setAttribute("type", "button");
 
+      generateLootBtn.innerHTML = `<i id="BRT-gen-loot" class="fas fa-coins"></i> ${i18n('BRT.GenerateLoot.Button')}`;
+      generateLootBtn.onclick = () => { BetterRT.generateLoot(tableEntity); };
+      footer.insertBefore(generateLootBtn, footer.firstChild);
+    }
   }
 
   static generateLoot(tableEntity) {
     console.log("Generate Loot button clicked ", tableEntity);
   }
 
-  static onOptionTypeChanged(value, tableEntity) {
-    console.log("onOptionTypeChanged ", value, " + ", tableEntity);
+  static async onOptionTypeChanged(value, tableId) {
+    console.log("Value ", value, " . Entity: ", tableId);
+
+    const table = game.tables.entities.find(t => t.id === tableId);
+    console.log("entity table ", table);
+
+    // let updates = [];
+    // updates.push({ "_id": tableId, "data.flags.better-rolltables.table-type": value })
+    // await table.update(updates);
+
+    await table.setFlag("better-rolltables", "table-type", value);
   }
 
 }

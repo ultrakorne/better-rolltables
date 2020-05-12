@@ -27,15 +27,15 @@ export class BetterRT {
             }
         }
 
-        let divBetterTableType = document.createElement("div");
+        let divElement = document.createElement("div");
         let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.html", tableEntity);
-        divBetterTableType.innerHTML = selectTypeHtml;
-        tableViewClass.insertBefore(divBetterTableType, tableViewClass.children[2]);
+        divElement.innerHTML = selectTypeHtml;
+        tableViewClass.insertBefore(divElement, tableViewClass.children[2]);
 
-        const selectTypeElement = divBetterTableType.getElementsByTagName("select")[0];
+        const selectTypeElement = divElement.getElementsByTagName("select")[0];
         selectTypeElement.onchange = async function () { await BetterRT.onOptionTypeChanged(selectTypeElement.value, tableEntity); };
 
-        BetterRT.configureCurrencyInputField(divBetterTableType);
+        BetterRT.configureCurrencyInputField(divElement, tableEntity);
 
         //create generate loot button
         if (selectedTableType === "loot") {
@@ -45,12 +45,22 @@ export class BetterRT {
         }
     }
 
+    static preUpdateRollTable(tableEntity, updateData, diff, tableId) {
+        setProperty(updateData, "flags.better-rolltables.table-currency-string", updateData["currency-input"]); 
+        console.log("preUpdateRollTable updateData ", updateData);
+    }
+
     //if the currency-input exist (when selectedTableType === "loot" but configured in the handlebars rendered html) we configure the field
-    static async configureCurrencyInputField(htmlElement) {
+    static async configureCurrencyInputField(htmlElement, tableEntity) {
         const allInputs = htmlElement.getElementsByTagName("input");
         const currencyInput = allInputs.namedItem("currency-input");
 
         if (!currencyInput) return;
+
+        const tableCurrencyString = await tableEntity.getFlag("better-rolltables", "table-currency-string");
+        if (tableCurrencyString) {
+            currencyInput.value = tableCurrencyString;
+        }
 
         console.log("currencyInput value ", currencyInput.value);
         currencyInput.oninput = async function () { await BetterRT.onCurrencyInput(currencyInput.value, tableEntity); };
@@ -79,5 +89,6 @@ export class BetterRT {
 
     static async onCurrencyInput(value, tableEntity) {
         console.log("onCurrencyInput table ", tableEntity);
+        // await tableEntity.setFlag("better-rolltables", "table-currency-string", value);
     }
 }

@@ -16,3 +16,4 @@ Hooks.on("init", function () {
 // });
 
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
+Hooks.on("preUpdateRollTable", BetterRT.preUpdateRollTable);

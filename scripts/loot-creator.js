@@ -30,10 +30,8 @@ export class LootCreator {
         let currencyData = actor.data.data.currency;
         for (var key in this.loot.currencyData) {
             if (currencyData.hasOwnProperty(key)) {
-                console.log("has key ", key, "with value ", currencyData[key]);
                 const amount = (currencyData[key].value || 0) + this.loot.currencyData[key];
                 currencyData[key] = { "value": amount.toString() };
-                console.log("after value newCurrencyData", currencyData[key]);
             }
         }
 
@@ -66,7 +64,7 @@ export class LootCreator {
     rndSpellIdx = [];
     async getSpellCompendiumIndex() {
         const spellCompendiumIndex = await game.packs.find(t => t.collection === BRTCONFIG.SPELL_COMPENDIUM).getIndex();
-        console.log(`compenidum ${BRTCONFIG.SPELL_COMPENDIUM} has ${spellCompendiumIndex.length} index entries.`)
+        // console.log(`compenidum ${BRTCONFIG.SPELL_COMPENDIUM} has ${spellCompendiumIndex.length} index entries.`)
     
         for (var i = 0; i < spellCompendiumIndex.length; i++) {
             this.rndSpellIdx[i] = i;
@@ -84,7 +82,7 @@ export class LootCreator {
     
         //if its a scorll then open compendium
         let level = match[1].toLowerCase() === "cantrip" ? 0 : match[1];
-        console.log("Spell Scroll found of level", level);
+        // console.log("Spell Scroll found of level", level);
     
         const compendium = game.packs.find(t => t.collection === BRTCONFIG.SPELL_COMPENDIUM);
         let index = await this.getSpellCompendiumIndex();
@@ -108,7 +106,6 @@ export class LootCreator {
             return itemData;
         }
 
-        console.log(itemEntity);
         itemData.name += ` (${itemEntity.data.name})`
         return itemData;
     }

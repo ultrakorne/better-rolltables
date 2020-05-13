@@ -1,4 +1,4 @@
-import { CONFIG } from './config.js';
+import { BRTCONFIG } from './config.js';
 import { LootData } from './loot-item.js';
 
 export class LootBuilder {
@@ -15,14 +15,9 @@ export class LootBuilder {
     generateLoot() {      
         const currenciesToAdd = this.generateCurrency();
         this.loot.addCurrency(currenciesToAdd);
-
-        // console.log("currenciesToAdd ", currenciesToAdd);
-
         const tableEntry = this.rollOnTable(this.table);
-        console.log("tableEntry rolled is ", tableEntry);
         this.processTableEntry(tableEntry);
 
-        console.log("generated loot object ", this.loot);
         return this.loot;
     }
 
@@ -33,7 +28,7 @@ export class LootBuilder {
      */
     rollOnTable(table) {
         let entry = table.roll().results;
-        console.log("tableEntry rolled ", entry);
+        // console.log("tableEntry rolled ", entry);
         return entry[0]; //TODO maybe return the array, in 0.5.6 it is possible to return multiple results for overlapping table entries
     }
 
@@ -50,24 +45,19 @@ export class LootBuilder {
     return: an obj with currency type string as key and amount as value e.g. { "gp" : amount, "sp" : amount }
     */
     generateCurrency() {
-        const currencyFlag = this.table.getFlag(CONFIG.NAMESPACE, CONFIG.LOOT_CURRENCY_KEY);
+        const currencyFlag = this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_CURRENCY_KEY);
         const currenciesToAdd = {};
         if (currencyFlag) {
             const currenciesPieces = currencyFlag.split(",");
             for (const currency of currenciesPieces) {
-                // const currencyMatch = currency.match(/\[(.*?)\]/);
-
                 const match = /(.*)\[(.*?)\]/g.exec(currency); //capturing 2 groups, the formula and then the currency symbol in brakets []
                 if (!match || match.length < 3) {
                     ui.notifications.warn(`Currency loot field contain wrong formatting, currencies need to be define as "diceFormula[currencyType]" => "1d100[gp]" but was ${currency}`);
                     continue;
                 }
-                console.log("MATCH ", match);
-
                 const rollFormula = match[1];
                 const currencyString = match[2];
                 const amount = this.tryToRollString(rollFormula);
-                console.log("rolling rollFormula: " + rollFormula, " wtih result ", amount);
                 currenciesToAdd[currencyString] = (currenciesToAdd[currencyString] || 0) + amount;
             }
         }

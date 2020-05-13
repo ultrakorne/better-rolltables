@@ -1,18 +1,18 @@
 import { i18n } from './utils.js';
 import { LootBuilder } from './loot-builder.js'
-import { CONFIG } from './config.js';
+import { BRTCONFIG } from './config.js';
 import { LootCreator } from './loot-creator.js';
 
 export class BetterRT {
     static async enhanceRollTableView(rollTableConfig, html, rollTable) {
-        console.log("rollTableConfig ", rollTableConfig);
-        console.log("html ", html[0]);
-        console.log("rollTable ", rollTable);
+        // console.log("rollTableConfig ", rollTableConfig);
+        // console.log("html ", html[0]);
+        // console.log("rollTable ", rollTable);
 
         const tableClassName = rollTable.cssClass;// "editable";
         const tableEntity = rollTableConfig.object;
 
-        const selectedTableType = tableEntity.getFlag(CONFIG.NAMESPACE, CONFIG.TABLE_TYPE_KEY) || CONFIG.TABLE_TYPE_NONE;
+        const selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE;
 
         let tableViewClass = html[0].getElementsByClassName(tableClassName)[0];
 
@@ -41,15 +41,14 @@ export class BetterRT {
         BetterRT.configureCurrencyInputField(divElement, tableEntity);
 
         //create generate loot button
-        if (selectedTableType === CONFIG.TABLE_TYPE_LOOT) {
+        if (selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) {
             const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
-            console.log("footer ", footer);
             await BetterRT.showGenerateLootButton(footer, tableEntity);
         }
     }
 
     static preUpdateRollTable(tableEntity, updateData, diff, tableId) {
-        setProperty(updateData, `flags.${CONFIG.NAMESPACE}.${CONFIG.LOOT_CURRENCY_KEY}`, updateData["currency-input"]);
+        setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.LOOT_CURRENCY_KEY}`, updateData["currency-input"]);
         console.log("preUpdateRollTable updateData ", updateData);
     }
 
@@ -60,12 +59,12 @@ export class BetterRT {
 
         if (!currencyInput) return;
 
-        const tableCurrencyString = tableEntity.getFlag(CONFIG.NAMESPACE, CONFIG.LOOT_CURRENCY_KEY);
+        const tableCurrencyString = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_CURRENCY_KEY);
         if (tableCurrencyString) {
             currencyInput.value = tableCurrencyString;
         }
 
-        console.log("currencyInput value ", currencyInput.value);
+        // console.log("currencyInput value ", currencyInput.value);
         // currencyInput.oninput = async function () { await BetterRT.onCurrencyInput(currencyInput.value, tableEntity); };
     }
 
@@ -80,9 +79,6 @@ export class BetterRT {
     }
 
     static async generateLoot(tableEntity) {
-        // console.log("Generate Loot button clicked ", tableEntity);
-        // const currencyString = tableEntity.getFlag(CONFIG.NAMESPACE, CONFIG.LOOT_CURRENCY_KEY);
-        // console.log("Generate Loot button clicked ", currencyString);
         const lootBuilder = new LootBuilder(tableEntity);
         const generatedLoot = lootBuilder.generateLoot();
         const lootCreator = new LootCreator(generatedLoot);
@@ -93,7 +89,7 @@ export class BetterRT {
     static async onOptionTypeChanged(value, tableEntity) {
         // const table = game.tables.entities.find(t => t.id === tableId);
         console.log("entity table ", tableEntity);
-        await tableEntity.setFlag(CONFIG.NAMESPACE, CONFIG.TABLE_TYPE_KEY, value);
+        await tableEntity.setFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY, value);
     }
 
     // static async onCurrencyInput(value, tableEntity) {

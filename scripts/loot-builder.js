@@ -8,8 +8,11 @@ export class LootBuilder {
         this.loot = new LootData();
     }
 
-    generateLoot() {
-        
+    /**
+     * Generate loot based on the table definition
+     * @returns {LootData} containing all the rolled item selected
+     */
+    generateLoot() {      
         const currenciesToAdd = this.generateCurrency();
         this.loot.addCurrency(currenciesToAdd);
 
@@ -20,8 +23,14 @@ export class LootBuilder {
         this.processTableEntry(tableEntry);
 
         console.log("generated loot object ", this.loot);
+        return this.loot;
     }
 
+    /**
+     * Rolls on a table and returns the entry result
+     * @param table table to roll on
+     * @returns tableEntry selected    
+     */
     rollOnTable(table) {
         let entry = table.roll().results;
         console.log("tableEntry rolled ", entry);

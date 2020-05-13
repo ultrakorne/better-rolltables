@@ -1,6 +1,7 @@
 import { i18n } from './utils.js';
 import { LootBuilder } from './loot-builder.js'
 import { CONFIG } from './config.js';
+import { LootCreator } from './loot-creator.js';
 
 export class BetterRT {
     static async enhanceRollTableView(rollTableConfig, html, rollTable) {
@@ -43,7 +44,7 @@ export class BetterRT {
         if (selectedTableType === CONFIG.TABLE_TYPE_LOOT) {
             const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
             console.log("footer ", footer);
-            BetterRT.showGenerateLootButton(footer, tableEntity);
+            await BetterRT.showGenerateLootButton(footer, tableEntity);
         }
     }
 
@@ -74,16 +75,18 @@ export class BetterRT {
         generateLootBtn.setAttribute("type", "button");
 
         generateLootBtn.innerHTML = `<i id="BRT-gen-loot" class="fas fa-coins"></i> ${i18n('BRT.GenerateLoot.Button')}`;
-        generateLootBtn.onclick = () => { BetterRT.generateLoot(tableEntity); };
+        generateLootBtn.onclick = async function () { await BetterRT.generateLoot(tableEntity); };
         htmlElement.insertBefore(generateLootBtn, htmlElement.firstChild);
     }
 
-    static generateLoot(tableEntity) {
+    static async generateLoot(tableEntity) {
         // console.log("Generate Loot button clicked ", tableEntity);
-        let currencyString = tableEntity.getFlag(CONFIG.NAMESPACE, CONFIG.LOOT_CURRENCY_KEY);
-        console.log("Generate Loot button clicked ", currencyString);
-        let lootBuilder = new LootBuilder(tableEntity);
-        lootBuilder.generateLoot();
+        // const currencyString = tableEntity.getFlag(CONFIG.NAMESPACE, CONFIG.LOOT_CURRENCY_KEY);
+        // console.log("Generate Loot button clicked ", currencyString);
+        const lootBuilder = new LootBuilder(tableEntity);
+        const generatedLoot = lootBuilder.generateLoot();
+        const lootCreator = new LootCreator(generatedLoot);
+        await lootCreator.createActor();
     }
 
     // game.tables.getName("Your Roll Table Name Here")

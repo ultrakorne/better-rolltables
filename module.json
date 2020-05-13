@@ -19,6 +19,6 @@
         }
     ],
     "url": "https://github.com/ultrakorne/better-rolltables",
-    "manifest": "https://github.com/ultrakorne/better-rolltables/blob/master/module.json",
+    "manifest": "https://raw.githubusercontent.com/ultrakorne/better-rolltables/master/module.json",
     "download": "https://github.com/ultrakorne/better-rolltables/archive/master.zip"
 }

@@ -1,2 +1,37 @@
-# better-rolltables
-Module for FoundryVTT to improve rolltables
+# Better Rolltables #
+*better-rolltables* is Module for FoundryVTT to improve and add functionality rolltables
+
+This module adds functionality on rolltables to be able to generate loot (implementing for example the Treasure Hoard" Tables from the DMG), rolling on multiple tables with 1 click!
+
+## Features ##
+
+* Roll on multiple tables with roll formulas
+* Auto create a loot actor to store generated loot
+* Auto roll random spells when a scroll is selected as loot
+* A table can specify multiple currencies (with roll formulas) to always be awarded
+
+### Requirements ###
+
+* I strongly suggest to use **loot sheet NPC** (https://github.com/jopeek/fvtt-loot-sheet-npc-5e). if you have that module installed, better rolltable loot generator will automatically use it
+
+![howto picture 1](img/howto-1.png)
+
+### How to use it ###
+
+1. Open a RollTable or create a new one
+1. Change *Better Table type* to "Loot Table" (just under the table description field)
+1. if you want to generate currency with the loot use the field *Currency loot*. currencies accept formulas and in squre brackets the currency type. You can add multiple currency and separate them with a comma. `(1d10+2)*100[gp], 1d10*100[sp], 200[cp]`
+1. You can roll formula on multplie table by adding an entry of type Text in the rollTable and use the following syntax: `1d6 of [Magic Scrolls Table] | 1d4 of [Potions Table]` This will roll 1d6 times on a table named *Magic Scrolls Table* and 1d4 on a table named *Potions Table*
+1. Remember to hit *update* on the table if you change values (or enter after you typed)
+1. Click **Generate Loot** when you are done
+1. You will find your loot actor in the Actor's directory, named *New Loot*
+
+### Auto Roll Random Scrolls Spells ###
+
+if you have some scrolls with this naming, as in the picture below a random spell will be selected using the dnd5e.spell compendium
+
+![howto picture 2](img/howto-2.png)
+
+The picture below is an example of random loot generated with the example table table
+
+![howto picture 3](img/howto-3.png)

@@ -49,7 +49,7 @@ export class BetterRT {
 
     static preUpdateRollTable(tableEntity, updateData, diff, tableId) {
         setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.LOOT_CURRENCY_KEY}`, updateData["currency-input"]);
-        console.log("preUpdateRollTable updateData ", updateData);
+        // console.log("preUpdateRollTable updateData ", updateData);
     }
 
     //if the currency-input exist (when selectedTableType === "loot" but configured in the handlebars rendered html) we configure the field

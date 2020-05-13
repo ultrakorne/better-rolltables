@@ -1,3 +1,4 @@
+import { BRTCONFIG } from './config.js';
 
 export class LootCreator {
 
@@ -37,7 +38,6 @@ export class LootCreator {
         }
 
         await actor.update({ "data.currency": currencyData });
-
     }
 
     async createLootItem(item, actor) {
@@ -58,9 +58,58 @@ export class LootCreator {
     
         if(!itemToCreateData) return;
         
-        // itemToCreateData = await preItemCreationDataManipulation(itemToCreateData);
+        itemToCreateData = await this.preItemCreationDataManipulation(itemToCreateData);
 
         await actor.createOwnedItem(itemToCreateData);
     }
     
+    rndSpellIdx = [];
+    async getSpellCompendiumIndex() {
+        const spellCompendiumIndex = await game.packs.find(t => t.collection === BRTCONFIG.SPELL_COMPENDIUM).getIndex();
+        console.log(`compenidum ${BRTCONFIG.SPELL_COMPENDIUM} has ${spellCompendiumIndex.length} index entries.`)
+    
+        for (var i = 0; i < spellCompendiumIndex.length; i++) {
+            this.rndSpellIdx[i] = i;
+        }
+    
+        this.rndSpellIdx.sort(() => Math.random() - 0.5);
+        return spellCompendiumIndex;
+    }
+
+    async preItemCreationDataManipulation(itemData) {
+        const match = /\s*Spell\s*Scroll\s*(\d+|cantrip)/gi.exec(itemData.name);
+        if (!match) {
+            return itemData; //not a scroll
+        }
+    
+        //if its a scorll then open compendium
+        let level = match[1].toLowerCase() === "cantrip" ? 0 : match[1];
+        console.log("Spell Scroll found of level", level);
+    
+        const compendium = game.packs.find(t => t.collection === BRTCONFIG.SPELL_COMPENDIUM);
+        let index = await this.getSpellCompendiumIndex();
+    
+        let spellFound = false;
+        let itemEntity;
+
+        while (this.rndSpellIdx.length > 0 && !spellFound) {
+
+            let rnd = this.rndSpellIdx.pop();
+            let entry = await compendium.getEntity(index[rnd]._id);
+            const spellLevel = entry.data.data.level
+            if (spellLevel == level) {
+                itemEntity = entry;
+                spellFound = true;
+            }
+        }
+    
+        if (!itemEntity) {
+            ui.notifications.warn(`no spell of level ${level} found in compendium  ${BRTCONFIG.SPELL_COMPENDIUM} `);
+            return itemData;
+        }
+
+        console.log(itemEntity);
+        itemData.name += ` (${itemEntity.data.name})`
+        return itemData;
+    }
 }

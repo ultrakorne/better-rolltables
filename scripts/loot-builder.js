@@ -1,23 +1,29 @@
 import { CONFIG } from './config.js';
+import { LootData } from './loot-item.js';
 
 export class LootBuilder {
 
     constructor(tableEntity) {
         this.table = tableEntity;
+        this.loot = new LootData();
     }
 
     generateLoot() {
-        const tableEntry = this.rollOnTable();
+        
+        const currenciesToAdd = this.generateCurrency();
+        this.loot.addCurrency(currenciesToAdd);
+
+        // console.log("currenciesToAdd ", currenciesToAdd);
+
+        const tableEntry = this.rollOnTable(this.table);
         console.log("tableEntry rolled is ", tableEntry);
+        this.processTableEntry(tableEntry);
+
+        console.log("generated loot object ", this.loot);
     }
 
-    rollOnTable() {
-        // console.log("Rolling on table: ", this.table);
-
-        const currenciesToAdd = this.generateCurrency();
-        console.log("currenciesToAdd ", currenciesToAdd);
-
-        let entry = this.table.roll().results;
+    rollOnTable(table) {
+        let entry = table.roll().results;
         console.log("tableEntry rolled ", entry);
         return entry[0]; //TODO maybe return the array, in 0.5.6 it is possible to return multiple results for overlapping table entries
     }
@@ -43,7 +49,7 @@ export class LootBuilder {
                 // const currencyMatch = currency.match(/\[(.*?)\]/);
 
                 const match = /(.*)\[(.*?)\]/g.exec(currency); //capturing 2 groups, the formula and then the currency symbol in brakets []
-                if(!match || match.length<3){
+                if (!match || match.length < 3) {
                     ui.notifications.warn(`Currency loot field contain wrong formatting, currencies need to be define as "diceFormula[currencyType]" => "1d100[gp]" but was ${currency}`);
                     continue;
                 }
@@ -54,15 +60,51 @@ export class LootBuilder {
                 const amount = this.tryToRollString(rollFormula);
                 console.log("rolling rollFormula: " + rollFormula, " wtih result ", amount);
                 currenciesToAdd[currencyString] = (currenciesToAdd[currencyString] || 0) + amount;
-                // if (currencyMatch) {
-                //     const currencyString = currencyMatch[1];
-                    
-                //     const amount = this.tryToRollString(currency);
-                //     console.log("rolling currency: " + currency, " wtih result ", amount);
-                //     currenciesToAdd[currencyString] = (currenciesToAdd[currencyString] || 0) + amount;
-                // }
             }
         }
         return currenciesToAdd;
+    }
+
+    processTableEntry(tableEntry) {
+        if (!tableEntry) return;
+
+        if (tableEntry.type == 0) { //text type
+            let resultText = tableEntry.text;
+            let complexTextList = resultText.split("|");
+            for (const complexText of complexTextList) {
+                this.processTextTableEntry(complexText);
+            }
+        } else if (tableEntry.type == 1 && tableEntry.collection === "Item") { //item
+            this.loot.createLootItem(tableEntry);
+        } else if (tableEntry.type == 2) { //collection type
+            this.loot.createLootItem(tableEntry, tableEntry.collection);
+        }
+    }
+
+    processTextTableEntry(complexText) {
+        let numberItems = this.tryToRollString(complexText);
+        const tableNameMatch = complexText.match(/\[(.*?)\]/);
+
+        if (!tableNameMatch) {
+            //no table in brakets [table] is specified, so if its text we pick that
+            this.loot.createLootTextItem(complexText);
+            return;
+        }
+
+        let tableName;
+        if (tableNameMatch.length >= 2) {
+            tableName = tableNameMatch[1];
+        } else {
+            ui.notifications.warn(`no table for complexText ${complexText} found, check that the table name is in sqaure brackets`);
+            return;
+        }
+
+        const table = game.tables.getName(tableName);
+        if (!table) { ui.notifications.warn(`no table named ${tableName} found, Please create a table`); return; }
+
+        for (let i = 0; i < numberItems; i++) {
+            let tableEntry = this.rollOnTable(table);
+            this.processTableEntry(tableEntry);
+        }
     }
 }

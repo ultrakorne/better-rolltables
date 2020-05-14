@@ -5,10 +5,6 @@ import { LootCreator } from './loot-creator.js';
 
 export class BetterRT {
     static async enhanceRollTableView(rollTableConfig, html, rollTable) {
-        // console.log("rollTableConfig ", rollTableConfig);
-        // console.log("html ", html[0]);
-        // console.log("rollTable ", rollTable);
-
         const tableClassName = rollTable.cssClass;// "editable";
         const tableEntity = rollTableConfig.object;
 
@@ -63,9 +59,6 @@ export class BetterRT {
         if (tableCurrencyString) {
             currencyInput.value = tableCurrencyString;
         }
-
-        // console.log("currencyInput value ", currencyInput.value);
-        // currencyInput.oninput = async function () { await BetterRT.onCurrencyInput(currencyInput.value, tableEntity); };
     }
 
     static async showGenerateLootButton(htmlElement, tableEntity) {
@@ -85,15 +78,7 @@ export class BetterRT {
         await lootCreator.createActor();
     }
 
-    // game.tables.getName("Your Roll Table Name Here")
     static async onOptionTypeChanged(value, tableEntity) {
-        // const table = game.tables.entities.find(t => t.id === tableId);
-        console.log("entity table ", tableEntity);
         await tableEntity.setFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY, value);
     }
-
-    // static async onCurrencyInput(value, tableEntity) {
-    //     console.log("onCurrencyInput table ", tableEntity);
-    //     // await tableEntity.setFlag("better-rolltables", "table-currency-string", value);
-    // }
 }

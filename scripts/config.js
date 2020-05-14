@@ -8,4 +8,5 @@ BRTCONFIG.LOOT_CURRENCY_KEY = "table-currency-string";
 BRTCONFIG.TABLE_TYPE_NONE = "none";
 BRTCONFIG.TABLE_TYPE_LOOT = "loot";
 
-BRTCONFIG.SPELL_COMPENDIUM = "dnd5e.spells";
+BRTCONFIG.SPELL_COMPENDIUM_KEY = "default-spell-compendium";
+BRTCONFIG.LOOT_SHEET_TO_USE_KEY = "loot-sheet-to-use";

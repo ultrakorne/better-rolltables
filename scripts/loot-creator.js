@@ -7,7 +7,6 @@ export class LootCreator {
     }
 
     async createActor() {
-
         console.log("createActor with data ", this.loot);
         let actor = await Actor.create({
             name: "New Loot",
@@ -16,8 +15,10 @@ export class LootCreator {
             sort: 12000,
         });
 
-        if ("dnd5e.LootSheet5eNPC" in CONFIG.Actor.sheetClasses.npc) {
-            await actor.setFlag("core", "sheetClass", "dnd5e.LootSheet5eNPC");
+        const lootSheet = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_SHEET_TO_USE_KEY);
+
+        if (lootSheet in CONFIG.Actor.sheetClasses.npc) {
+            await actor.setFlag("core", "sheetClass", lootSheet);
         }
 
         for (const item of this.loot.lootItems) {
@@ -53,23 +54,22 @@ export class LootCreator {
             let itemData = { name: item.text, type: "loot", img: "icons/svg/mystery-man.svg" };
             itemToCreateData = itemData;
         }
-    
-        if(!itemToCreateData) return;
-        
-        itemToCreateData = await this.preItemCreationDataManipulation(itemToCreateData);
 
+        if (!itemToCreateData) return;
+        itemToCreateData = await this.preItemCreationDataManipulation(itemToCreateData);
         await actor.createOwnedItem(itemToCreateData);
     }
-    
+
     rndSpellIdx = [];
     async getSpellCompendiumIndex() {
-        const spellCompendiumIndex = await game.packs.find(t => t.collection === BRTCONFIG.SPELL_COMPENDIUM).getIndex();
+        const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
+        const spellCompendiumIndex = await game.packs.find(t => t.collection === spellCompendiumName).getIndex();
         // console.log(`compenidum ${BRTCONFIG.SPELL_COMPENDIUM} has ${spellCompendiumIndex.length} index entries.`)
-    
+
         for (var i = 0; i < spellCompendiumIndex.length; i++) {
             this.rndSpellIdx[i] = i;
         }
-    
+
         this.rndSpellIdx.sort(() => Math.random() - 0.5);
         return spellCompendiumIndex;
     }
@@ -79,14 +79,18 @@ export class LootCreator {
         if (!match) {
             return itemData; //not a scroll
         }
-    
+
         //if its a scorll then open compendium
         let level = match[1].toLowerCase() === "cantrip" ? 0 : match[1];
-        // console.log("Spell Scroll found of level", level);
-    
-        const compendium = game.packs.find(t => t.collection === BRTCONFIG.SPELL_COMPENDIUM);
+
+        const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
+        const compendium = game.packs.find(t => t.collection === spellCompendiumName);
+        if(!compendium) {
+            console.log(`Spell Compendium ${spellCompendiumName} not found`);
+            return itemData;
+        }
         let index = await this.getSpellCompendiumIndex();
-    
+
         let spellFound = false;
         let itemEntity;
 
@@ -100,9 +104,9 @@ export class LootCreator {
                 spellFound = true;
             }
         }
-    
+
         if (!itemEntity) {
-            ui.notifications.warn(`no spell of level ${level} found in compendium  ${BRTCONFIG.SPELL_COMPENDIUM} `);
+            ui.notifications.warn(`no spell of level ${level} found in compendium  ${spellCompendiumName} `);
             return itemData;
         }
 

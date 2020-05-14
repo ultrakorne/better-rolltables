@@ -5,7 +5,6 @@ import { i18n } from './utils.js';
 // CONFIG.debug.hooks = true;
 
 Hooks.on("init", function () {
-  // console.log("BRT: initialized.");
   Handlebars.registerHelper('ifeq', function (a, b, options) {
     if (a == b) { return options.fn(this); }
     return options.inverse(this);

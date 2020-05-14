@@ -85,25 +85,19 @@ export class LootBuilder {
     }
 
     processTextTableEntry(complexText) {
-        let numberItems = this.tryToRollString(complexText);
-        const tableNameMatch = complexText.match(/\[(.*?)\]/);
-
-        if (!tableNameMatch) {
-            //no table in brakets [table] is specified, so if its text we pick that
+        const match = /(.*)\[(.*?)\]/g.exec(complexText);
+        //no table in brakets [table] is specified, so we create an item out of the text
+        if (!match || match.length < 3) {       
             this.loot.createLootTextItem(complexText);
             return;
         }
 
-        let tableName;
-        if (tableNameMatch.length >= 2) {
-            tableName = tableNameMatch[1];
-        } else {
-            ui.notifications.warn(`no table for complexText ${complexText} found, check that the table name is in sqaure brackets`);
-            return;
-        }
+        const rollFormula = match[1];
+        const tableName = match[2];
+        let numberItems = this.tryToRollString(rollFormula);
 
         const table = game.tables.getName(tableName);
-        if (!table) { ui.notifications.warn(`no table named ${tableName} found, Please create a table`); return; }
+        if (!table) { ui.notifications.warn(`no table named ${tableName} found, did you misspell your table name in brackets?`); return; }
 
         for (let i = 0; i < numberItems; i++) {
             let tableEntry = this.rollOnTable(table);

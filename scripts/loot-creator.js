@@ -85,6 +85,10 @@ export class LootCreator {
 
         const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
         const compendium = game.packs.find(t => t.collection === spellCompendiumName);
+        if(!compendium) {
+            console.log(`Spell Compendium ${spellCompendiumName} not found`);
+            return itemData;
+        }
         let index = await this.getSpellCompendiumIndex();
 
         let spellFound = false;

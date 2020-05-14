@@ -3,6 +3,9 @@
     "BRT.TypeDefault": "Default Table",
     "BRT.TypeLoot": "Loot Table",
     "BRT.CurrencyLoot": "Currency Loot",
-    
-    "BRT.GenerateLoot.Button": " Generate Loot"
+    "BRT.GenerateLoot.Button": " Generate Loot",
+    "BRT.Settings.LootSheet.Title": "Sheet to use for Generated Loot",
+    "BRT.Settings.LootSheet.Description": "You can set an alternate npc sheets to be used for the generated loot to have upon creation",
+    "BRT.Settings.SpellCompendium.Title": "Spell compendium to use for Random scrolls",
+    "BRT.Settings.SpellCompendium.Description": "You can specify a spell compendium and when a scroll is picked from a loot table (they need to have a specific name) a random spell is rolled from this compendium"
 }

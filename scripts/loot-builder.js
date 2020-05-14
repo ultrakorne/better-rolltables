@@ -12,7 +12,7 @@ export class LootBuilder {
      * Generate loot based on the table definition
      * @returns {LootData} containing all the rolled item selected
      */
-    generateLoot() {      
+    generateLoot() {
         const currenciesToAdd = this.generateCurrency();
         this.loot.addCurrency(currenciesToAdd);
         const tableEntry = this.rollOnTable(this.table);
@@ -27,7 +27,11 @@ export class LootBuilder {
      * @returns tableEntry selected    
      */
     rollOnTable(table) {
-        let entry = table.roll().results;
+        let roll = table.roll();
+        let entry = roll.results;
+        if (!entry) { //hack for making it work on 0.5.5
+            return roll[1];
+        }
         // console.log("tableEntry rolled ", entry);
         return entry[0]; //TODO maybe return the array, in 0.5.6 it is possible to return multiple results for overlapping table entries
     }

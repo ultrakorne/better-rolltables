@@ -2,7 +2,7 @@
     "name": "better-rolltables",
     "title": "Better Roll Tables",
     "description": "A simple module to add functionality to roll tables, especially to roll treasure and magic items",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "author": "Ultrakorne#6240",
     "esmodules": [
         "./scripts/brt-main.js"
@@ -10,7 +10,7 @@
     "styles": [],
     "packs": [],
     "minimumCoreVersion": "0.5.5",
-    "compatibleCoreVersion": "0.5.6",
+    "compatibleCoreVersion": "0.5.7",
     "languages": [
         {
           "lang": "en",

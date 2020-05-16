@@ -37,7 +37,7 @@ export class LootCreator {
     }
 
     async addCurrencies(actor) {
-        let currencyData = actor.data.data.currency;
+        let currencyData = duplicate(actor.data.data.currency);
         for (var key in this.loot.currencyData) {
             if (currencyData.hasOwnProperty(key)) {
                 const amount = Number(currencyData[key].value || 0) + Number(this.loot.currencyData[key]);

@@ -11,6 +11,15 @@
 {{#ifeq data.flags.better-rolltables.table-type "loot"}}
 <div class="form-group">
     <label>{{localize 'BRT.CurrencyLoot'}}</label>
-    <input type="text" placeholder="Add comma separated formulas e.g.: 1d4[gp], (1d4+1)*10[sp]" name="currency-input">
+    <input type="text" placeholder="{{localize 'BRT.CurrencyLootPlaceholder'}}" name="currency-input"
+        value="{{data.flags.better-rolltables.table-currency-string}}">
+</div>
+{{/ifeq}}
+
+{{#ifeq data.flags.better-rolltables.table-type "loot"}}
+<div class="form-group">
+    <label>{{localize 'BRT.LootActorName'}}</label>
+    <input type="text" placeholder="{{localize 'BRT.LootActorNamePlaceholder'}}" name="loot-name-input"
+        value="{{data.flags.better-rolltables.loot-actor-name}}">
 </div>
 {{/ifeq}}

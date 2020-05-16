@@ -34,8 +34,6 @@ export class BetterRT {
         const selectTypeElement = divElement.getElementsByTagName("select")[0];
         selectTypeElement.onchange = async function () { await BetterRT.onOptionTypeChanged(selectTypeElement.value, tableEntity); };
 
-        BetterRT.configureCurrencyInputField(divElement, tableEntity);
-
         //create generate loot button
         if (selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) {
             const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
@@ -45,20 +43,8 @@ export class BetterRT {
 
     static preUpdateRollTable(tableEntity, updateData, diff, tableId) {
         setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.LOOT_CURRENCY_KEY}`, updateData["currency-input"]);
+        setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.ACTOR_NAME_KEY}`, updateData["loot-name-input"]);
         // console.log("preUpdateRollTable updateData ", updateData);
-    }
-
-    //if the currency-input exist (when selectedTableType === "loot" but configured in the handlebars rendered html) we configure the field
-    static async configureCurrencyInputField(htmlElement, tableEntity) {
-        const allInputs = htmlElement.getElementsByTagName("input");
-        const currencyInput = allInputs.namedItem("currency-input");
-
-        if (!currencyInput) return;
-
-        const tableCurrencyString = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_CURRENCY_KEY);
-        if (tableCurrencyString) {
-            currencyInput.value = tableCurrencyString;
-        }
     }
 
     static async showGenerateLootButton(htmlElement, tableEntity) {

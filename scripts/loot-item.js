@@ -1,7 +1,7 @@
 export class LootData {
-
     currencyData = {};
     lootItems = [];
+    actorName;
 
     createLootItem(item, compendiumName) {
         if (compendiumName) {
@@ -17,5 +17,9 @@ export class LootData {
 
     addCurrency(currencyData) {
         this.currencyData = currencyData;
+    }
+
+    setActorName(actorName) {
+        this.actorName = actorName;
     }
 }

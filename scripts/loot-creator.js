@@ -1,19 +1,29 @@
 import { BRTCONFIG } from './config.js';
 
+/**
+ * create actor and items based on the content of the object LootData
+ */
 export class LootCreator {
-
+    /**
+     * Will created actor carring object based on the content of the object lootData
+     * @param {LootData} lootData 
+     */
     constructor(lootData) {
         this.loot = lootData;
     }
 
     async createActor() {
+        let actor = game.actors.getName(this.loot.actorName);
+        if (!actor) {
+            actor = await Actor.create({
+                name: this.loot.actorName || "New Loot",
+                type: "npc",
+                img: "modules/better-rolltables/artwork/chest.png",
+                sort: 12000,
+            });
+        }
+
         console.log("createActor with data ", this.loot);
-        let actor = await Actor.create({
-            name: "New Loot",
-            type: "npc",
-            img: "modules/better-rolltables/artwork/chest.png",
-            sort: 12000,
-        });
 
         const lootSheet = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_SHEET_TO_USE_KEY);
 
@@ -31,7 +41,7 @@ export class LootCreator {
         let currencyData = actor.data.data.currency;
         for (var key in this.loot.currencyData) {
             if (currencyData.hasOwnProperty(key)) {
-                const amount = (currencyData[key].value || 0) + this.loot.currencyData[key];
+                const amount = Number(currencyData[key].value || 0) + Number(this.loot.currencyData[key]);
                 currencyData[key] = { "value": amount.toString() };
             }
         }
@@ -85,7 +95,7 @@ export class LootCreator {
 
         const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
         const compendium = game.packs.find(t => t.collection === spellCompendiumName);
-        if(!compendium) {
+        if (!compendium) {
             console.log(`Spell Compendium ${spellCompendiumName} not found`);
             return itemData;
         }

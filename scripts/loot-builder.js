@@ -1,6 +1,10 @@
 import { BRTCONFIG } from './config.js';
 import { LootData } from './loot-item.js';
 
+/**
+ * This class build a LootData object based on the tableEntity
+ * call generateLoot() to return the created LootData object
+ */
 export class LootBuilder {
 
     constructor(tableEntity) {
@@ -13,6 +17,7 @@ export class LootBuilder {
      * @returns {LootData} containing all the rolled item selected
      */
     generateLoot() {
+        this.loot.actorName = this.actorName();
         const currenciesToAdd = this.generateCurrency();
         this.loot.addCurrency(currenciesToAdd);
         const tableEntry = this.rollOnTable(this.table);
@@ -44,9 +49,16 @@ export class LootBuilder {
         }
     }
 
-    /*
-    based on the currency string set in the flag  CONFIG.LOOT_CURRENCY_KEY (in the format of '1d6[gp], 1d4[sp]'), we roll random currencies 
-    return: an obj with currency type string as key and amount as value e.g. { "gp" : amount, "sp" : amount }
+    /**
+     * @returns {string} the name of the actor to which to add the loot. if this is empty or undefined a new actor will be created instead of adding to an existing one
+     */
+    actorName() {
+        return this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ACTOR_NAME_KEY);
+    }
+
+    /**
+    * based on the currency string set in the flag  CONFIG.LOOT_CURRENCY_KEY (in the format of '1d6[gp], 1d4[sp]'), we roll random currencies 
+    * @returns {object} an obj with currency type string as key and amount as value e.g. { "gp" : amount, "sp" : amount }
     */
     generateCurrency() {
         const currencyFlag = this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_CURRENCY_KEY);

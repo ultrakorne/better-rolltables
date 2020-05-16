@@ -26,15 +26,14 @@ export class LootCreator {
         console.log("createActor with data ", this.loot);
 
         const lootSheet = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_SHEET_TO_USE_KEY);
-
         if (lootSheet in CONFIG.Actor.sheetClasses.npc) {
             await actor.setFlag("core", "sheetClass", lootSheet);
         }
 
+        await this.addCurrencies(actor);
         for (const item of this.loot.lootItems) {
             await this.createLootItem(item, actor);
         }
-        await this.addCurrencies(actor);
     }
 
     async addCurrencies(actor) {

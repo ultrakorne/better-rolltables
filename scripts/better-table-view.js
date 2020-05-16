@@ -44,7 +44,7 @@ export class BetterRT {
     static preUpdateRollTable(tableEntity, updateData, diff, tableId) {
         setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.LOOT_CURRENCY_KEY}`, updateData["currency-input"]);
         setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.ACTOR_NAME_KEY}`, updateData["loot-name-input"]);
-        console.log("preUpdateRollTable updateData ", updateData);
+        // console.log("preUpdateRollTable updateData ", updateData);
     }
 
     static async showGenerateLootButton(htmlElement, tableEntity) {

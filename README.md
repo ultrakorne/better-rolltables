@@ -35,3 +35,14 @@ if you have some scrolls with this naming, as in the picture below a random spel
 The picture below is an example of random loot generated with the example table table
 
 ![howto picture 3](img/howto-3.png)
+
+### Creating Items on the Fly with random value ###
+
+Especially for gems it is useful to create items on the fly that do not exist in a compendium or anywhere else.
+You can create a Text result type in a table, give it name, set an image and use
+@price[formula] to set the price of the item
+@quantity[formula] for having more than 1 item and 
+@weight[formula] if you wanna assign a weight to the item
+
+
+![howto picture 4](img/howto-4.png)

@@ -46,3 +46,9 @@ You can create a Text result type in a table, give it name, set an image and use
 
 
 ![howto picture 4](img/howto-4.png)
+
+FAQs
+https://github.com/ultrakorne/better-rolltables/wiki/FAQ
+
+### Contacts
+Ultrakorne#6240

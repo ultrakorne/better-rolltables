@@ -51,7 +51,7 @@ export class LootCreator {
 
     async createLootItem(item, actor) {
         let itemToCreateData;
-        if (item.compendium) { //item belongs to a compendium
+        if (item.item && item.compendium) { //item belongs to a compendium
             const compendium = game.packs.find(t => t.collection === item.compendium);
             let indexes = await compendium.getIndex();
             let entry = indexes.find(e => e.name.toLowerCase() === item.item.text.toLowerCase());
@@ -72,7 +72,7 @@ export class LootCreator {
                     } catch (error) {
                         continue;
                     }
-                    setProperty(itemData, `data.${cmd.command}`, rolledValue);
+                    setProperty(itemData, `data.${cmd.command.toLowerCase()}`, rolledValue);
                 }
             }
             

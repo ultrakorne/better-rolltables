@@ -87,7 +87,6 @@ export class LootBuilder {
             let resultText = tableEntry.text;
             let complexTextList = resultText.split("|");
             for (const complexText of complexTextList) {
-                console.log("TEXT ENTRY ", tableEntry);
                 this.processTextTableEntry(complexText, tableEntry.img);
             }
         } else if (tableEntry.type == 1 && tableEntry.collection === "Item") { //item

@@ -11,8 +11,14 @@ export class LootData {
         }
     }
 
-    createLootTextItem(text) {
-        this.lootItems.push({ "text": text });
+    /**
+     * 
+     * @param {string} the name of the item 
+     * @param {Array} and array of { "command" : commandName, "arg" : commandArgument });
+     * an example of command is price and the arg is a formula to set the price of the item
+     */
+    createLootTextItem(itemName, commandList, img) {
+        this.lootItems.push({ "text": itemName, "commands": commandList, "img" : img });
     }
 
     addCurrency(currencyData) {

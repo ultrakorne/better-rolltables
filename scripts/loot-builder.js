@@ -87,7 +87,8 @@ export class LootBuilder {
             let resultText = tableEntry.text;
             let complexTextList = resultText.split("|");
             for (const complexText of complexTextList) {
-                this.processTextTableEntry(complexText);
+                console.log("TEXT ENTRY ", tableEntry);
+                this.processTextTableEntry(complexText, tableEntry.img);
             }
         } else if (tableEntry.type == 1 && tableEntry.collection === "Item") { //item
             this.loot.createLootItem(tableEntry);
@@ -96,11 +97,43 @@ export class LootBuilder {
         }
     }
 
-    processTextTableEntry(complexText) {
-        const match = /(.*)\[(.*?)\]/g.exec(complexText);
+    /**
+     * We do most of the custom rolltable handling with the Text field, this method is processing the table entry text
+     * @param {String} complexText the text of a table entry of type Text
+     * @param {String} img the image path assigned to the text table Entry selected
+     */
+    processTextTableEntry(complexText, img) {
+        /** check for commands @command[arg]
+         * commands are then passed along the item name so during creation (in loot-creator.js) we can set some property of the item, for example we can set the price of an
+         * item with @price(1d4)  the command is price, the arg is 1d4
+        */
+        let itemName;
+        let commands = [];
+
+        let input = complexText;
+        let regex = /([^@]*)@(\w+)\[([^\]]+)\]/g;
+
+        let matches;
+        while (matches = regex.exec(input)) {
+            if (!itemName) {
+                itemName = matches[1].trim(); //the name of the object is the first group [1]. match [0] is the entire match
+            }
+            commands.push({ "command": matches[2], "arg": matches[3] });
+        }
+
+        if (commands.length > 0) {
+            // console.log("commands ", commands);
+            this.loot.createLootTextItem(itemName, commands, img);
+            return;
+        }
+
+        /** if no command was found, we check if a simple [table name to roll match is found] 
+         * matching formula [table name to roll]
+        */
+        const match = /([^\[]+)\[([^\]]+)\]/g.exec(complexText);
         //no table in brakets [table] is specified, so we create an item out of the text
-        if (!match || match.length < 3) {       
-            this.loot.createLootTextItem(complexText);
+        if (!match || match.length < 3) {
+            this.loot.createLootTextItem(complexText.trim(), commands, img);
             return;
         }
 

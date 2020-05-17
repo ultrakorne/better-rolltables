@@ -23,7 +23,7 @@ export class LootCreator {
             });
         }
 
-        console.log("createActor with data ", this.loot);
+        // console.log("createActor with data ", this.loot);
 
         const lootSheet = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_SHEET_TO_USE_KEY);
         if (lootSheet in CONFIG.Actor.sheetClasses.npc) {
@@ -34,6 +34,7 @@ export class LootCreator {
         for (const item of this.loot.lootItems) {
             await this.createLootItem(item, actor);
         }
+        console.log("actor ", actor);
     }
 
     async addCurrencies(actor) {
@@ -60,7 +61,21 @@ export class LootCreator {
             const itemEntity = game.items.entities.find(t => t.name.toLowerCase() === item.item.text.toLowerCase());
             itemToCreateData = itemEntity.data;
         } else if (item.text) { //there is no item, just a text name
-            let itemData = { name: item.text, type: "loot", img: "icons/svg/mystery-man.svg" };
+           
+            let itemData = { name: item.text, type: "loot", img: item.img}; //"icons/svg/mystery-man.svg"
+            if(item.hasOwnProperty('commands') && item.commands) {
+                for(let cmd of item.commands) {
+                    //TODO check the type of command, that is a command to be rolled and a valid command
+                    let rolledValue;
+                    try {
+                        rolledValue = new Roll(cmd.arg).roll().total;
+                    } catch (error) {
+                        continue;
+                    }
+                    setProperty(itemData, `data.${cmd.command}`, rolledValue);
+                }
+            }
+            
             itemToCreateData = itemData;
         }
 

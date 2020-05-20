@@ -57,8 +57,7 @@ export class LootCreator {
             let entry = indexes.find(e => e.name.toLowerCase() === item.item.text.toLowerCase());
             const itemEntity = await compendium.getEntity(entry._id);
             itemToCreateData = itemEntity.data;
-        } else if (item.text) { //there is no item, just a text name
-
+        } else if (item.text) { 
             /**if an item with this name exist we load that item data, otherwise we create a new one */
             const itemEntity = game.items.getName(item.text);
             let itemData;
@@ -69,18 +68,8 @@ export class LootCreator {
             }
 
             if (item.hasOwnProperty('commands') && item.commands) {
-                for (let cmd of item.commands) {
-                    //TODO check the type of command, that is a command to be rolled and a valid command
-                    let rolledValue;
-                    try {
-                        rolledValue = new Roll(cmd.arg).roll().total;
-                    } catch (error) {
-                        continue;
-                    }
-                    setProperty(itemData, `data.${cmd.command.toLowerCase()}`, rolledValue);
-                }
+                itemData = this.applyCommandToItemData(itemData, item.commands);
             }
-
             itemToCreateData = itemData;
         }
 
@@ -101,6 +90,20 @@ export class LootCreator {
 
         this.rndSpellIdx.sort(() => Math.random() - 0.5);
         return spellCompendiumIndex;
+    }
+
+    applyCommandToItemData(itemData, commands) {
+        for (let cmd of commands) {
+            //TODO check the type of command, that is a command to be rolled and a valid command
+            let rolledValue;
+            try {
+                rolledValue = new Roll(cmd.arg).roll().total;
+            } catch (error) {
+                continue;
+            }
+            setProperty(itemData, `data.${cmd.command.toLowerCase()}`, rolledValue);
+        }
+        return itemData;
     }
 
     async preItemCreationDataManipulation(itemData) {

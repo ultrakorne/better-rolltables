@@ -57,14 +57,19 @@ export class LootCreator {
             let entry = indexes.find(e => e.name.toLowerCase() === item.item.text.toLowerCase());
             const itemEntity = await compendium.getEntity(entry._id);
             itemToCreateData = itemEntity.data;
-        } else if (item.item) { //item is not in a compendium
-            const itemEntity = game.items.entities.find(t => t.name.toLowerCase() === item.item.text.toLowerCase());
-            itemToCreateData = itemEntity.data;
         } else if (item.text) { //there is no item, just a text name
-           
-            let itemData = { name: item.text, type: "loot", img: item.img}; //"icons/svg/mystery-man.svg"
-            if(item.hasOwnProperty('commands') && item.commands) {
-                for(let cmd of item.commands) {
+
+            /**if an item with this name exist we load that item data, otherwise we create a new one */
+            const itemEntity = game.items.getName(item.text);
+            let itemData;
+            if (itemEntity) {
+                itemData = itemEntity.data;
+            } else {
+                itemData = { name: item.text, type: "loot", img: item.img }; //"icons/svg/mystery-man.svg"
+            }
+
+            if (item.hasOwnProperty('commands') && item.commands) {
+                for (let cmd of item.commands) {
                     //TODO check the type of command, that is a command to be rolled and a valid command
                     let rolledValue;
                     try {
@@ -75,7 +80,7 @@ export class LootCreator {
                     setProperty(itemData, `data.${cmd.command.toLowerCase()}`, rolledValue);
                 }
             }
-            
+
             itemToCreateData = itemData;
         }
 

@@ -90,7 +90,7 @@ export class LootBuilder {
                 this.processTextTableEntry(complexText, tableEntry.img);
             }
         } else if (tableEntry.type == 1 && tableEntry.collection === "Item") { //item
-            this.loot.createLootItem(tableEntry);
+            this.loot.createLootTextItem(tableEntry.text);
         } else if (tableEntry.type == 2) { //collection type
             this.loot.createLootItem(tableEntry, tableEntry.collection);
         }
@@ -104,7 +104,7 @@ export class LootBuilder {
     processTextTableEntry(complexText, img) {
         /** check for commands @command[arg]
          * commands are then passed along the item name so during creation (in loot-creator.js) we can set some property of the item, for example we can set the price of an
-         * item with @price(1d4)  the command is price, the arg is 1d4
+         * item with @price[1d4]  the command is price, the arg is 1d4
         */
         let itemName;
         let commands = [];

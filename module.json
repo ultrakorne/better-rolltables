@@ -8,7 +8,15 @@
         "./scripts/brt-main.js"
     ],
     "styles": [],
-    "packs": [],
+    "packs": [
+        {
+          "name": "better-roll-tables",
+          "label": "Better Roll Tables",
+          "system": "dnd5e",
+          "path": "./packs/better-roll-tables.db",
+          "entity": "RollTable"
+        }
+    ],
     "minimumCoreVersion": "0.5.5",
     "compatibleCoreVersion": "0.5.7",
     "languages": [

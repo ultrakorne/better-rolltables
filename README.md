@@ -20,11 +20,12 @@ Inside foundry, go to add-ons module section, click on Install module and copy t
 ![howto picture 1](img/howto-1.png)
 
 ### How to use it ###
+**Note for 0.5.7 users**: do not add additional text to roll formulas ```1d6 of [tableName]``` does not work and you have to do simply ```1d6 [tableName]```
 
 1. Open a RollTable or create a new one
 1. Change *Better Table type* to "Loot Table" (just under the table description field)
 1. if you want to generate currency with the loot use the field *Currency loot*. currencies accept formulas and in squre brackets the currency type. You can add multiple currency and separate them with a comma. `(1d10+2)*100[gp], 1d10*100[sp], 200[cp]`
-1. You can roll formula on multplie table by adding an entry of type Text in the rollTable and use the following syntax: `1d6 of [Magic Scrolls Table] | 1d4 of [Potions Table]` This will roll 1d6 times on a table named *Magic Scrolls Table* and 1d4 on a table named *Potions Table*
+1. You can roll formula on multplie table by adding an entry of type Text in the rollTable and use the following syntax: `1d6 [Magic Scrolls Table] | 1d4 [Potions Table]` This will roll 1d6 times on a table named *Magic Scrolls Table* and 1d4 on a table named *Potions Table*
 1. Remember to hit *update* on the table if you change values (or enter after you typed)
 1. Click **Generate Loot** when you are done
 1. You will find your loot actor in the Actor's directory, named *New Loot*

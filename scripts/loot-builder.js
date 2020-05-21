@@ -90,9 +90,9 @@ export class LootBuilder {
                 this.processTextTableEntry(complexText, tableEntry.img);
             }
         } else if (tableEntry.type == 1 && tableEntry.collection === "Item") { //item
-            this.loot.createLootItem(tableEntry);
+            this.loot.createLootTextItem(tableEntry.text);
         } else if (tableEntry.type == 2) { //collection type
-            this.loot.createLootItem(tableEntry, tableEntry.collection);
+            this.loot.createLootTextItem(tableEntry.text, undefined, undefined, tableEntry.collection);
         }
     }
 
@@ -104,10 +104,11 @@ export class LootBuilder {
     processTextTableEntry(complexText, img) {
         /** check for commands @command[arg]
          * commands are then passed along the item name so during creation (in loot-creator.js) we can set some property of the item, for example we can set the price of an
-         * item with @price(1d4)  the command is price, the arg is 1d4
+         * item with @price[1d4]  the command is price, the arg is 1d4
         */
         let itemName;
         let commands = [];
+        let compendiumName;
 
         let input = complexText;
         let regex = /([^@]*)@(\w+)\[([^\]]+)\]/g;
@@ -117,12 +118,16 @@ export class LootBuilder {
             if (!itemName) {
                 itemName = matches[1].trim(); //the name of the object is the first group [1]. match [0] is the entire match
             }
-            commands.push({ "command": matches[2], "arg": matches[3] });
+            /**If an Compendium command is specified (e.g. @Compendium[compendiumName]) i use that as compendium name and i dont add it to command list */
+            if (matches[2].toLowerCase() === "compendium") {
+                compendiumName = matches[3]
+            } else {
+                commands.push({ "command": matches[2], "arg": matches[3] });
+            }
         }
 
-        if (commands.length > 0) {
-            // console.log("commands ", commands);
-            this.loot.createLootTextItem(itemName, commands, img);
+        if (commands.length > 0 || compendiumName) {
+            this.loot.createLootTextItem(itemName, commands, img, compendiumName);
             return;
         }
 
@@ -132,7 +137,7 @@ export class LootBuilder {
         const match = /([^\[]+)\[([^\]]+)\]/g.exec(complexText);
         //no table in brakets [table] is specified, so we create an item out of the text
         if (!match || match.length < 3) {
-            this.loot.createLootTextItem(complexText.trim(), commands, img);
+            this.loot.createLootTextItem(complexText.trim(), commands, img, compendiumName);
             return;
         }
 

@@ -2,13 +2,21 @@
     "name": "better-rolltables",
     "title": "Better Roll Tables",
     "description": "A simple module to add functionality to roll tables, especially to roll treasure and magic items",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "author": "Ultrakorne#6240",
     "esmodules": [
         "./scripts/brt-main.js"
     ],
     "styles": [],
-    "packs": [],
+    "packs": [
+        {
+          "name": "better-roll-tables",
+          "label": "Better Roll Tables",
+          "system": "dnd5e",
+          "path": "./packs/better-roll-tables.db",
+          "entity": "RollTable"
+        }
+    ],
     "minimumCoreVersion": "0.5.5",
     "compatibleCoreVersion": "0.5.7",
     "languages": [

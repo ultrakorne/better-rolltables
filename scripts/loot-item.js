@@ -2,23 +2,17 @@ export class LootData {
     currencyData = {};
     lootItems = [];
     actorName;
-
-    createLootItem(item, compendiumName) {
-        if (compendiumName) {
-            this.lootItems.push({ "compendium": compendiumName, "item": item });
-        } else {
-            this.lootItems.push({ "item": item });
-        }
-    }
-
+    
     /**
      * 
-     * @param {string} the name of the item 
-     * @param {Array} and array of { "command" : commandName, "arg" : commandArgument });
+     * @param {string} itemName the name of the item 
+     * @param {Array} commandList and array of { "command" : commandName, "arg" : commandArgument });
+     * @param {string} img the image to use for the item
+     * @param {string} compendiumName if the item is to be found in a compendium
      * an example of command is price and the arg is a formula to set the price of the item
      */
-    createLootTextItem(itemName, commandList, img) {
-        this.lootItems.push({ "text": itemName, "commands": commandList, "img" : img });
+    createLootTextItem(itemName, commandList, img, compendiumName) {
+        this.lootItems.push({ "text": itemName, "commands": commandList, "img" : img, "compendium": compendiumName });
     }
 
     addCurrency(currencyData) {

@@ -92,7 +92,7 @@ export class LootBuilder {
         } else if (tableEntry.type == 1 && tableEntry.collection === "Item") { //item
             this.loot.createLootTextItem(tableEntry.text);
         } else if (tableEntry.type == 2) { //collection type
-            this.loot.createLootItem(tableEntry, tableEntry.collection);
+            this.loot.createLootTextItem(tableEntry.text, undefined, undefined, tableEntry.collection);
         }
     }
 

@@ -23,8 +23,6 @@ export class LootCreator {
             });
         }
 
-        // console.log("createActor with data ", this.loot);
-
         const lootSheet = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_SHEET_TO_USE_KEY);
         if (lootSheet in CONFIG.Actor.sheetClasses.npc) {
             await actor.setFlag("core", "sheetClass", lootSheet);
@@ -34,7 +32,6 @@ export class LootCreator {
         for (const item of this.loot.lootItems) {
             await this.createLootItem(item, actor);
         }
-        console.log("actor ", actor);
     }
 
     async addCurrencies(actor) {
@@ -50,32 +47,40 @@ export class LootCreator {
     }
 
     async createLootItem(item, actor) {
-        let itemToCreateData;
-        if (item.item && item.compendium) { //item belongs to a compendium
-            const compendium = game.packs.find(t => t.collection === item.compendium);
-            let indexes = await compendium.getIndex();
-            let entry = indexes.find(e => e.name.toLowerCase() === item.item.text.toLowerCase());
-            const itemEntity = await compendium.getEntity(entry._id);
-            itemToCreateData = itemEntity.data;
-        } else if (item.text) { 
-            /**if an item with this name exist we load that item data, otherwise we create a new one */
-            const itemEntity = game.items.getName(item.text);
-            let itemData;
-            if (itemEntity) {
-                itemData = itemEntity.data;
-            } else {
-                itemData = { name: item.text, type: "loot", img: item.img }; //"icons/svg/mystery-man.svg"
-            }
+        let itemData;
 
-            if (item.hasOwnProperty('commands') && item.commands) {
-                itemData = this.applyCommandToItemData(itemData, item.commands);
+        /** Try first to load item from compendium */
+        if (item.compendium) {
+            const compendium = game.packs.find(t => t.collection === item.compendium);
+            if (compendium) {
+                let indexes = await compendium.getIndex();
+                let entry = indexes.find(e => e.name.toLowerCase() === item.text.toLowerCase());
+                const itemEntity = await compendium.getEntity(entry._id);
+                itemData = itemEntity.data;
             }
-            itemToCreateData = itemData;
         }
 
-        if (!itemToCreateData) return;
-        itemToCreateData = await this.preItemCreationDataManipulation(itemToCreateData);
-        await actor.createOwnedItem(itemToCreateData);
+        /** Try first to load item from item list */
+        if (!itemData) {
+            /**if an item with this name exist we load that item data, otherwise we create a new one */
+            const itemEntity = game.items.getName(item.text);
+            if (itemEntity) {
+                itemData = itemEntity.data;
+            }
+        }
+
+        /** Create item from text since the item does not exist */
+        if (!itemData) {
+            itemData = { name: item.text, type: "loot", img: item.img }; //"icons/svg/mystery-man.svg"
+        }
+
+        if (item.hasOwnProperty('commands') && item.commands) {
+            itemData = this.applyCommandToItemData(itemData, item.commands);
+        }
+
+        if (!itemData) return;
+        itemData = await this.preItemCreationDataManipulation(itemData);
+        await actor.createOwnedItem(itemData);
     }
 
     rndSpellIdx = [];

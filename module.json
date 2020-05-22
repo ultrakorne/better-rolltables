@@ -1,7 +1,7 @@
 {
     "name": "better-rolltables",
     "title": "Better Roll Tables",
-    "description": "A simple module to add functionality to roll tables, especially to roll treasure and magic items",
+    "description": "Adding functionality to roll tables, especially to roll treasure and magic items",
     "version": "0.4.2",
     "author": "Ultrakorne#6240",
     "esmodules": [

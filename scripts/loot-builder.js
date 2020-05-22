@@ -20,8 +20,11 @@ export class LootBuilder {
         this.loot.actorName = this.actorName();
         const currenciesToAdd = this.generateCurrency();
         this.loot.addCurrency(currenciesToAdd);
-        const tableEntry = this.rollOnTable(this.table);
-        this.processTableEntry(tableEntry);
+
+        for (let i = 0; i < this.tableRollsAmount(); i++) {
+            const tableEntry = this.rollOnTable(this.table);
+            this.processTableEntry(tableEntry);
+        }
 
         return this.loot;
     }
@@ -54,6 +57,14 @@ export class LootBuilder {
      */
     actorName() {
         return this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ACTOR_NAME_KEY);
+    }
+    /**
+     * we can provide a formula on how many times we roll on the table.
+     * @returns {Number} how many times to roll on this table
+     */
+    tableRollsAmount() {
+        const rollFormula = this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLLS_AMOUNT_KEY);
+        return this.tryToRollString(rollFormula);
     }
 
     /**

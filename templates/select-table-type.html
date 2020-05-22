@@ -18,6 +18,14 @@
 
 {{#ifeq data.flags.better-rolltables.table-type "loot"}}
 <div class="form-group">
+    <label>{{localize 'BRT.LootRollAmount'}}</label>
+    <input type="text" placeholder="{{localize 'BRT.LootRollAmountPlaceholder'}}" name="loot-rolls-amount-input"
+        value="{{data.flags.better-rolltables.loot-amount-key}}">
+</div>
+{{/ifeq}}
+
+{{#ifeq data.flags.better-rolltables.table-type "loot"}}
+<div class="form-group">
     <label>{{localize 'BRT.LootActorName'}}</label>
     <input type="text" placeholder="{{localize 'BRT.LootActorNamePlaceholder'}}" name="loot-name-input"
         value="{{data.flags.better-rolltables.loot-actor-name}}">

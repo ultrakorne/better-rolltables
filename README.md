@@ -1,3 +1,5 @@
+<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/ultrakorne/better-rolltables?style=flat-square"> <img alt="GitHub" src="https://img.shields.io/github/license/ultrakorne/better-rolltables?style=flat-square"> <img alt="GitHub Releases" src="https://img.shields.io/github/downloads/ultrakorne/better-rolltables/latest/total?style=flat-square">  
+
 # Better Rolltables #
 *better-rolltables* is Module for FoundryVTT to improve and add functionality rolltables
 

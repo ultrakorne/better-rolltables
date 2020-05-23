@@ -22,7 +22,7 @@ Inside foundry, go to add-ons module section, click on Install module and copy t
 ![howto picture 1](img/howto-1.png)
 
 ### How to use it ###
-**Note for 0.5.7 users**: do not add additional text to roll formulas ```1d6 of [tableName]``` does not work and you have to do simply ```1d6 [tableName]```
+**Note for 0.5.7+ users**: do not add additional text to roll formulas ```1d6 of [tableName]``` does not work and you have to do simply ```1d6 [tableName]```
 
 1. Open a RollTable or create a new one
 1. Change *Better Table type* to "Loot Table" (just under the table description field)

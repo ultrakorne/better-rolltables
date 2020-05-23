@@ -26,6 +26,8 @@ export class BetterRT {
             }
         }
 
+        // console.log("html[0] ", html[0]);
+
         let divElement = document.createElement("div");
         let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.html", tableEntity);
         divElement.innerHTML = selectTypeHtml;
@@ -36,8 +38,17 @@ export class BetterRT {
 
         //create generate loot button
         if (selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) {
+            /** Create additional Button to Generate Loot */
             const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
             await BetterRT.showGenerateLootButton(footer, tableEntity);
+
+            /** Hide the element with displayRoll checkbox */
+            const inputElements = html[0].getElementsByTagName("input");
+            const displayRollElement = inputElements.namedItem("displayRoll").parentElement;
+            const replacementElement = inputElements.namedItem("replacement").parentElement;
+            // console.log("displayRollElement ", displayRollElement);
+            displayRollElement.remove();
+            replacementElement.remove();
         }
     }
 

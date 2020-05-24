@@ -47,7 +47,7 @@ export class BetterRT {
             const displayRollElement = inputElements.namedItem("displayRoll").parentElement;
             // const replacementElement = inputElements.namedItem("replacement").parentElement;
             // console.log("displayRollElement ", displayRollElement);
-            // displayRollElement.remove();
+            displayRollElement.remove();
             // replacementElement.remove();
         }
     }

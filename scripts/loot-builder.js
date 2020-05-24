@@ -22,27 +22,23 @@ export class LootBuilder {
         const currenciesToAdd = this.generateCurrency(currencyString);
         this.loot.addCurrency(currenciesToAdd);
 
-        for (let i = 0; i < this.tableRollsAmount(); i++) {
-            const tableEntries = this.rollOnTable(this.table); //as foundry 0.5.6 overlapping ranges are supported and a table roll can return multiple entries
-            for (var tableEntry of tableEntries) {
-                this.processTableEntry(tableEntry);
-            }
-        }
+        this.rollManyOnTable(this.tableRollsAmount(), this.table);
+
         return this.loot;
     }
 
     /**
-     * Rolls on a table and returns the entry result
-     * @param table table to roll on
-     * @returns tableEntry selected    
+     * Rolls on a table and processes each entry
+     * @param {Number} amount of rolls to do
+     * @param {RollTable} table table to roll on
      */
-    rollOnTable(table) {
-        let roll = table.roll();
-        let entry = roll.results;
-        if (!entry) { //hack for making it work on 0.5.5
-            return roll[1];
+    rollManyOnTable(amount, table) {
+        for (let i = 0; i < amount; i++) {
+            const roll = table.roll(); //as foundry 0.5.6 overlapping ranges are supported and a table roll can return multiple entries
+            for (const entry of roll.results) {
+                this.processTableEntry(entry);
+            }
         }
-        return entry;
     }
 
     tryToRollString(textWithRollFormula) {
@@ -120,6 +116,8 @@ export class LootBuilder {
             return;
         }
 
+        console.log("processing ", complexText);
+
         /** check for commands @command[arg]
          * commands are then passed along the item name so during creation (in loot-creator.js) we can set some property of the item, for example we can set the price of an
          * item with @price[1d4]  the command is price, the arg is 1d4
@@ -166,10 +164,7 @@ export class LootBuilder {
         const table = game.tables.getName(tableName);
         if (!table) { ui.notifications.warn(`no table named ${tableName} found, did you misspell your table name in brackets?`); return; }
 
-        for (let i = 0; i < numberItems; i++) {
-            let tableEntry = this.rollOnTable(table);
-            this.processTableEntry(tableEntry);
-        }
+        this.rollManyOnTable(numberItems, table);
     }
 
     /** Currency is defined as a text entry in the table inside { } , the format inside brackets it's the same as the global currency set
@@ -184,7 +179,6 @@ export class LootBuilder {
             const currencyToAdd = this.generateCurrency(matches[1]);
             this.loot.addCurrency(currencyToAdd);
         }
-
         return tableText.replace(regex, '');
     }
 }

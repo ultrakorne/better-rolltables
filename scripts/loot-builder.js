@@ -23,10 +23,11 @@ export class LootBuilder {
         this.loot.addCurrency(currenciesToAdd);
 
         for (let i = 0; i < this.tableRollsAmount(); i++) {
-            const tableEntry = this.rollOnTable(this.table);
-            this.processTableEntry(tableEntry);
+            const tableEntries = this.rollOnTable(this.table); //as foundry 0.5.6 overlapping ranges are supported and a table roll can return multiple entries
+            for (var tableEntry of tableEntries) {
+                this.processTableEntry(tableEntry);
+            }
         }
-
         return this.loot;
     }
 
@@ -41,8 +42,7 @@ export class LootBuilder {
         if (!entry) { //hack for making it work on 0.5.5
             return roll[1];
         }
-        // console.log("tableEntry rolled ", entry);
-        return entry[0]; //TODO maybe return the array, in 0.5.6 it is possible to return multiple results for overlapping table entries
+        return entry;
     }
 
     tryToRollString(textWithRollFormula) {
@@ -116,7 +116,7 @@ export class LootBuilder {
         /**extract currency first */
         complexText = this.processTextAsCurrency(complexText);
 
-        if(complexText.trim().length == 0) {
+        if (complexText.trim().length == 0) {
             return;
         }
 

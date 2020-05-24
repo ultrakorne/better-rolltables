@@ -18,7 +18,8 @@ export class LootBuilder {
      */
     generateLoot() {
         this.loot.actorName = this.actorName();
-        const currenciesToAdd = this.generateCurrency();
+        const currencyString = this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_CURRENCY_KEY);
+        const currenciesToAdd = this.generateCurrency(currencyString);
         this.loot.addCurrency(currenciesToAdd);
 
         for (let i = 0; i < this.tableRollsAmount(); i++) {
@@ -71,11 +72,10 @@ export class LootBuilder {
     * based on the currency string set in the flag  CONFIG.LOOT_CURRENCY_KEY (in the format of '1d6[gp], 1d4[sp]'), we roll random currencies 
     * @returns {object} an obj with currency type string as key and amount as value e.g. { "gp" : amount, "sp" : amount }
     */
-    generateCurrency() {
-        const currencyFlag = this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_CURRENCY_KEY);
+    generateCurrency(currencyString) {
         const currenciesToAdd = {};
-        if (currencyFlag) {
-            const currenciesPieces = currencyFlag.split(",");
+        if (currencyString) {
+            const currenciesPieces = currencyString.split(",");
             for (const currency of currenciesPieces) {
                 const match = /(.*)\[(.*?)\]/g.exec(currency); //capturing 2 groups, the formula and then the currency symbol in brakets []
                 if (!match || match.length < 3) {
@@ -113,6 +113,13 @@ export class LootBuilder {
      * @param {String} img the image path assigned to the text table Entry selected
      */
     processTextTableEntry(complexText, img) {
+        /**extract currency first */
+        complexText = this.processTextAsCurrency(complexText);
+
+        if(complexText.trim().length == 0) {
+            return;
+        }
+
         /** check for commands @command[arg]
          * commands are then passed along the item name so during creation (in loot-creator.js) we can set some property of the item, for example we can set the price of an
          * item with @price[1d4]  the command is price, the arg is 1d4
@@ -148,7 +155,7 @@ export class LootBuilder {
         const match = /([^\[]+)\[([^\]]+)\]/g.exec(complexText);
         //no table in brakets [table] is specified, so we create an item out of the text
         if (!match || match.length < 3) {
-            this.loot.createLootTextItem(complexText.trim(), commands, img, compendiumName);
+            this.loot.createLootTextItem(complexText.trim(), [], img, undefined);
             return;
         }
 
@@ -163,5 +170,21 @@ export class LootBuilder {
             let tableEntry = this.rollOnTable(table);
             this.processTableEntry(tableEntry);
         }
+    }
+
+    /** Currency is defined as a text entry in the table inside { } , the format inside brackets it's the same as the global currency set
+     * in the whole rolltable. e.g. formula[gp],formula[sp] and so on
+     */
+    processTextAsCurrency(tableText) {
+        const regex = /{([^}]+)}/g
+        const input = tableText;
+
+        let matches;
+        while (matches = regex.exec(input)) {
+            const currencyToAdd = this.generateCurrency(matches[1]);
+            this.loot.addCurrency(currencyToAdd);
+        }
+
+        return tableText.replace(regex, '');
     }
 }

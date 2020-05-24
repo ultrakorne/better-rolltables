@@ -53,6 +53,12 @@ You can create a Text result type in a table, give it name, set an image and use
 
 ![howto picture 4](img/howto-4.png)
 
+### Adding currencies as text entries in the table ###
+
+you can have text table entries to reward currency! The syntax is `{1d6+2[gp], 1d4+1[pp]}`, check example on how to combine it with other loot in the same line.
+
+![howto picture 5](img/howto-5.png)
+
 FAQs
 https://github.com/ultrakorne/better-rolltables/wiki/FAQ
 

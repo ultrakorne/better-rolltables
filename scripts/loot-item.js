@@ -16,7 +16,9 @@ export class LootData {
     }
 
     addCurrency(currencyData) {
-        this.currencyData = currencyData;
+        for(var key in currencyData){
+            this.currencyData[key] = (this.currencyData[key] || 0) + currencyData[key];
+        }
     }
 
     setActorName(actorName) {

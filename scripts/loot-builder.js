@@ -16,14 +16,14 @@ export class LootBuilder {
      * Generate loot based on the table definition
      * @returns {LootData} containing all the rolled item selected
      */
-    generateLoot() {
+    async generateLoot() {
         this.loot.actorName = this.actorName();
         const currencyString = this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_CURRENCY_KEY);
         const currenciesToAdd = this.generateCurrency(currencyString);
         this.loot.addCurrency(currenciesToAdd);
 
         for (let i = 0; i < this.tableRollsAmount(); i++) {
-            const tableEntries = this.rollOnTable(this.table); //as foundry 0.5.6 overlapping ranges are supported and a table roll can return multiple entries
+            const tableEntries = await this.rollOnTable(this.table); //as foundry 0.5.6 overlapping ranges are supported and a table roll can return multiple entries
             for (var tableEntry of tableEntries) {
                 this.processTableEntry(tableEntry);
             }
@@ -36,9 +36,15 @@ export class LootBuilder {
      * @param table table to roll on
      * @returns tableEntry selected    
      */
-    rollOnTable(table) {
-        let roll = table.roll();
-        let entry = roll.results;
+    async rollOnTable(table) {
+        const roll = table.roll();
+        const entry = roll.results;
+
+        console.log("table ", table);
+        console.log("roll ", roll);
+        const draw = await table.drawMany(1, new Roll(table.data.formula), false);
+        console.log("rdrawoll ", draw);
+
         if (!entry) { //hack for making it work on 0.5.5
             return roll[1];
         }

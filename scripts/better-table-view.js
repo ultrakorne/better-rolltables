@@ -45,10 +45,10 @@ export class BetterRT {
             /** Hide the element with displayRoll checkbox */
             const inputElements = html[0].getElementsByTagName("input");
             const displayRollElement = inputElements.namedItem("displayRoll").parentElement;
-            const replacementElement = inputElements.namedItem("replacement").parentElement;
+            // const replacementElement = inputElements.namedItem("replacement").parentElement;
             // console.log("displayRollElement ", displayRollElement);
-            displayRollElement.remove();
-            replacementElement.remove();
+            // displayRollElement.remove();
+            // replacementElement.remove();
         }
     }
 
@@ -71,7 +71,7 @@ export class BetterRT {
 
     static async generateLoot(tableEntity) {
         const lootBuilder = new LootBuilder(tableEntity);
-        const generatedLoot = lootBuilder.generateLoot();
+        const generatedLoot = await lootBuilder.generateLoot();
         const lootCreator = new LootCreator(generatedLoot);
         await lootCreator.createActor();
     }

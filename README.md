@@ -6,7 +6,9 @@
 This module adds functionality on rolltables to be able to generate loot (implementing for example the Treasure Hoard" Tables from the DMG), rolling on multiple tables with 1 click!
 
 ## Install ##
-Inside foundry, go to add-ons module section, click on Install module and copy the manifest in the url manifest input field: https://raw.githubusercontent.com/ultrakorne/better-rolltables/master/module.json
+option A) Inside foundry, go to add-ons module section and search for Better Rolltables.
+
+option B) Copy the manifest in the url manifest input field: https://raw.githubusercontent.com/ultrakorne/better-rolltables/master/module.json
 
 ## Features ##
 

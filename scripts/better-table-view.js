@@ -45,10 +45,8 @@ export class BetterRT {
             /** Hide the element with displayRoll checkbox */
             const inputElements = html[0].getElementsByTagName("input");
             const displayRollElement = inputElements.namedItem("displayRoll").parentElement;
-            // const replacementElement = inputElements.namedItem("replacement").parentElement;
-            // console.log("displayRollElement ", displayRollElement);
+
             displayRollElement.remove();
-            // replacementElement.remove();
         }
     }
 

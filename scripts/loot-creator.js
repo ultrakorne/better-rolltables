@@ -29,6 +29,7 @@ export class LootCreator {
         }
 
         await this.addCurrencies(actor);
+
         for (const item of this.loot.lootItems) {
             await this.createLootItem(item, actor);
         }
@@ -80,7 +81,20 @@ export class LootCreator {
 
         if (!itemData) return;
         itemData = await this.preItemCreationDataManipulation(itemData);
-        await actor.createOwnedItem(itemData);
+
+        const itemPrice = getProperty(itemData, "data.price") || 0;
+        /** if the item is already owned by the actor (same name and same PRICE) */
+        const sameItemOwnedAlready = actor.getEmbeddedCollection("OwnedItem").find(i => i.name === itemData.name && itemPrice == i.data.price);
+
+        if (sameItemOwnedAlready) {
+            /** add quantity to existing item*/
+            const itemQuantity = getProperty(itemData, "data.quantity") || 1;
+            const updateItem = { _id: sameItemOwnedAlready._id, data: { quantity: (sameItemOwnedAlready.data.quantity + itemQuantity) } };
+            await actor.updateEmbeddedEntity("OwnedItem", updateItem);
+        } else {
+            /**we create a new item if we don't own already */
+            await actor.createOwnedItem(itemData);
+        }
     }
 
     rndSpellIdx = [];

@@ -11,7 +11,6 @@ export class LootChatCard {
         this.loot = lootData;
     }
 
-
     createChatCard(table) {
         console.log("LOOT", this.loot);
         console.log("table", table);
@@ -38,11 +37,24 @@ export class LootChatCard {
 
         chatContent += `</ol></div>`;
 
+
         let chatData = {
             flavor: `Draws ${this.loot.lootItems.length} results from ${table.data.name}`,
             sound: "sounds/dice.wav",
             user: game.user._id,
             content: chatContent
+        }
+
+        const rollMode = game.settings.get("core", "rollMode");
+        switch (rollMode) {
+            case "blindroll":
+                chatData.blind = true;
+            case "gmroll":
+                chatData.whisper = [game.users.find(u => u.isGM).id];
+                break;
+            case "selfroll":
+                chatData.whisper = [game.userId];
+                break;
         }
         ChatMessage.create(chatData);
     }

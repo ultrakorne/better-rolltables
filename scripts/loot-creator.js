@@ -5,7 +5,7 @@ import { BRTCONFIG } from './config.js';
  */
 export class LootCreator {
     /**
-     * Will created actor carring object based on the content of the object lootData
+     * Will create an actor carring items based on the content of the object lootData
      * @param {LootData} lootData 
      */
     constructor(lootData) {

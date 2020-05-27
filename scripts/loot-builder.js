@@ -116,9 +116,9 @@ export class LootBuilder {
                 this.processTextTableEntry(complexText, tableEntry.img);
             }
         } else if (tableEntry.type == 1 && tableEntry.collection === "Item") { //item
-            this.loot.createLootTextItem(tableEntry.text);
+            this.loot.createLootTextItem(tableEntry.text, [], tableEntry.img,);
         } else if (tableEntry.type == 2) { //collection type
-            this.loot.createLootTextItem(tableEntry.text, undefined, undefined, tableEntry.collection);
+            this.loot.createLootTextItem(tableEntry.text, [], tableEntry.img, tableEntry.collection);
         }
     }
 

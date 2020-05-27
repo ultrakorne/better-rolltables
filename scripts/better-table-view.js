@@ -2,6 +2,7 @@ import { i18n } from './utils.js';
 import { LootBuilder } from './loot-builder.js'
 import { BRTCONFIG } from './config.js';
 import { LootCreator } from './loot-creator.js';
+import { LootChatCard } from './loot-chat-card.js';
 
 export class BetterRT {
     static async enhanceRollTableView(rollTableConfig, html, rollTable) {
@@ -40,6 +41,13 @@ export class BetterRT {
         if (selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) {
             /** Create additional Button to Generate Loot */
             const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
+
+            const rollButton = footer.getElementsByClassName("roll")[0];
+            //remove the default listener by cloning the button
+            let rollButtonClone = rollButton.cloneNode(true);
+            rollButton.parentNode.replaceChild(rollButtonClone, rollButton);
+            rollButtonClone.onclick = async function () { await BetterRT.onRollClicked(selectTypeElement.value, tableEntity); };
+
             await BetterRT.showGenerateLootButton(footer, tableEntity);
 
             /** Hide the element with displayRoll checkbox */
@@ -76,5 +84,13 @@ export class BetterRT {
 
     static async onOptionTypeChanged(value, tableEntity) {
         await tableEntity.setFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY, value);
+    }
+
+    static async onRollClicked(value, tableEntity) {
+        console.log("ON ROLL CLICKED");
+        const lootBuilder = new LootBuilder(tableEntity);
+        const generatedLoot = await lootBuilder.generateLoot();
+        const lootChatCard = new LootChatCard(generatedLoot);
+        lootChatCard.createChatCard(tableEntity);
     }
 }

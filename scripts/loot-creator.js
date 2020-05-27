@@ -35,6 +35,17 @@ export class LootCreator {
         }
     }
 
+    /** 
+     * @returns {[itemData]} an array of itemData ready to create an actor item with
+     */
+    async buildItemsData() {
+        let allItemsData = [];
+        for (const item of this.loot.lootItems) {
+            allItemsData.push(await this.buildItemData(item));
+        }
+        return allItemsData;
+    }
+
     async addCurrencies(actor) {
         let currencyData = duplicate(actor.data.data.currency);
         for (var key in this.loot.currencyData) {
@@ -47,7 +58,7 @@ export class LootCreator {
         await actor.update({ "data.currency": currencyData });
     }
 
-    async createLootItem(item, actor) {
+    async buildItemData(item) {
         let itemData;
 
         /** Try first to load item from compendium */
@@ -81,6 +92,11 @@ export class LootCreator {
 
         if (!itemData) return;
         itemData = await this.preItemCreationDataManipulation(itemData);
+        return itemData;
+    }
+
+    async createLootItem(item, actor) {
+        const itemData = await this.buildItemData(item);
 
         const itemPrice = getProperty(itemData, "data.price") || 0;
         /** if the item is already owned by the actor (same name and same PRICE) */

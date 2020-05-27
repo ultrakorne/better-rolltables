@@ -87,10 +87,10 @@ export class BetterRT {
     }
 
     static async onRollClicked(value, tableEntity) {
-        console.log("ON ROLL CLICKED");
+
         const lootBuilder = new LootBuilder(tableEntity);
         const generatedLoot = await lootBuilder.generateLoot();
         const lootChatCard = new LootChatCard(generatedLoot);
-        lootChatCard.createChatCard(tableEntity);
+        await lootChatCard.createChatCard(tableEntity);
     }
 }

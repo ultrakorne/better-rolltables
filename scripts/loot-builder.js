@@ -135,8 +135,6 @@ export class LootBuilder {
             return;
         }
 
-        console.log("processing ", complexText);
-
         /** check for commands @command[arg]
          * commands are then passed along the item name so during creation (in loot-creator.js) we can set some property of the item, for example we can set the price of an
          * item with @price[1d4]  the command is price, the arg is 1d4

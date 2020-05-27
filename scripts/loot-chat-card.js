@@ -12,16 +12,12 @@ export class LootChatCard {
     }
 
     async createChatCard(table) {
-
         const lootCreator = new LootCreator(this.loot);
         const itemsData = await lootCreator.buildItemsData();
-
-        console.log("itemsData", itemsData);
-
         let items = await Item.create(itemsData);
-        console.log("LOOT", this.loot);
-        console.log("table", table);
-        console.log("items !!! ", items);
+        // console.log("LOOT", this.loot);
+        // console.log("table", table);
+        // console.log("items !!! ", items);
 
         let chatContent = `
         <div class="table-draw">
@@ -31,15 +27,12 @@ export class LootChatCard {
 
 
         for (const item of items) {
-
-            let itemText = item.name;// this.buildItemName(item);
-
             let itemAmount = item.data.data.quantity > 1 ? ` x${item.data.data.quantity}` : "";
 
             chatContent +=
             `<li class="table-result flexrow">
                 <img class="result-image" src="${item.img}">
-                <div class="result-text"><a class="entity-link" draggable="true" data-entity="Item" data-id="${item.id}"><i class="fas fa-suitcase"></i> ${itemText}</a><strong>${itemAmount}</strong></div>
+                <div class="result-text"><a class="entity-link" draggable="true" data-entity="Item" data-id="${item.id}"><i class="fas fa-suitcase"></i> ${item.name}</a><strong>${itemAmount}</strong></div>
             </li>`;
         }
 
@@ -65,27 +58,4 @@ export class LootChatCard {
         }
         ChatMessage.create(chatData);
     }
-
-    buildItemName(item) {
-        const quantityCommand = item.commands.find(i => i.command === "quantity");
-        if (quantityCommand && quantityCommand.arg > 1) {
-            return `${quantityCommand.arg}x ${item.text}`;
-        }
-
-        return item.text;
-    }
 }
-
-/*
-"<div class="table-draw" data-table-id="kyKwGSHtjm9bOn5h">
-    <div class="table-description">a table that creates a loot reward actor containing multiple rolls from multiple tables at once.</div>
-    
-    <ol class="table-results">
-        <li class="table-result flexrow" data-result-id="zIMkvFKq6lYd5ukF">
-            <img class="result-image" src="systems/dnd5e/icons/items/potions/grand-yellow.jpg">
-            <div class="result-text"><a class="entity-link" draggable="true" data-entity="Item" data-id="04t2ZO2pH9Gb1n00"><i class="fas fa-suitcase"></i> Alchemist's Fire</a></div>
-        </li>
-    </ol>
-</div>"
-
-*/

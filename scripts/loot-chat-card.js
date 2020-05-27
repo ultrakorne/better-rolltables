@@ -34,10 +34,12 @@ export class LootChatCard {
 
             let itemText = item.name;// this.buildItemName(item);
 
+            let itemAmount = item.data.data.quantity > 1 ? ` x${item.data.data.quantity}` : "";
+
             chatContent +=
             `<li class="table-result flexrow">
                 <img class="result-image" src="${item.img}">
-                <div class="result-text"><a class="entity-link" draggable="true" data-entity="Item" data-id="${item.id}"><i class="fas fa-suitcase"></i> ${itemText}</a></div>
+                <div class="result-text"><a class="entity-link" draggable="true" data-entity="Item" data-id="${item.id}"><i class="fas fa-suitcase"></i> ${itemText}</a><strong>${itemAmount}</strong></div>
             </li>`;
         }
 

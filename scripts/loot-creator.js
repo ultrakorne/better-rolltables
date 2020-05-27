@@ -177,6 +177,9 @@ export class LootCreator {
             return itemData;
         }
 
+        //make the name shorter by removing some text
+        itemData.name = itemData.name.replace(/^(Spell\s)/,"");
+        itemData.name = itemData.name.replace(/(Cantrip\sLevel)/,"Cantrip");
         itemData.name += ` (${itemEntity.data.name})`
         return itemData;
     }

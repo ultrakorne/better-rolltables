@@ -76,21 +76,23 @@ export class LootChatCard {
         }
 
         let chatContent = `<div class="table-draw">`;
-            
-        if(table.data.description.trim().length != 0){
+
+        if (table.data.description.trim().length != 0) {
             chatContent += `<div class="table-description">${table.data.description}</div>`;
         }
-        if(currencyString.length != 0){
+        if (currencyString.length != 0) {
             chatContent += `<div class="table-description" style="font-size: 15px; text-align: center;"><strong>${i18n('BRT.Currency')} </strong>${currencyString}</div>`;
         }
         chatContent += `<ol class="table-results">`;
 
-        // console.log("ITEMS ", this.itemsData);
-
         for (const itemData of this.itemsData) {
             const item = itemData.item;
-            let itemAmount = itemData.quantity > 1 ? ` x${itemData.quantity}` : "";
+            const itemAmount = itemData.quantity > 1 ? ` x${itemData.quantity}` : "";
 
+            let fontSizeStyle = "";
+            if (item.name.length > 30) {
+                fontSizeStyle = `style="font-size: ${Math.max(60, 100-(item.name.length-30)*2)}%;"`
+            }
             let dataLinkId;
             if (item.compendium) {
                 dataLinkId = `data-pack="${item.compendium.collection}" data-lookup="${item.id}"`;
@@ -100,7 +102,7 @@ export class LootChatCard {
             chatContent +=
                 `<li class="table-result flexrow">
                 <img class="result-image" src="${item.img}">
-                <div class="result-text" style="fonst-size: 50%;"><a class="entity-link" draggable="true" data-entity="Item" ${dataLinkId}><i class="fas fa-suitcase"></i> ${item.name}</a><strong>${itemAmount}</strong></div>
+                <div class="result-text" ${fontSizeStyle}><a class="entity-link" draggable="true" data-entity="Item" ${dataLinkId}><i class="fas fa-suitcase"></i> ${item.name}</a><strong>${itemAmount}</strong></div>
             </li>`;
         }
 

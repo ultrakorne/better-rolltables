@@ -1,4 +1,5 @@
 import { LootCreator } from './loot-creator.js';
+import { i18n } from './utils.js';
 
 /**
  * create a chat card based on the content of the object LootData
@@ -68,11 +69,21 @@ export class LootChatCard {
     async createChatCard(table) {
         await this.findOrCreateItems();
 
-        let chatContent = `
-        <div class="table-draw">
-            <div class="table-description">${table.data.description}</div>
-            <ol class="table-results">
-        `;
+        let currencyString = "";
+        for (var key in this.loot.currencyData) {
+            if (currencyString !== "") currencyString += ", ";
+            currencyString += `${this.loot.currencyData[key]}${key}`;
+        }
+
+        let chatContent = `<div class="table-draw">`;
+            
+        if(table.data.description.trim().length != 0){
+            chatContent += `<div class="table-description">${table.data.description}</div>`;
+        }
+        if(currencyString.length != 0){
+            chatContent += `<div class="table-description" style="font-size: 15px; text-align: center;"><strong>${i18n('BRT.Currency')} </strong>${currencyString}</div>`;
+        }
+        chatContent += `<ol class="table-results">`;
 
         // console.log("ITEMS ", this.itemsData);
 
@@ -89,14 +100,14 @@ export class LootChatCard {
             chatContent +=
                 `<li class="table-result flexrow">
                 <img class="result-image" src="${item.img}">
-                <div class="result-text"><a class="entity-link" draggable="true" data-entity="Item" ${dataLinkId}><i class="fas fa-suitcase"></i> ${item.name}</a><strong>${itemAmount}</strong></div>
+                <div class="result-text" style="fonst-size: 50%;"><a class="entity-link" draggable="true" data-entity="Item" ${dataLinkId}><i class="fas fa-suitcase"></i> ${item.name}</a><strong>${itemAmount}</strong></div>
             </li>`;
         }
 
         chatContent += `</ol></div>`;
 
         let chatData = {
-            flavor: `Draws ${items.length} results from ${table.data.name}`,
+            flavor: `Draws ${this.itemsData.length} results from ${table.data.name}`,
             sound: "sounds/dice.wav",
             user: game.user._id,
             content: chatContent

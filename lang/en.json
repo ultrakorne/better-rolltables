@@ -3,6 +3,7 @@
     "BRT.TypeDefault": "Default Table",
     "BRT.TypeLoot": "Loot Table",
     "BRT.CurrencyLoot": "Currency Loot",
+    "BRT.Currency": "Currency:",
     "BRT.CurrencyLootPlaceholder": "Add comma separated formulas e.g.: 1d4[gp], (1d4+1)*10[sp]",
     "BRT.LootActorName": "Add Loot to Actor",
     "BRT.LootActorNamePlaceholder": "If empty it will create a new loot actor every time",

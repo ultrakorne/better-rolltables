@@ -80,6 +80,8 @@ export class BetterRT {
         const generatedLoot = await lootBuilder.generateLoot();
         const lootCreator = new LootCreator(generatedLoot);
         await lootCreator.createActor();
+        await lootCreator.addCurrenciesToActor();
+        await lootCreator.addItemsToActor();
     }
 
     static async onOptionTypeChanged(value, tableEntity) {

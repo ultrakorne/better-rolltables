@@ -12,11 +12,12 @@ export class LootCreator {
         this.loot = lootData;
     }
 
-    async createActor() {
-        let actor = game.actors.getName(this.loot.actorName);
-        if (!actor) {
-            actor = await Actor.create({
-                name: this.loot.actorName || "New Loot",
+    async createActor(overrideName = undefined) {
+        const actorName = overrideName ? overrideName : this.loot.actorName;
+        this.actor = game.actors.getName(actorName);
+        if (!this.actor) {
+            this.actor = await Actor.create({
+                name: actorName || "New Loot",
                 type: "npc",
                 img: "modules/better-rolltables/artwork/chest.png",
                 sort: 12000,
@@ -25,29 +26,22 @@ export class LootCreator {
 
         const lootSheet = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_SHEET_TO_USE_KEY);
         if (lootSheet in CONFIG.Actor.sheetClasses.npc) {
-            await actor.setFlag("core", "sheetClass", lootSheet);
+            await this.actor.setFlag("core", "sheetClass", lootSheet);
         }
 
-        await this.addCurrencies(actor);
-
-        for (const item of this.loot.lootItems) {
-            await this.createLootItem(item, actor);
-        }
+        
     }
 
-    /** 
-     * @returns {[itemData]} an array of itemData ready to create an actor item with
-     */
-    async buildItemsData() {
-        let allItemsData = [];
+    async addItemsToActor(stackSame = true) {
+        let items = [];
         for (const item of this.loot.lootItems) {
-            allItemsData.push(await this.buildItemData(item));
+            items.push(await this.createLootItem(item, this.actor, stackSame));
         }
-        return allItemsData;
+        return items;
     }
 
-    async addCurrencies(actor) {
-        let currencyData = duplicate(actor.data.data.currency);
+    async addCurrenciesToActor() {
+        let currencyData = duplicate(this.actor.data.data.currency);
         for (var key in this.loot.currencyData) {
             if (currencyData.hasOwnProperty(key)) {
                 const amount = Number(currencyData[key].value || 0) + Number(this.loot.currencyData[key]);
@@ -55,7 +49,7 @@ export class LootCreator {
             }
         }
 
-        await actor.update({ "data.currency": currencyData });
+        await this.actor.update({ "data.currency": currencyData });
     }
 
     async buildItemData(item) {
@@ -68,7 +62,7 @@ export class LootCreator {
                 let indexes = await compendium.getIndex();
                 let entry = indexes.find(e => e.name.toLowerCase() === item.text.toLowerCase());
                 const itemEntity = await compendium.getEntity(entry._id);
-                itemData = itemEntity.data;
+                itemData = duplicate(itemEntity.data);
             }
         }
 
@@ -77,7 +71,7 @@ export class LootCreator {
             /**if an item with this name exist we load that item data, otherwise we create a new one */
             const itemEntity = game.items.getName(item.text);
             if (itemEntity) {
-                itemData = itemEntity.data;
+                itemData = duplicate(itemEntity.data);
             }
         }
 
@@ -95,21 +89,29 @@ export class LootCreator {
         return itemData;
     }
 
-    async createLootItem(item, actor) {
+    /**
+     * 
+     * @param {LootData.lootItem} item rapresentation 
+     * @param {Actor} actor to which to add items to
+     * @param {boolean} stackSame if true add quantity to an existing item of same name in the current actor
+     * @returns {Item} the create Item (foundry item)
+     */
+    async createLootItem(item, actor, stackSame = true) {
         const itemData = await this.buildItemData(item);
 
         const itemPrice = getProperty(itemData, "data.price") || 0;
         /** if the item is already owned by the actor (same name and same PRICE) */
         const sameItemOwnedAlready = actor.getEmbeddedCollection("OwnedItem").find(i => i.name === itemData.name && itemPrice == i.data.price);
 
-        if (sameItemOwnedAlready) {
+        if (sameItemOwnedAlready && stackSame) {
             /** add quantity to existing item*/
             const itemQuantity = getProperty(itemData, "data.quantity") || 1;
             const updateItem = { _id: sameItemOwnedAlready._id, data: { quantity: (sameItemOwnedAlready.data.quantity + itemQuantity) } };
             await actor.updateEmbeddedEntity("OwnedItem", updateItem);
+            return actor.getOwnedItem(sameItemOwnedAlready._id);
         } else {
             /**we create a new item if we don't own already */
-            await actor.createOwnedItem(itemData);
+            return await actor.createOwnedItem(itemData);
         }
     }
 
@@ -178,8 +180,8 @@ export class LootCreator {
         }
 
         //make the name shorter by removing some text
-        itemData.name = itemData.name.replace(/^(Spell\s)/,"");
-        itemData.name = itemData.name.replace(/(Cantrip\sLevel)/,"Cantrip");
+        itemData.name = itemData.name.replace(/^(Spell\s)/, "");
+        itemData.name = itemData.name.replace(/(Cantrip\sLevel)/, "Cantrip");
         itemData.name += ` (${itemEntity.data.name})`
         return itemData;
     }

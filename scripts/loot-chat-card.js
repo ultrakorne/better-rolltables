@@ -9,11 +9,11 @@ export class LootChatCard {
      */
     constructor(lootData) {
         this.loot = lootData;
+        this.itemsData = [];
     }
 
     async findOrCreateItems() {
         const lootCreator = new LootCreator(this.loot);
-        let itemsWithData = [];
         for (const item of this.loot.lootItems) {
             /** we pass though the data, since we might have some data manipulation that changes an existing item, in that case even if it was initially 
              * existing or in a compendium we have to create a new one */
@@ -25,7 +25,7 @@ export class LootChatCard {
                     let entry = indexes.find(e => e.name === data.name);
                     if (entry) { //since the data from buildItemData could have been changed (e.g. the name of the scroll item that was coming from a compendium originally, entry can be undefined)
                         const itemEntity = await compendium.getEntity(entry._id);
-                        itemsWithData.push({item: itemEntity, quantity: data.data.quantity || 1});
+                        this.addToItemData(itemEntity, data);
                         continue;
                     }
                 }
@@ -33,7 +33,7 @@ export class LootChatCard {
 
             const itemEntity = game.items.getName(data.name);
             if (itemEntity) {
-                itemsWithData.push({item: itemEntity, quantity: data.data.quantity || 1});
+                this.addToItemData(itemEntity, data);
                 continue;
             }
 
@@ -41,9 +41,17 @@ export class LootChatCard {
             data.folder = itemFolder.id;
 
             const newItem = await Item.create(data)
-            itemsWithData.push({item: newItem, quantity: data.data.quantity || 1});
+            this.addToItemData(newItem, data);
         }
-        return itemsWithData;
+    }
+
+    addToItemData(itemEntity, data) {
+        const existingItem = this.itemsData.find(i => i.item.id === itemEntity.id);
+        if (existingItem) {
+            existingItem.quantity += data.data.quantity || 1;
+        } else {
+            this.itemsData.push({ item: itemEntity, quantity: data.data.quantity || 1 });
+        }
     }
 
     async getBRTFolder() {
@@ -58,7 +66,7 @@ export class LootChatCard {
     }
 
     async createChatCard(table) {
-        let itemsWithData = await this.findOrCreateItems();
+        await this.findOrCreateItems();
 
         let chatContent = `
         <div class="table-draw">
@@ -66,9 +74,9 @@ export class LootChatCard {
             <ol class="table-results">
         `;
 
-        // console.log("ITEMS ", itemsWithData);
+        // console.log("ITEMS ", this.itemsData);
 
-        for (const itemData of itemsWithData) {
+        for (const itemData of this.itemsData) {
             const item = itemData.item;
             let itemAmount = itemData.quantity > 1 ? ` x${itemData.quantity}` : "";
 

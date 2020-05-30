@@ -61,6 +61,12 @@ you can have text table entries to reward currency! The syntax is `{1d6+2[gp], 1
 
 ![howto picture 5](img/howto-5.png)
 
+### Rolling to Chat
+
+From version 0.8 when a loot table is selected you can use the normal "Roll" Button to do a better roll that will be posted as a chat card (respecting the chat privacy setting selected)
+
+![howto picture 6](img/howto-6.png)
+
 FAQs
 https://github.com/ultrakorne/better-rolltables/wiki/FAQ
 

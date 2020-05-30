@@ -41,7 +41,8 @@ export class LootChatCard {
             const itemFolder = await this.getBRTFolder();
             data.folder = itemFolder.id;
 
-            const newItem = await Item.create(data)
+            setProperty(data, "permission.default", ENTITY_PERMISSIONS.OBSERVER); //{"permission.default": ENTITY_PERMISSIONS.OBSERVER}
+            const newItem = await Item.create(data);
             this.addToItemData(newItem, data);
         }
     }

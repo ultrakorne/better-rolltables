@@ -41,7 +41,7 @@ export class LootChatCard {
             const itemFolder = await this.getBRTFolder();
             data.folder = itemFolder.id;
 
-            setProperty(data, "permission.default", ENTITY_PERMISSIONS.OBSERVER); //{"permission.default": ENTITY_PERMISSIONS.OBSERVER}
+            setProperty(data, "permission.default", ENTITY_PERMISSIONS.OBSERVER);
             const newItem = await Item.create(data);
             this.addToItemData(newItem, data);
         }
@@ -49,10 +49,12 @@ export class LootChatCard {
 
     addToItemData(itemEntity, data) {
         const existingItem = this.itemsData.find(i => i.item.id === itemEntity.id);
+        //in fp2e quantity is in data.data.quantity.value , in 5e data.data.quantity
+        const quantity = data.data.quantity.value || data.data.quantity || 1;
         if (existingItem) {
-            existingItem.quantity += data.data.quantity || 1;
+            existingItem.quantity += quantity;
         } else {
-            this.itemsData.push({ item: itemEntity, quantity: data.data.quantity || 1 });
+            this.itemsData.push({ item: itemEntity, quantity: quantity });
         }
     }
 

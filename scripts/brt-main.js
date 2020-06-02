@@ -16,13 +16,20 @@ Hooks.on("init", function () {
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
 Hooks.on("preUpdateRollTable", BetterRT.preUpdateRollTable);
 
-
 function registerSettings() {
+  let defaultLootSheet = "dnd5e.LootSheet5eNPC";
+  let defaultSpellCompendium = "dnd5e.spells";
+
+  if (game.system.id === "pf2e") {
+    defaultLootSheet = "pf2e.LootSheetNPC";
+    defaultSpellCompendium = "pf2e.spells-srd";
+  }
+
   game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_SHEET_TO_USE_KEY, {
     name: i18n("BRT.Settings.LootSheet.Title"),
     hint: i18n("BRT.Settings.LootSheet.Description"),
     config: true,
-    default: "dnd5e.LootSheet5eNPC",
+    default: defaultLootSheet,
     type: String
   });
 
@@ -30,7 +37,7 @@ function registerSettings() {
     name: i18n("BRT.Settings.SpellCompendium.Title"),
     hint: i18n("BRT.Settings.SpellCompendium.Description"),
     config: true,
-    default: "dnd5e.spells",
+    default: defaultSpellCompendium,
     type: String
   });
 }

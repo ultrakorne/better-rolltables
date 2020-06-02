@@ -111,7 +111,7 @@ export class LootCreator {
             const itemQuantity = getProperty(itemData, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
             const sameItemOwnedAlreadyQuantity = getProperty(sameItemOwnedAlready, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
             let updateItem = { _id: sameItemOwnedAlready._id };
-            setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, sameItemOwnedAlreadyQuantity + itemQuantity);
+            setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, +sameItemOwnedAlreadyQuantity + +itemQuantity);
 
             console.log("NEW updateItem ", updateItem);
             await actor.updateEmbeddedEntity("OwnedItem", updateItem);

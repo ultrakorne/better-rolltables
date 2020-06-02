@@ -13,3 +13,9 @@ BRTCONFIG.TABLE_TYPE_LOOT = "loot";
 BRTCONFIG.SPELL_COMPENDIUM_KEY = "default-spell-compendium";
 BRTCONFIG.LOOT_SHEET_TO_USE_KEY = "loot-sheet-to-use";
 BRTCONFIG.ROLLS_AMOUNT_KEY = "loot-amount-key";
+
+//in fp2e quantity is in data.data.quantity.value , in 5e data.data.quantity  
+BRTCONFIG.QUANTITY_PROPERTY_PATH = "data.quantity";
+BRTCONFIG.PRICE_PROPERTY_PATH = "data.price";
+//in 5e a valid item type is loot
+BRTCONFIG.ITEM_LOOT_TYPE = "loot";

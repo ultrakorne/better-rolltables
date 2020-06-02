@@ -1,5 +1,6 @@
 import { LootCreator } from './loot-creator.js';
 import { i18n } from './utils.js';
+import { BRTCONFIG } from './config.js';
 
 /**
  * create a chat card based on the content of the object LootData
@@ -49,8 +50,7 @@ export class LootChatCard {
 
     addToItemData(itemEntity, data) {
         const existingItem = this.itemsData.find(i => i.item.id === itemEntity.id);
-        //in fp2e quantity is in data.data.quantity.value , in 5e data.data.quantity
-        const quantity = data.data.quantity.value || data.data.quantity || 1;
+        const quantity = getProperty(data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
         if (existingItem) {
             existingItem.quantity += quantity;
         } else {

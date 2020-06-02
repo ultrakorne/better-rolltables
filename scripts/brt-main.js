@@ -23,6 +23,10 @@ function registerSettings() {
   if (game.system.id === "pf2e") {
     defaultLootSheet = "pf2e.LootSheetNPC";
     defaultSpellCompendium = "pf2e.spells-srd";
+
+    BRTCONFIG.QUANTITY_PROPERTY_PATH = "data.quantity.value";
+    BRTCONFIG.PRICE_PROPERTY_PATH = "data.price.value";
+    BRTCONFIG.ITEM_LOOT_TYPE = "treasure";
   }
 
   game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_SHEET_TO_USE_KEY, {

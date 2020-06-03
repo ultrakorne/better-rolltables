@@ -29,7 +29,7 @@ export class LootCreator {
             await this.actor.setFlag("core", "sheetClass", lootSheet);
         }
 
-        
+
     }
 
     async addItemsToActor(stackSame = true) {
@@ -148,7 +148,14 @@ export class LootCreator {
     }
 
     async preItemCreationDataManipulation(itemData) {
-        const match = BRTCONFIG.SCROLL_REGEX.exec(itemData.name);
+        // const match = BRTCONFIG.SCROLL_REGEX.exec(itemData.name);
+        let match = /\s*Spell\s*Scroll\s*(\d+|cantrip)/gi.exec(itemData.name);
+
+        if (!match) {
+            //pf2e temporary FIXME add this in a proper config
+            match = /\s*Scroll\s*of\s*(\d+)/gi.exec(itemData.name);
+        }
+
         if (!match) {
             // console.log("not a SCROLL ", itemData.name);
             // console.log("match ",match);
@@ -186,8 +193,8 @@ export class LootCreator {
         }
 
         //make the name shorter by removing some text
-        // itemData.name = itemData.name.replace(/^(Spell\s)/, "");
-        // itemData.name = itemData.name.replace(/(Cantrip\sLevel)/, "Cantrip");
+        itemData.name = itemData.name.replace(/^(Spell\s)/, "");
+        itemData.name = itemData.name.replace(/(Cantrip\sLevel)/, "Cantrip");
         itemData.name += ` (${itemEntity.data.name})`
         return itemData;
     }

@@ -7,6 +7,7 @@ import { LootChatCard } from './loot-chat-card.js';
 export class BetterRT {
     static async enhanceRollTableView(rollTableConfig, html, rollTable) {
         const tableClassName = rollTable.cssClass;// "editable";
+        const tableEditable = rollTable.editable;
         const tableEntity = rollTableConfig.object;
 
         const selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE;
@@ -30,7 +31,9 @@ export class BetterRT {
         // console.log("html[0] ", html[0]);
 
         let divElement = document.createElement("div");
-        let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.html", tableEntity);
+        let brtData = duplicate(tableEntity.data.flags);
+        brtData.disabled = !tableEditable;
+        let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.hbs", brtData);
         divElement.innerHTML = selectTypeHtml;
         tableViewClass.insertBefore(divElement, tableViewClass.children[2]);
 

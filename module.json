@@ -10,10 +10,10 @@
     "styles": [],
     "packs": [
         {
-          "name": "better-roll-tables",
-          "label": "Better Roll Tables",
+          "name": "brt-loot",
+          "label": "Loot Tables",
           "system": "dnd5e",
-          "path": "./packs/better-roll-tables.db",
+          "path": "./packs/loot-tables.db",
           "entity": "RollTable"
         }
     ],

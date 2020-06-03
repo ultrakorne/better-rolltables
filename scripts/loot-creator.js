@@ -122,7 +122,6 @@ export class LootCreator {
     async getSpellCompendiumIndex() {
         const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
         const spellCompendiumIndex = await game.packs.find(t => t.collection === spellCompendiumName).getIndex();
-        // console.log(`compenidum ${BRTCONFIG.SPELL_COMPENDIUM} has ${spellCompendiumIndex.length} index entries.`)
 
         for (var i = 0; i < spellCompendiumIndex.length; i++) {
             this.rndSpellIdx[i] = i;

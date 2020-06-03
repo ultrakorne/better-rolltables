@@ -55,7 +55,7 @@ export class LootBuilder {
             // console.log("draw roll ", draw);
 
             for (const entry of draw.results) {
-                this.processTableEntry(entry);
+                await this.processTableEntry(entry);
             }
         }
     }
@@ -106,17 +106,17 @@ export class LootBuilder {
         return currenciesToAdd;
     }
 
-    processTableEntry(tableEntry) {
+    async processTableEntry(tableEntry) {
         if (!tableEntry) return;
 
         if (tableEntry.type == 0) { //text type
             let resultText = tableEntry.text;
             let complexTextList = resultText.split("|");
             for (const complexText of complexTextList) {
-                this.processTextTableEntry(complexText, tableEntry.img);
+                await this.processTextTableEntry(complexText, tableEntry.img);
             }
         } else if (tableEntry.type == 1 && tableEntry.collection === "Item") { //item
-            this.loot.createLootTextItem(tableEntry.text, [], tableEntry.img,);
+            this.loot.createLootTextItem(tableEntry.text, [], tableEntry.img);
         } else if (tableEntry.type == 2) { //collection type
             this.loot.createLootTextItem(tableEntry.text, [], tableEntry.img, tableEntry.collection);
         }
@@ -127,7 +127,7 @@ export class LootBuilder {
      * @param {String} complexText the text of a table entry of type Text
      * @param {String} img the image path assigned to the text table Entry selected
      */
-    processTextTableEntry(complexText, img) {
+    async processTextTableEntry(complexText, img) {
         /**extract currency first */
         complexText = this.processTextAsCurrency(complexText);
 
@@ -175,12 +175,34 @@ export class LootBuilder {
         }
 
         const rollFormula = match[1];
-        const tableName = match[2];
-        let numberItems = this.tryToRollString(rollFormula);
+        let tableSplit = match[2].split(".");
 
-        const table = game.tables.getName(tableName);
+        const tableName = tableSplit.pop().trim();
+        const tableCompendiumName = tableSplit.join('.').trim();
+
+        console.log("table name ", tableName);
+        console.log("table in compendium ", tableCompendiumName);
+
+        let table;
+        /**table is inside a compendium */
+        if (tableCompendiumName) {
+            const compendium = game.packs.find(t => t.collection === tableCompendiumName);
+            if (compendium) {
+                const compendiumIndex = await compendium.getIndex();
+                let entry = compendiumIndex.find(e => e.name === tableName);
+                if (entry) {
+                    table = await compendium.getEntity(entry._id);
+                }
+            } else {
+                ui.notifications.warn(`no compendium named ${tableCompendiumName} found`);
+            }
+        } else {
+            table = game.tables.getName(tableName);
+        }
+
         if (!table) { ui.notifications.warn(`no table named ${tableName} found, did you misspell your table name in brackets?`); return; }
 
+        let numberItems = this.tryToRollString(rollFormula);
         this.rollManyOnTable(numberItems, table);
     }
 

@@ -167,7 +167,7 @@ export class LootBuilder {
         /** if no command was found, we check if a simple [table name to roll match is found] 
          * matching formula [table name to roll]
         */
-        const match = /([^\[]+)\[([^\]]+)\]/g.exec(complexText);
+        const match = /([^\[]*)\[([^\]]+)\]/g.exec(complexText);
         //no table in brakets [table] is specified, so we create an item out of the text
         if (!match || match.length < 3) {
             this.loot.createLootTextItem(complexText.trim(), [], img, undefined);
@@ -179,9 +179,6 @@ export class LootBuilder {
 
         const tableName = tableSplit.pop().trim();
         const tableCompendiumName = tableSplit.join('.').trim();
-
-        console.log("table name ", tableName);
-        console.log("table in compendium ", tableCompendiumName);
 
         let table;
         /**table is inside a compendium */

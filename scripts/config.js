@@ -17,5 +17,7 @@ BRTCONFIG.ROLLS_AMOUNT_KEY = "loot-amount-key";
 //in fp2e quantity is in data.data.quantity.value , in 5e data.data.quantity  
 BRTCONFIG.QUANTITY_PROPERTY_PATH = "data.quantity";
 BRTCONFIG.PRICE_PROPERTY_PATH = "data.price";
+BRTCONFIG.SPELL_LEVEL_PATH = "data.level";
 //in 5e a valid item type is loot
 BRTCONFIG.ITEM_LOOT_TYPE = "loot";
+BRTCONFIG.SCROLL_REGEX = /\s*Spell\s*Scroll\s*(\d+|cantrip)/gi;

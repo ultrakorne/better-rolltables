@@ -52,7 +52,7 @@ export class LootChatCard {
         const existingItem = this.itemsData.find(i => i.item.id === itemEntity.id);
         const quantity = getProperty(data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
         if (existingItem) {
-            existingItem.quantity += quantity;
+            existingItem.quantity = +existingItem.quantity + +quantity;
         } else {
             this.itemsData.push({ item: itemEntity, quantity: quantity });
         }

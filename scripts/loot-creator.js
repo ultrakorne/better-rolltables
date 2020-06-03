@@ -36,7 +36,6 @@ export class LootCreator {
         let items = [];
         for (const item of this.loot.lootItems) {
             const newItem = await this.createLootItem(item, this.actor, stackSame);
-            console.log("NEW ITEM ", newItem);
             items.push(newItem);
         }
         return items;
@@ -105,7 +104,6 @@ export class LootCreator {
         /** if the item is already owned by the actor (same name and same PRICE) */
         const sameItemOwnedAlready = actor.getEmbeddedCollection("OwnedItem").find(i => i.name === itemData.name && itemPrice == getProperty(i, BRTCONFIG.PRICE_PROPERTY_PATH));
 
-        console.log("NEW itemData ", itemData);
         if (sameItemOwnedAlready && stackSame) {
             /** add quantity to existing item*/
             const itemQuantity = getProperty(itemData, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
@@ -113,7 +111,6 @@ export class LootCreator {
             let updateItem = { _id: sameItemOwnedAlready._id };
             setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, +sameItemOwnedAlreadyQuantity + +itemQuantity);
 
-            console.log("NEW updateItem ", updateItem);
             await actor.updateEmbeddedEntity("OwnedItem", updateItem);
             return actor.getOwnedItem(sameItemOwnedAlready._id);
         } else {
@@ -151,8 +148,10 @@ export class LootCreator {
     }
 
     async preItemCreationDataManipulation(itemData) {
-        const match = /\s*Spell\s*Scroll\s*(\d+|cantrip)/gi.exec(itemData.name);
+        const match = BRTCONFIG.SCROLL_REGEX.exec(itemData.name);
         if (!match) {
+            // console.log("not a SCROLL ", itemData.name);
+            // console.log("match ",match);
             return itemData; //not a scroll
         }
 
@@ -174,7 +173,7 @@ export class LootCreator {
 
             let rnd = this.rndSpellIdx.pop();
             let entry = await compendium.getEntity(index[rnd]._id);
-            const spellLevel = entry.data.data.level
+            const spellLevel = getProperty(entry.data, BRTCONFIG.SPELL_LEVEL_PATH);
             if (spellLevel == level) {
                 itemEntity = entry;
                 spellFound = true;
@@ -187,8 +186,8 @@ export class LootCreator {
         }
 
         //make the name shorter by removing some text
-        itemData.name = itemData.name.replace(/^(Spell\s)/, "");
-        itemData.name = itemData.name.replace(/(Cantrip\sLevel)/, "Cantrip");
+        // itemData.name = itemData.name.replace(/^(Spell\s)/, "");
+        // itemData.name = itemData.name.replace(/(Cantrip\sLevel)/, "Cantrip");
         itemData.name += ` (${itemEntity.data.name})`
         return itemData;
     }

@@ -54,7 +54,13 @@ export class LootChatCard {
         if (existingItem) {
             existingItem.quantity = +existingItem.quantity + +quantity;
         } else {
-            this.itemsData.push({ item: itemEntity, quantity: quantity });
+            //we will scale down the font size if an item name is too long
+            const fontSize = Math.max(60, 100 - Math.max(0, itemEntity.name.length - 27) * 2);
+            this.itemsData.push({ 
+                item: itemEntity, 
+                quantity: quantity,
+                fontSize: fontSize
+            });
         }
     }
 
@@ -78,44 +84,18 @@ export class LootChatCard {
             currencyString += `${this.loot.currencyData[key]}${key}`;
         }
 
-        let chatContent = `<div class="table-draw">`;
-
-        if (table.data.description.trim().length != 0) {
-            chatContent += `<div class="table-description">${table.data.description}</div>`;
+        const chatCardData = {
+            tableData: table.data,
+            itemsData: this.itemsData,
+            currency: currencyString
         }
-        if (currencyString.length != 0) {
-            chatContent += `<div class="table-description" style="font-size: 15px; text-align: center;"><strong>${i18n('BRT.Currency')} </strong>${currencyString}</div>`;
-        }
-        chatContent += `<ol class="table-results">`;
-
-        for (const itemData of this.itemsData) {
-            const item = itemData.item;
-            const itemAmount = itemData.quantity > 1 ? ` x${itemData.quantity}` : "";
-
-            let fontSizeStyle = "";
-            if (item.name.length > 30) {
-                fontSizeStyle = `style="font-size: ${Math.max(60, 100-(item.name.length-30)*2)}%;"`
-            }
-            let dataLinkId;
-            if (item.compendium) {
-                dataLinkId = `data-pack="${item.compendium.collection}" data-lookup="${item.id}"`;
-            } else {
-                dataLinkId = `data-id="${item.id}"`;
-            }
-            chatContent +=
-                `<li class="table-result flexrow">
-                <img class="result-image" src="${item.img}">
-                <div class="result-text" ${fontSizeStyle}><a class="entity-link" draggable="true" data-entity="Item" ${dataLinkId}><i class="fas fa-suitcase"></i> ${item.name}</a><strong>${itemAmount}</strong></div>
-            </li>`;
-        }
-
-        chatContent += `</ol></div>`;
+        const cardHtml = await renderTemplate("modules/better-rolltables/templates/loot-chat-card.hbs", chatCardData);
 
         let chatData = {
             flavor: `Draws ${this.itemsData.length} results from ${table.data.name}`,
             sound: "sounds/dice.wav",
             user: game.user._id,
-            content: chatContent
+            content: cardHtml
         }
 
         switch (game.settings.get("core", "rollMode")) {

@@ -21,6 +21,7 @@ export class LootCreator {
                 type: "npc",
                 img: "modules/better-rolltables/artwork/chest.png",
                 sort: 12000,
+                token: {actorLink: true}
             });
         }
 
@@ -28,8 +29,6 @@ export class LootCreator {
         if (lootSheet in CONFIG.Actor.sheetClasses.npc) {
             await this.actor.setFlag("core", "sheetClass", lootSheet);
         }
-
-
     }
 
     async addItemsToActor(stackSame = true) {

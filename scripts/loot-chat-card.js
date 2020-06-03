@@ -12,11 +12,13 @@ export class LootChatCard {
     constructor(lootData) {
         this.loot = lootData;
         this.itemsData = [];
+        this.numberOfDraws = 0;
     }
 
     async findOrCreateItems() {
         const lootCreator = new LootCreator(this.loot);
         for (const item of this.loot.lootItems) {
+            this.numberOfDraws++;
             /** we pass though the data, since we might have some data manipulation that changes an existing item, in that case even if it was initially 
              * existing or in a compendium we have to create a new one */
             const data = await lootCreator.buildItemData(item);
@@ -56,8 +58,8 @@ export class LootChatCard {
         } else {
             //we will scale down the font size if an item name is too long
             const fontSize = Math.max(60, 100 - Math.max(0, itemEntity.name.length - 27) * 2);
-            this.itemsData.push({ 
-                item: itemEntity, 
+            this.itemsData.push({
+                item: itemEntity,
                 quantity: quantity,
                 fontSize: fontSize
             });
@@ -91,8 +93,17 @@ export class LootChatCard {
         }
         const cardHtml = await renderTemplate("modules/better-rolltables/templates/loot-chat-card.hbs", chatCardData);
 
+        let flavorString;
+        if (this.numberOfDraws > 1) {
+            flavorString = game.i18n.format('BRT.DrawResultPlural', { amount: this.numberOfDraws, name: table.data.name });
+        } else if (this.numberOfDraws > 0) {
+            flavorString = game.i18n.format('BRT.DrawResultSingular', { amount: this.numberOfDraws, name: table.data.name });
+        } else {
+            flavorString = game.i18n.format('BRT.DrawResultZero', { name: table.data.name });;
+        }
+
         let chatData = {
-            flavor: `Draws ${this.itemsData.length} results from ${table.data.name}`,
+            flavor: flavorString,
             sound: "sounds/dice.wav",
             user: game.user._id,
             content: cardHtml

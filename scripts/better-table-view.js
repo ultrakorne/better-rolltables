@@ -28,13 +28,18 @@ export class BetterRT {
             }
         }
 
-        // console.log("html[0] ", html[0]);
+        console.log("tableViewClass html ", tableViewClass);
 
         let divElement = document.createElement("div");
         let brtData = duplicate(tableEntity.data.flags);
         brtData.disabled = !tableEditable;
         let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.hbs", brtData);
         divElement.innerHTML = selectTypeHtml;
+
+        tableViewClass.addEventListener('drop', function (event) {
+            BetterRT.onDropEvent(event, tableEntity);
+        });
+
         tableViewClass.insertBefore(divElement, tableViewClass.children[2]);
 
         const selectTypeElement = divElement.getElementsByTagName("select")[0];
@@ -60,6 +65,83 @@ export class BetterRT {
             displayRollElement.remove();
         }
     }
+
+    static onDropEvent(event, table) {
+        console.log("EVENT ", event);
+        let data;
+        try {
+            data = JSON.parse(event.dataTransfer.getData('text/plain'));
+        } catch (err) {
+            console.log("no entity dropped");
+            return;
+        }
+        console.log("DATA ", data);
+        console.log("TABLE ", table);
+        //results.2.type
+        //results.2.collection
+        //results.2.text
+        const targetName = event.target.name;
+
+        console.log("targetName ", targetName);
+        // const elements = event.target.form.elements;
+        // console.log("elements ", elements);
+        // const namedItem = elements.namedItem(targetName);
+        // console.log("namedItem ", namedItem);
+
+        let resultIndex = -1;
+        if (targetName.startsWith("results.")) {
+            const splitString = targetName.split(".");
+            if (splitString.length > 1) {
+                resultIndex = Number(splitString[1]);
+            }
+        }
+
+        if (resultIndex >= 0) {
+            console.log("table result dropped on ", resultIndex);
+            let resultArray = duplicate(table.results);
+
+            if (hasProperty(data, "pack")) {
+                //type 2
+            }
+
+            let entityToLink;
+            switch (data.type) {
+                case "RollTable":
+                    entityToLink = game.tables.get(data.id);
+                    break;
+                case "Actor":
+                case "Item":
+                    entityToLink = game.items.get(data.id);
+                    break;
+                case "JournalEntry":
+                    entityToLink = game.journal.get(data.id);
+                    break;
+                case "Playlist":
+                    entityToLink = game.playlists.get(data.id);
+                    break;
+                case "Scene":
+                    entityToLink = game.scenes.get(data.id);
+                    break;
+                case "Macro":
+                    entityToLink = game.macros.get(data.id);
+                    break;
+                default:
+                    ui.notifications.warn(`Drag and drop of type ${data.type} not supported`);
+
+
+            }
+
+            if (entityToLink) {
+                resultArray[resultIndex].type = 1;
+                resultArray[resultIndex].collection = data.type;
+                resultArray[resultIndex].text = entityToLink.name;
+
+                table.update({ results: resultArray }); //await?
+            }
+
+        }
+    }
+
 
     static preUpdateRollTable(tableEntity, updateData, diff, tableId) {
         setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.LOOT_CURRENCY_KEY}`, updateData["currency-input"]);

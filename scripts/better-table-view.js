@@ -77,11 +77,8 @@ export class BetterRT {
         }
         console.log("DATA ", data);
         console.log("TABLE ", table);
-        //results.2.type
-        //results.2.collection
-        //results.2.text
-        const targetName = event.target.name;
 
+        const targetName = event.target.name;
         console.log("targetName ", targetName);
         // const elements = event.target.form.elements;
         // console.log("elements ", elements);
@@ -99,12 +96,15 @@ export class BetterRT {
 
         if (resultIndex >= 0) {
             console.log("table result dropped on ", resultIndex);
-            let resultArray = duplicate(table.results);
-            let entityToLinkName;
+
+            let resultTableId = table.results[resultIndex]._id;
+            let resultTableData = { _id: resultTableId };
+            let entityToLink;
 
             if (hasProperty(data, "pack")) {
-                resultArray[resultIndex].type = 2;
-                resultArray[resultIndex].collection = data.pack;
+
+                resultTableData.type = 2;
+                resultTableData.collection = data.pack;
 
                 const compendium = game.packs.find(t => t.collection === data.pack);
                 if (compendium) {
@@ -112,45 +112,47 @@ export class BetterRT {
                     let entry = indexes.find(e => e._id === data.id);
 
                     if (entry) { //since the data from buildItemData could have been changed (e.g. the name of the scroll item that was coming from a compendium originally, entry can be undefined)
-                        const itemEntity = await compendium.getEntity(entry._id);
-                        entityToLinkName = itemEntity.name;
+                        entityToLink = await compendium.getEntity(entry._id);
                     }
                 }
             } else {
-                resultArray[resultIndex].type = 1;
-                resultArray[resultIndex].collection = data.type;
+                resultTableData.type = 1;
+                resultTableData.collection = data.type;
+
                 switch (data.type) {
                     case "RollTable":
-                        entityToLinkName = game.tables.get(data.id).name;
+                        entityToLink = game.tables.get(data.id);
                         break;
                     case "Actor":
                     case "Item":
-                        entityToLinkName = game.items.get(data.id).name;
+                        entityToLink = game.items.get(data.id);
                         break;
                     case "JournalEntry":
-                        entityToLinkName = game.journal.get(data.id).name;
+                        entityToLink = game.journal.get(data.id);
                         break;
                     case "Playlist":
-                        entityToLinkName = game.playlists.get(data.id).name;
+                        entityToLink = game.playlists.get(data.id);
                         break;
                     case "Scene":
-                        entityToLinkName = game.scenes.get(data.id).name;
+                        entityToLink = game.scenes.get(data.id);
                         break;
                     case "Macro":
-                        entityToLinkName = game.macros.get(data.id).name;
+                        entityToLink = game.macros.get(data.id);
                         break;
                 }
             }
 
-            if (entityToLinkName) {
-                resultArray[resultIndex].text = entityToLinkName;
-                table.update({ results: resultArray }); //await?
+            if (entityToLink) {
+                resultTableData.text = entityToLink.name;
+                resultTableData.img = entityToLink.img;
+
+                table.updateEmbeddedEntity("TableResult", resultTableData);
             } else {
                 ui.notifications.warn(`Drag and drop of type ${data.type} not supported`);
             }
         } else {
             console.log("creating tableresult");
-            await table.createEmbeddedEntity("TableResult", {weight: 2, range: [11, 13], type: 0});
+            table.createEmbeddedEntity("TableResult", { weight: 2, range: [11, 13], type: 0 });
         }
     }
 

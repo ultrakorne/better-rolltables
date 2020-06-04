@@ -147,7 +147,7 @@ export class BetterRT {
             resultTableData.text = entityToLink.name;
             resultTableData.img = entityToLink.img;
         } else {
-            ui.notifications.warn(`Drag and drop of type ${data.type} not supported`);
+            ui.notifications.error(`Item of type ${data.type} or Embedded items not supported`);
             return;
         }
 

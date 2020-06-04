@@ -12,7 +12,7 @@
         {{#each itemsData as |itemData|}}
         <li class="table-result flexrow">
             <img class="result-image" src="{{itemData.item.img}}">
-            <div class="result-text style="font-size: {{itemData.fontSize}}%;">
+            <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
                 <a class="entity-link" draggable="true" data-entity="Item" 
                 {{#if itemData.item.compendium}}
                     data-pack="{{itemData.item.compendium.collection}}" data-lookup="{{itemData.item.id}}" 

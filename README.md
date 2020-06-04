@@ -1,9 +1,9 @@
 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/ultrakorne/better-rolltables?style=flat-square"> <img alt="GitHub" src="https://img.shields.io/github/license/ultrakorne/better-rolltables?style=flat-square"> <img alt="GitHub Releases" src="https://img.shields.io/github/downloads/ultrakorne/better-rolltables/latest/total?style=flat-square">  
 
 # Better Rolltables #
-*better-rolltables* is Module for FoundryVTT to improve and add functionality rolltables
+*better-rolltables* is Module for FoundryVTT to improve and add functionality to rolltables
 
-This module adds functionality on rolltables to be able to generate loot (implementing for example the Treasure Hoard" Tables from the DMG), rolling on multiple tables with 1 click!
+The module adds functionality to rolltables to enhance loot generation capabilities and rolling on multiple tables with 1 click!(implementing for example the Treasure Hoard" Tables from the DMG becomes possible)
 
 ## Install ##
 option A) Inside foundry, go to add-ons module section and search for Better Rolltables.

@@ -9,7 +9,6 @@ export class BetterRT {
         const tableClassName = rollTable.cssClass;// "editable";
         const tableEditable = rollTable.editable;
         const tableEntity = rollTableConfig.object;
-
         const selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE;
 
         let tableViewClass = html[0].getElementsByClassName(tableClassName)[0];
@@ -27,7 +26,6 @@ export class BetterRT {
                 console.log(`cannot find table class element ${tableClassName}`);
             }
         }
-
         // console.log("tableViewClass html ", tableViewClass);
 
         let divElement = document.createElement("div");
@@ -67,7 +65,7 @@ export class BetterRT {
     }
 
     static async onDropEvent(event, table) {
-        console.log("EVENT ", event);
+        // console.log("EVENT ", event);
         let data;
         try {
             data = JSON.parse(event.dataTransfer.getData('text/plain'));
@@ -75,15 +73,13 @@ export class BetterRT {
             console.log("no entity dropped");
             return;
         }
-        console.log("DATA ", data);
-        console.log("TABLE ", table);
+        // console.log("DATA ", data);
+        // console.log("TABLE ", table);
 
         const targetName = event.target.name;
-        console.log("targetName ", targetName);
+        // console.log("targetName ", targetName);
         // const elements = event.target.form.elements;
-        // console.log("elements ", elements);
         // const namedItem = elements.namedItem(targetName);
-        // console.log("namedItem ", namedItem);
 
         let resultIndex = -1;
         /** dropping on a table result line the target will be results.2.type, results.2.collection, results.2.text*/
@@ -96,7 +92,7 @@ export class BetterRT {
 
         let resultTableData = {};
         if (resultIndex >= 0) {
-            console.log("table result dropped on ", resultIndex);
+            // console.log("table result dropped on ", resultIndex);
             resultTableData._id = table.results[resultIndex]._id;
         }
         let entityToLink;
@@ -155,7 +151,6 @@ export class BetterRT {
             table.updateEmbeddedEntity("TableResult", resultTableData);
         } else {
             /**create a new embedded entity if we dropped the entity on the sheet but not on a specific result */
-            console.log("creating tableresult");
             const lastTableResult = table.results[table.results.length - 1];
             const rangeLenght = lastTableResult.range[1] - lastTableResult.range[0]
             resultTableData.weight = lastTableResult.weight;

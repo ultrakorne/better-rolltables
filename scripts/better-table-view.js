@@ -36,8 +36,8 @@ export class BetterRT {
         let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.hbs", brtData);
         divElement.innerHTML = selectTypeHtml;
 
-        tableViewClass.addEventListener('drop', function (event) {
-            BetterRT.onDropEvent(event, tableEntity);
+        tableViewClass.addEventListener('drop', async function (event) {
+            await BetterRT.onDropEvent(event, tableEntity);
         });
 
         tableViewClass.insertBefore(divElement, tableViewClass.children[2]);
@@ -66,7 +66,7 @@ export class BetterRT {
         }
     }
 
-    static onDropEvent(event, table) {
+    static async onDropEvent(event, table) {
         console.log("EVENT ", event);
         let data;
         try {
@@ -89,7 +89,8 @@ export class BetterRT {
         // console.log("namedItem ", namedItem);
 
         let resultIndex = -1;
-        if (targetName.startsWith("results.")) {
+        /** dropping on a table result line the target will be results.2.type, results.2.collection, results.2.text*/
+        if (targetName && targetName.startsWith("results.")) {
             const splitString = targetName.split(".");
             if (splitString.length > 1) {
                 resultIndex = Number(splitString[1]);
@@ -99,46 +100,57 @@ export class BetterRT {
         if (resultIndex >= 0) {
             console.log("table result dropped on ", resultIndex);
             let resultArray = duplicate(table.results);
+            let entityToLinkName;
 
             if (hasProperty(data, "pack")) {
-                //type 2
-            }
+                resultArray[resultIndex].type = 2;
+                resultArray[resultIndex].collection = data.pack;
 
-            let entityToLink;
-            switch (data.type) {
-                case "RollTable":
-                    entityToLink = game.tables.get(data.id);
-                    break;
-                case "Actor":
-                case "Item":
-                    entityToLink = game.items.get(data.id);
-                    break;
-                case "JournalEntry":
-                    entityToLink = game.journal.get(data.id);
-                    break;
-                case "Playlist":
-                    entityToLink = game.playlists.get(data.id);
-                    break;
-                case "Scene":
-                    entityToLink = game.scenes.get(data.id);
-                    break;
-                case "Macro":
-                    entityToLink = game.macros.get(data.id);
-                    break;
-                default:
-                    ui.notifications.warn(`Drag and drop of type ${data.type} not supported`);
+                const compendium = game.packs.find(t => t.collection === data.pack);
+                if (compendium) {
+                    let indexes = await compendium.getIndex();
+                    let entry = indexes.find(e => e._id === data.id);
 
-
-            }
-
-            if (entityToLink) {
+                    if (entry) { //since the data from buildItemData could have been changed (e.g. the name of the scroll item that was coming from a compendium originally, entry can be undefined)
+                        const itemEntity = await compendium.getEntity(entry._id);
+                        entityToLinkName = itemEntity.name;
+                    }
+                }
+            } else {
                 resultArray[resultIndex].type = 1;
                 resultArray[resultIndex].collection = data.type;
-                resultArray[resultIndex].text = entityToLink.name;
-
-                table.update({ results: resultArray }); //await?
+                switch (data.type) {
+                    case "RollTable":
+                        entityToLinkName = game.tables.get(data.id).name;
+                        break;
+                    case "Actor":
+                    case "Item":
+                        entityToLinkName = game.items.get(data.id).name;
+                        break;
+                    case "JournalEntry":
+                        entityToLinkName = game.journal.get(data.id).name;
+                        break;
+                    case "Playlist":
+                        entityToLinkName = game.playlists.get(data.id).name;
+                        break;
+                    case "Scene":
+                        entityToLinkName = game.scenes.get(data.id).name;
+                        break;
+                    case "Macro":
+                        entityToLinkName = game.macros.get(data.id).name;
+                        break;
+                }
             }
 
+            if (entityToLinkName) {
+                resultArray[resultIndex].text = entityToLinkName;
+                table.update({ results: resultArray }); //await?
+            } else {
+                ui.notifications.warn(`Drag and drop of type ${data.type} not supported`);
+            }
+        } else {
+            console.log("creating tableresult");
+            await table.createEmbeddedEntity("TableResult", {weight: 2, range: [11, 13], type: 0});
         }
     }
 

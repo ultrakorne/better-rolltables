@@ -28,7 +28,7 @@ export class BetterRT {
             }
         }
 
-        console.log("tableViewClass html ", tableViewClass);
+        // console.log("tableViewClass html ", tableViewClass);
 
         let divElement = document.createElement("div");
         let brtData = duplicate(tableEntity.data.flags);
@@ -94,66 +94,77 @@ export class BetterRT {
             }
         }
 
+        let resultTableData = {};
         if (resultIndex >= 0) {
             console.log("table result dropped on ", resultIndex);
+            resultTableData._id = table.results[resultIndex]._id;
+        }
+        let entityToLink;
 
-            let resultTableId = table.results[resultIndex]._id;
-            let resultTableData = { _id: resultTableId };
-            let entityToLink;
+        if (data.pack) {
+            resultTableData.type = 2;
+            resultTableData.collection = data.pack;
 
-            if (hasProperty(data, "pack")) {
+            const compendium = game.packs.find(t => t.collection === data.pack);
+            if (compendium) {
+                let indexes = await compendium.getIndex();
+                let entry = indexes.find(e => e._id === data.id);
 
-                resultTableData.type = 2;
-                resultTableData.collection = data.pack;
-
-                const compendium = game.packs.find(t => t.collection === data.pack);
-                if (compendium) {
-                    let indexes = await compendium.getIndex();
-                    let entry = indexes.find(e => e._id === data.id);
-
-                    if (entry) { //since the data from buildItemData could have been changed (e.g. the name of the scroll item that was coming from a compendium originally, entry can be undefined)
-                        entityToLink = await compendium.getEntity(entry._id);
-                    }
+                if (entry) { //since the data from buildItemData could have been changed (e.g. the name of the scroll item that was coming from a compendium originally, entry can be undefined)
+                    entityToLink = await compendium.getEntity(entry._id);
                 }
-            } else {
-                resultTableData.type = 1;
-                resultTableData.collection = data.type;
-
-                switch (data.type) {
-                    case "RollTable":
-                        entityToLink = game.tables.get(data.id);
-                        break;
-                    case "Actor":
-                    case "Item":
-                        entityToLink = game.items.get(data.id);
-                        break;
-                    case "JournalEntry":
-                        entityToLink = game.journal.get(data.id);
-                        break;
-                    case "Playlist":
-                        entityToLink = game.playlists.get(data.id);
-                        break;
-                    case "Scene":
-                        entityToLink = game.scenes.get(data.id);
-                        break;
-                    case "Macro":
-                        entityToLink = game.macros.get(data.id);
-                        break;
-                }
-            }
-
-            if (entityToLink) {
-                resultTableData.text = entityToLink.name;
-                resultTableData.img = entityToLink.img;
-
-                table.updateEmbeddedEntity("TableResult", resultTableData);
-            } else {
-                ui.notifications.warn(`Drag and drop of type ${data.type} not supported`);
             }
         } else {
-            console.log("creating tableresult");
-            table.createEmbeddedEntity("TableResult", { weight: 2, range: [11, 13], type: 0 });
+            resultTableData.type = 1;
+            resultTableData.collection = data.type;
+
+            switch (data.type) {
+                case "RollTable":
+                    entityToLink = game.tables.get(data.id);
+                    break;
+                case "Actor":
+                    entityToLink = game.actors.get(data.id);
+                    break;
+                case "Item":
+                    entityToLink = game.items.get(data.id);
+                    break;
+                case "JournalEntry":
+                    entityToLink = game.journal.get(data.id);
+                    break;
+                case "Playlist":
+                    entityToLink = game.playlists.get(data.id);
+                    break;
+                case "Scene":
+                    entityToLink = game.scenes.get(data.id);
+                    break;
+                case "Macro":
+                    entityToLink = game.macros.get(data.id);
+                    break;
+            }
         }
+
+        if (entityToLink) {
+            resultTableData.text = entityToLink.name;
+            resultTableData.img = entityToLink.img;
+        } else {
+            ui.notifications.warn(`Drag and drop of type ${data.type} not supported`);
+            return;
+        }
+
+        if (resultTableData._id) {
+            table.updateEmbeddedEntity("TableResult", resultTableData);
+        } else {
+            /**create a new embedded entity if we dropped the entity on the sheet but not on a specific result */
+            console.log("creating tableresult");
+            const lastTableResult = table.results[table.results.length - 1];
+            const rangeLenght = lastTableResult.range[1] - lastTableResult.range[0]
+            resultTableData.weight = lastTableResult.weight;
+            resultTableData.range = [lastTableResult.range[1], lastTableResult.range[1] + rangeLenght];
+            table.createEmbeddedEntity("TableResult", resultTableData);
+        }
+
+
+
     }
 
 

@@ -152,9 +152,14 @@ export class BetterRT {
         } else {
             /**create a new embedded entity if we dropped the entity on the sheet but not on a specific result */
             const lastTableResult = table.results[table.results.length - 1];
-            const rangeLenght = lastTableResult.range[1] - lastTableResult.range[0]
-            resultTableData.weight = lastTableResult.weight;
-            resultTableData.range = [lastTableResult.range[1], lastTableResult.range[1] + rangeLenght];
+            if(lastTableResult) {
+                const rangeLenght = lastTableResult.range[1] - lastTableResult.range[0]
+                resultTableData.weight = lastTableResult.weight;
+                resultTableData.range = [lastTableResult.range[1], lastTableResult.range[1] + rangeLenght];
+            } else {
+                resultTableData.weight = 1;
+                resultTableData.range = [1,1];
+            }
             table.createEmbeddedEntity("TableResult", resultTableData);
         }
 

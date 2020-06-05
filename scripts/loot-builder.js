@@ -35,7 +35,7 @@ export class LootBuilder {
     async rollManyOnTable(amount, table) {
         // console.log("table ", table);
 
-        for (let i = 0; i < 25 && amount > 0; i++) {
+        for (let i = 0; i < 50 && amount > 0; i++) {
 
             let resultToDraw = amount;
             /** if we draw without replacement we need to reset the table once all entries are drawn */

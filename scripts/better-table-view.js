@@ -3,6 +3,7 @@ import { LootBuilder } from './loot-builder.js'
 import { BRTCONFIG } from './config.js';
 import { LootCreator } from './loot-creator.js';
 import { LootChatCard } from './loot-chat-card.js';
+import { StoryBuilder } from './story/story-builder.js';
 
 export class BetterRT {
     static async enhanceRollTableView(rollTableConfig, html, rollTable) {
@@ -63,7 +64,6 @@ export class BetterRT {
         } else if (selectedTableType === BRTCONFIG.TABLE_TYPE_STORY) {
             const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
             const newRollButton = BetterRT.replaceRollButton(footer);
-            console.log("newRollButton ", newRollButton);
             newRollButton.getElementsByTagName("i")[0].className = "fas fa-book";
             newRollButton.onclick = async function () { await BetterRT.onStoryRollClicked(tableEntity); };
         }
@@ -219,6 +219,7 @@ export class BetterRT {
     }
 
     static async onStoryRollClicked(tableEntity) {
-
+        const storyBuilder = new StoryBuilder(tableEntity);
+        await storyBuilder.drawStory();
     }
 }

@@ -9,6 +9,7 @@ BRTCONFIG.ACTOR_NAME_KEY = "loot-actor-name";
 //different type of table type the mod will support. none will basically keep the basic rolltable functionality
 BRTCONFIG.TABLE_TYPE_NONE = "none";
 BRTCONFIG.TABLE_TYPE_LOOT = "loot";
+BRTCONFIG.TABLE_TYPE_STORY = "story";
 
 BRTCONFIG.SPELL_COMPENDIUM_KEY = "default-spell-compendium";
 BRTCONFIG.LOOT_SHEET_TO_USE_KEY = "loot-sheet-to-use";

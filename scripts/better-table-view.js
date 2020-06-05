@@ -45,15 +45,14 @@ export class BetterRT {
 
         //create generate loot button
         if (selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) {
-            /** Create additional Button to Generate Loot */
+
             const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
+            const newRollButton = BetterRT.replaceRollButton(footer);
+            
+            newRollButton.getElementsByTagName("i")[0].className = "fas fa-gem";
+            newRollButton.onclick = async function () { await BetterRT.onLootRollClicked(tableEntity); };
 
-            const rollButton = footer.getElementsByClassName("roll")[0];
-            //remove the default listener by cloning the button
-            let rollButtonClone = rollButton.cloneNode(true);
-            rollButton.parentNode.replaceChild(rollButtonClone, rollButton);
-            rollButtonClone.onclick = async function () { await BetterRT.onRollClicked(selectTypeElement.value, tableEntity); };
-
+            /** Create additional Button to Generate Loot */
             await BetterRT.showGenerateLootButton(footer, tableEntity);
 
             /** Hide the element with displayRoll checkbox */
@@ -61,7 +60,21 @@ export class BetterRT {
             const displayRollElement = inputElements.namedItem("displayRoll").parentElement;
 
             displayRollElement.remove();
+        } else if (selectedTableType === BRTCONFIG.TABLE_TYPE_STORY) {
+            const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
+            const newRollButton = BetterRT.replaceRollButton(footer);
+            console.log("newRollButton ", newRollButton);
+            newRollButton.getElementsByTagName("i")[0].className = "fas fa-book";
+            newRollButton.onclick = async function () { await BetterRT.onStoryRollClicked(tableEntity); };
         }
+    }
+
+    static replaceRollButton(footer) {
+        const rollButton = footer.getElementsByClassName("roll")[0];
+         //remove the default listener by cloning the button
+        const rollButtonClone = rollButton.cloneNode(true);
+        rollButton.parentNode.replaceChild(rollButtonClone, rollButton);
+        return rollButtonClone;
     }
 
     static async onDropEvent(event, table) {
@@ -152,13 +165,13 @@ export class BetterRT {
         } else {
             /**create a new embedded entity if we dropped the entity on the sheet but not on a specific result */
             const lastTableResult = table.results[table.results.length - 1];
-            if(lastTableResult) {
+            if (lastTableResult) {
                 const rangeLenght = lastTableResult.range[1] - lastTableResult.range[0]
                 resultTableData.weight = lastTableResult.weight;
                 resultTableData.range = [lastTableResult.range[1], lastTableResult.range[1] + rangeLenght];
             } else {
                 resultTableData.weight = 1;
-                resultTableData.range = [1,1];
+                resultTableData.range = [1, 1];
             }
             table.createEmbeddedEntity("TableResult", resultTableData);
         }
@@ -198,11 +211,14 @@ export class BetterRT {
         await tableEntity.setFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY, value);
     }
 
-    static async onRollClicked(value, tableEntity) {
-
+    static async onLootRollClicked(tableEntity) {
         const lootBuilder = new LootBuilder(tableEntity);
         const generatedLoot = await lootBuilder.generateLoot();
         const lootChatCard = new LootChatCard(generatedLoot);
         await lootChatCard.createChatCard(tableEntity);
+    }
+
+    static async onStoryRollClicked(tableEntity) {
+
     }
 }

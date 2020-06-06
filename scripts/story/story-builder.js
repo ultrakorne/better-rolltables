@@ -140,4 +140,23 @@ export class StoryBuilder {
             setProperty(this.storyTokens, definition, valueResult);
         }
     }
+
+    generatedStory() {
+        const input = this.story;
+        const regex = /{ *([^}]*?) *}/g
+
+        let replacedStory = this.story;
+
+        let matches;
+        while (matches = regex.exec(input)) {
+            const value = getProperty(this.storyTokens, matches[1]);
+            if (!value) {
+                ui.notifications.error(`cannot find a value for token ${matches[1]} in #story definition`);
+                continue;
+            }
+
+            replacedStory = replacedStory.replace(matches[0], value);
+        }
+        return replacedStory;
+    }
 }

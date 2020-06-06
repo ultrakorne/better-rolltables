@@ -221,5 +221,7 @@ export class BetterRT {
     static async onStoryRollClicked(tableEntity) {
         const storyBuilder = new StoryBuilder(tableEntity);
         await storyBuilder.drawStory();
+        const storyHtml = storyBuilder.generatedStory();
+        console.log("GENERATED STORY ", storyHtml);
     }
 }

@@ -29,8 +29,11 @@ export class StoryBuilder {
                 }
             } else if (entry.type == 2) {
                 /** entity type 2 is when an entity inside a compendium is linked */
-                const entity = await Utils.findInCompendiumByName(entry.collection, entry.name);
-                if (entity.entity == "JournalEntry") {
+                const entity = await Utils.findInCompendiumByName(entry.collection, entry.text);
+                if (!entity) {
+                    errorString = `entity ${entry.text} not found in compendium ${entry.collection}`;
+                }
+                else if (entity.entity == "JournalEntry") {
                     journalContent = entity.data.content;
                 } else {
                     errorString = `Only Journal entries are supported in the story generation as table results`;
@@ -60,8 +63,8 @@ export class StoryBuilder {
             STORYGM: 3,
         };
 
-        /** remove html spaces */
-        storyDefinition = storyDefinition.replace(/(&nbsp;|<br>)+/g, '');
+        /** remove html spaces and replacing with a space*/
+        storyDefinition = storyDefinition.replace(/(&nbsp;|<br>)+/g, " ");
         const lines = storyDefinition.split(/\r\n|\r|\n/);
 
         let parseMode = PARSE_MODE.DEFINITION;
@@ -138,13 +141,13 @@ export class StoryBuilder {
             const tableId = out.nameOrId;
             const compendiumName = out.compendiumName;
             let table;
-            if(compendiumName) {
+            if (compendiumName) {
                 table = await Utils.findInCompendiumById(compendiumName, tableId);
-            }else {
+            } else {
                 table = game.tables.get(tableId);
             }
 
-            
+
             if (!table) {
                 ui.notifications.error(`table with id ${tableId} not found in the world, check the generation journal for broken links`);
                 return;

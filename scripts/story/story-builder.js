@@ -18,7 +18,7 @@ export class StoryBuilder {
             if (entry.collection == "JournalEntry") {
 
                 const storyJournal = game.journal.get(entry.resultId);
-                await this.parseStoryDefinition(storyJournal.data.content);
+                await this._parseStoryDefinition(storyJournal.data.content);
             } else {
                 ui.notifications.warn(`Entry for ${entry.compendium} not supported for type story`);
             }
@@ -28,7 +28,7 @@ export class StoryBuilder {
         console.log("story ", this.story);
     }
 
-    async parseStoryDefinition(storyDefinition) {
+    async _parseStoryDefinition(storyDefinition) {
 
         const PARSE_MODE = {
             NONE: 0,
@@ -51,7 +51,7 @@ export class StoryBuilder {
                 case PARSE_MODE.DEFINITION:
                     const matches = /\s*<p>(.+)AS(.+)<\/p>/.exec(line);
                     if (matches) {
-                        await this.processDefinition(matches[1], matches[2]);
+                        await this._processDefinition(matches[1], matches[2]);
                         break;
                     }
                 default:
@@ -65,7 +65,7 @@ export class StoryBuilder {
     }
 
 
-    async processDefinition(defValue, definitionName) {
+    async _processDefinition(defValue, definitionName) {
 
         // console.log("value ", defValue);
 

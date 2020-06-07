@@ -4,6 +4,7 @@ import { BRTCONFIG } from './config.js';
 import { LootCreator } from './loot-creator.js';
 import { LootChatCard } from './loot-chat-card.js';
 import { StoryBuilder } from './story/story-builder.js';
+import { StoryChatCard } from './story/story-chat-card.js';
 
 export class BetterRT {
     static async enhanceRollTableView(rollTableConfig, html, rollTable) {
@@ -49,7 +50,7 @@ export class BetterRT {
 
             const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
             const newRollButton = BetterRT.replaceRollButton(footer);
-            
+
             newRollButton.getElementsByTagName("i")[0].className = "fas fa-gem";
             newRollButton.onclick = async function () { await BetterRT.onLootRollClicked(tableEntity); };
 
@@ -71,7 +72,7 @@ export class BetterRT {
 
     static replaceRollButton(footer) {
         const rollButton = footer.getElementsByClassName("roll")[0];
-         //remove the default listener by cloning the button
+        //remove the default listener by cloning the button
         const rollButtonClone = rollButton.cloneNode(true);
         rollButton.parentNode.replaceChild(rollButtonClone, rollButton);
         return rollButtonClone;
@@ -222,6 +223,7 @@ export class BetterRT {
         const storyBuilder = new StoryBuilder(tableEntity);
         await storyBuilder.drawStory();
         const storyHtml = storyBuilder.generatedStory();
+        new StoryChatCard(storyHtml).createChatCard(tableEntity.data.name);
         console.log("GENERATED STORY ", storyHtml);
     }
 }

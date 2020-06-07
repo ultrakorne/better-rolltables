@@ -1,5 +1,5 @@
 import { LootCreator } from './loot-creator.js';
-import { i18n } from './utils.js';
+import { addRollModeToChatData } from './utils.js';
 import { BRTCONFIG } from './config.js';
 
 /**
@@ -108,17 +108,7 @@ export class LootChatCard {
             user: game.user._id,
             content: cardHtml
         }
-
-        switch (game.settings.get("core", "rollMode")) {
-            case "blindroll":
-                chatData.blind = true;
-            case "gmroll":
-                chatData.whisper = [game.users.find(u => u.isGM).id];
-                break;
-            case "selfroll":
-                chatData.whisper = [game.userId];
-                break;
-        }
+        addRollModeToChatData(chatData);
         ChatMessage.create(chatData);
     }
 }

@@ -5,9 +5,11 @@ export class StoryBuilder {
     constructor(tableEntity) {
         this.table = tableEntity;
         /** the story tokens with the respective values, either pulled from a rolltable or rolled with a formula */
-        this.storyTokens = {};
+        this._storyTokens = {};
         /** string containing the story, to be replaced with the tokens */
-        this.story = "";
+        this._story = "";
+        /** a story part that will only be showned to the GM */
+        this._storyGm = "";
     }
 
     async drawStory() {
@@ -24,8 +26,8 @@ export class StoryBuilder {
             }
         }
 
-        console.log("this.storyTokens ", this.storyTokens);
-        console.log("story ", this.story);
+        console.log("this._storyTokens ", this._storyTokens);
+        console.log("story ", this._story);
     }
 
     async _parseStoryDefinition(storyDefinition) {
@@ -33,33 +35,46 @@ export class StoryBuilder {
         const PARSE_MODE = {
             NONE: 0,
             DEFINITION: 1,
-            STORY: 2
+            STORY: 2,
+            STORYGM: 3,
         };
+
         /** remove html spaces */
         storyDefinition = storyDefinition.replace(/(&nbsp;|<br>)+/g, '');
-
         const lines = storyDefinition.split(/\r\n|\r|\n/);
 
         let parseMode = PARSE_MODE.DEFINITION;
 
         for (const line of lines) {
-            // console.log("story line ", line);
-            switch (parseMode) {
-                case PARSE_MODE.STORY:
-                    this.story += line;
-                    break;
-                case PARSE_MODE.DEFINITION:
-                    const matches = /\s*<p>(.+)AS(.+)<\/p>/.exec(line);
-                    if (matches) {
-                        await this._processDefinition(matches[1], matches[2]);
-                        break;
-                    }
-                default:
-                    const sectionMatch = /.*#([a-zA-Z]+)/.exec(line);
-                    if (sectionMatch && sectionMatch[1] == "story") {
+            const sectionMatch = /.*#([a-zA-Z]+)/.exec(line);
+            if (sectionMatch) {
+                switch (sectionMatch[1]) {
+                    case "story":
                         parseMode = PARSE_MODE.STORY;
-                    }
-                    break;
+                        break;
+                    case "storyGM":
+                        parseMode = PARSE_MODE.STORYGM;
+                        break;
+                    case "definition":
+                        parseMode = PARSE_MODE.DEFINITION;
+                        break;
+                }
+            } else {
+                // console.log("story line ", line);
+                switch (parseMode) {
+                    case PARSE_MODE.STORY:
+                        this._story += line;
+                        break;
+                    case PARSE_MODE.STORYGM:
+                        this._storyGm += line;
+                        break;
+                    case PARSE_MODE.DEFINITION:
+                        const matches = /\s*<p>(.+)AS(.+)<\/p>/.exec(line);
+                        if (matches) {
+                            await this._processDefinition(matches[1], matches[2]);
+                        }
+                        break;
+                }
             }
         }
     }
@@ -75,7 +90,7 @@ export class StoryBuilder {
             return;
         }
         const definition = match[1];
-        if (hasProperty(this.storyTokens, definition)) {
+        if (hasProperty(this._storyTokens, definition)) {
             console.log(`definition ${definition} is already defined, skipping line`);
             return;
         }
@@ -137,24 +152,33 @@ export class StoryBuilder {
         }
 
         if (valueResult) {
-            setProperty(this.storyTokens, definition, valueResult);
+            setProperty(this._storyTokens, definition, valueResult);
         }
     }
 
     generatedStory() {
-        const input = this.story;
+        return this._generateStory(this._story);
+    }
+
+    generatedStoryGM() {
+        return this._generateStory(this._storyGm);
+    }
+
+    _generateStory(story) {
+        if (!story) return story;
+
+        const input = story;
         const regex = /{ *([^}]*?) *}/g
 
-        let replacedStory = this.story;
+        let replacedStory = story;
 
         let matches;
         while (matches = regex.exec(input)) {
-            const value = getProperty(this.storyTokens, matches[1]);
+            const value = getProperty(this._storyTokens, matches[1]);
             if (!value) {
                 ui.notifications.error(`cannot find a value for token ${matches[1]} in #story definition`);
                 continue;
             }
-
             replacedStory = replacedStory.replace(matches[0], value);
         }
         return replacedStory;

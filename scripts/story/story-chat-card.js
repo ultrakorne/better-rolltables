@@ -1,19 +1,30 @@
 import { addRollModeToChatData } from '../utils.js';
 
 export class StoryChatCard {
-    constructor(story) {
-        this.story = story;
+    constructor(tableEntity) {
+        this._tableEntity = tableEntity;
     }
 
-    createChatCard(cardFlavor) {
+    /**
+     * Create a chat card to display the story string
+     * @param {string} story the html string of the story to display in chat
+     * @param {dictionary} options set of options, if gmOnly = true then the card will be set to shown only to GM regardless of the chat preferences
+     */
+    createChatCard(story, options = {}) {
+        if (!story) return;
+
         let chatData = {
-            flavor: cardFlavor,
+            flavor: this._tableEntity.data.name,
             sound: "sounds/dice.wav",
             user: game.user._id,
-            content: this.story
+            content: story
+        }
+        if (options.gmOnly) {
+            chatData.whisper = [game.users.find(u => u.isGM).id];
+        } else {
+            addRollModeToChatData(chatData);
         }
 
-        addRollModeToChatData(chatData);
         ChatMessage.create(chatData);
     }
 }

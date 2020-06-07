@@ -223,7 +223,12 @@ export class BetterRT {
         const storyBuilder = new StoryBuilder(tableEntity);
         await storyBuilder.drawStory();
         const storyHtml = storyBuilder.generatedStory();
-        new StoryChatCard(storyHtml).createChatCard(tableEntity.data.name);
+        const storyGMHtml = storyBuilder.generatedStoryGM();
+
+        const storyChat = new StoryChatCard(tableEntity);
+        storyChat.createChatCard(storyHtml);
+        storyChat.createChatCard(storyGMHtml, {gmOnly: true});
         console.log("GENERATED STORY ", storyHtml);
+        console.log("GENERATED storyGMHtml ", storyGMHtml);
     }
 }

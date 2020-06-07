@@ -228,7 +228,5 @@ export class BetterRT {
         const storyChat = new StoryChatCard(tableEntity);
         storyChat.createChatCard(storyHtml);
         storyChat.createChatCard(storyGMHtml, {gmOnly: true});
-        console.log("GENERATED STORY ", storyHtml);
-        console.log("GENERATED storyGMHtml ", storyGMHtml);
     }
 }

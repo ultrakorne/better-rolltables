@@ -15,19 +15,35 @@ export class StoryBuilder {
     async drawStory() {
         const draw = await this.table.drawMany(1, { displayChat: false });
 
-        for (const entry of draw.results) {
-            console.log("draw roll ", entry);
-            if (entry.collection == "JournalEntry") {
+        let journalContent;
 
+        for (const entry of draw.results) {
+            /** entity type 2 is when an entity in the world is linked */
+            if (entry.type == 1 && entry.collection == "JournalEntry") {
                 const storyJournal = game.journal.get(entry.resultId);
-                await this._parseStoryDefinition(storyJournal.data.content);
+                journalContent = storyJournal.data.content;
+            } else if (entry.type == 2) {
+                /** entity type 2 is when an entity inside a compendium is linked */
+                const compendium = game.packs.find(t => t.collection === entry.collection);
+                if (compendium) {
+                    let indexes = await compendium.getIndex();
+                    let index = indexes.find(e => e.name === entry.text);
+                    const entity = await compendium.getEntity(index._id);
+
+                    if (entity.entity == "JournalEntry") {
+                        journalContent = entity.data.content;
+                    }
+                }
+            }
+
+            if (journalContent) {
+                await this._parseStoryDefinition(journalContent);
             } else {
-                ui.notifications.warn(`Entry for ${entry.compendium} not supported for type story`);
+                ui.notifications.warn(`Entry for ${entry.compendium} not supported for story. only Journal type are supported for story`);
             }
         }
-
-        console.log("this._storyTokens ", this._storyTokens);
-        console.log("story ", this._story);
+        // console.log("this._storyTokens ", this._storyTokens);
+        // console.log("story ", this._story);
     }
 
     async _parseStoryDefinition(storyDefinition) {
@@ -48,11 +64,11 @@ export class StoryBuilder {
         for (const line of lines) {
             const sectionMatch = /.*#([a-zA-Z]+)/.exec(line);
             if (sectionMatch) {
-                switch (sectionMatch[1]) {
+                switch (sectionMatch[1].toLowerCase()) {
                     case "story":
                         parseMode = PARSE_MODE.STORY;
                         break;
-                    case "storyGM":
+                    case "storygm":
                         parseMode = PARSE_MODE.STORYGM;
                         break;
                     case "definition":
@@ -60,7 +76,6 @@ export class StoryBuilder {
                         break;
                 }
             } else {
-                // console.log("story line ", line);
                 switch (parseMode) {
                     case PARSE_MODE.STORY:
                         this._story += line;
@@ -69,7 +84,7 @@ export class StoryBuilder {
                         this._storyGm += line;
                         break;
                     case PARSE_MODE.DEFINITION:
-                        const matches = /\s*<p>(.+)AS(.+)<\/p>/.exec(line);
+                        const matches = /\s*<p>(.+)\sas\s(.+)<\/p>/i.exec(line);
                         if (matches) {
                             await this._processDefinition(matches[1], matches[2]);
                         }

@@ -15,6 +15,18 @@
           "system": "dnd5e",
           "path": "./packs/loot-tables.db",
           "entity": "RollTable"
+        },
+        {
+          "name": "brt-story",
+          "label": "Story Tables",
+          "path": "./packs/story-tables.db",
+          "entity": "RollTable"
+        },
+        {
+          "name": "brt-gen",
+          "label": "Story Generators",
+          "path": "./packs/story-generators.db",
+          "entity": "JournalEntry"
         }
     ],
     "minimumCoreVersion": "0.5.5",

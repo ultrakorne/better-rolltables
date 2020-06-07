@@ -24,6 +24,19 @@ export async function findInCompendiumByName(compendiumName, entityName){
     }
 }
 
+export async function findInCompendiumById(compendiumName, entityId){
+    console.log("findInCompendiumById compendiumName ", compendiumName);
+    console.log("findInCompendiumById entityId ", entityId);
+    const compendium = game.packs.find(t => t.collection === compendiumName);
+    if(compendium) {
+        const compendiumIndex = await compendium.getIndex();
+        let entry = compendiumIndex.find(e => e._id === entityId);
+        if (entry) {
+            return await compendium.getEntity(entry._id);
+        }
+    }
+}
+
 export function separateIdComendiumName(stringWithComendium) {
     const split = stringWithComendium.split(".");
     const nameOrId = split.pop().trim();

@@ -185,14 +185,14 @@ export class LootBuilder {
         /**table is inside a compendium , syntax is [comp.endium.name.Table name]*/
         if (tableCompendiumName) {
             table = await findInCompendiumByName(tableCompendiumName, tableName);
-            if (!table) {
-                ui.notifications.warn(`no compendium named ${tableCompendiumName} found`);
-            }
         } else {
             table = game.tables.getName(tableName);
         }
 
-        if (!table) { ui.notifications.warn(`no table named ${tableName} found, did you misspell your table name in brackets?`); return; }
+        if (!table) { 
+            ui.notifications.warn(`no table named ${tableName} found in compendium ${tableCompendiumName}, did you misspell your table name in brackets?`); 
+            return; 
+        }
 
         let numberItems = this.tryToRollString(rollFormula);
         this.rollManyOnTable(numberItems, table);

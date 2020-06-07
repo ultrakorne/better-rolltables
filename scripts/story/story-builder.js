@@ -1,4 +1,5 @@
 import { StoryBoolCondition } from './story-bool-condition.js';
+import * as Utils from '../utils.js';
 
 export class StoryBuilder {
 
@@ -16,30 +17,34 @@ export class StoryBuilder {
         const draw = await this.table.drawMany(1, { displayChat: false });
 
         let journalContent;
-
+        let errorString;
         for (const entry of draw.results) {
             /** entity type 2 is when an entity in the world is linked */
             if (entry.type == 1 && entry.collection == "JournalEntry") {
                 const storyJournal = game.journal.get(entry.resultId);
-                journalContent = storyJournal.data.content;
+                if (storyJournal) {
+                    journalContent = storyJournal.data.content;
+                } else {
+                    errorString = `Journal Entry ${entry.name} not found inside your world`;
+                }
             } else if (entry.type == 2) {
                 /** entity type 2 is when an entity inside a compendium is linked */
-                const compendium = game.packs.find(t => t.collection === entry.collection);
-                if (compendium) {
-                    let indexes = await compendium.getIndex();
-                    let index = indexes.find(e => e.name === entry.text);
-                    const entity = await compendium.getEntity(index._id);
-
-                    if (entity.entity == "JournalEntry") {
-                        journalContent = entity.data.content;
-                    }
+                const entity = await Utils.findInCompendiumByName(entry.collection, entry.name);
+                if (entity.entity == "JournalEntry") {
+                    journalContent = entity.data.content;
+                } else {
+                    errorString = `Only Journal entries are supported in the story generation as table results`;
                 }
+            } else {
+                errorString = `Only Journal entries are supported in the story generation as table results`;
             }
 
             if (journalContent) {
                 await this._parseStoryDefinition(journalContent);
-            } else {
-                ui.notifications.warn(`Entry for ${entry.compendium} not supported for story. only Journal type are supported for story`);
+            }
+
+            if (errorString) {
+                ui.notifications.error(errorString);
             }
         }
         // console.log("this._storyTokens ", this._storyTokens);
@@ -62,6 +67,7 @@ export class StoryBuilder {
         let parseMode = PARSE_MODE.DEFINITION;
 
         for (const line of lines) {
+            // console.log("LINE ", line);
             const sectionMatch = /.*#([a-zA-Z]+)/.exec(line);
             if (sectionMatch) {
                 switch (sectionMatch[1].toLowerCase()) {
@@ -111,9 +117,7 @@ export class StoryBuilder {
         }
 
         // console.log("definition ", definition);
-
         const regexIF = /IF\s*\((.+)\)/;
-
         const ifMatch = regexIF.exec(defValue);
         let conditionMet = true;
         if (ifMatch) {
@@ -123,15 +127,28 @@ export class StoryBuilder {
 
         if (!conditionMet) return;
 
-        const regexTable = /\s*@RollTable\[ *([^\]]*?) *\]{ *([^}]*?) *}/;
-
+        const regexTable = /\s*@(RollTable|Compendium)\[ *([^\]]*?) *\]/;
         const tableMatch = regexTable.exec(defValue);
         let valueResult;
         /** there is a table definition on the left of the AS */
         if (tableMatch) {
-            const tableId = tableMatch[1];
-            const table = game.tables.get(tableId);
-            // console.log("table id ", tableId);
+            /** if it's a compendium the match is 'tablename.id' if it's a rolltable the match is directly the id */
+
+            const out = Utils.separateIdComendiumName(tableMatch[2]);
+            const tableId = out.nameOrId;
+            const compendiumName = out.compendiumName;
+            let table;
+            if(compendiumName) {
+                table = await Utils.findInCompendiumById(compendiumName, tableId);
+            }else {
+                table = game.tables.get(tableId);
+            }
+
+            
+            if (!table) {
+                ui.notifications.error(`table with id ${tableId} not found in the world, check the generation journal for broken links`);
+                return;
+            }
             const draw = await table.drawMany(1, { displayChat: false });
             if (!draw) {
                 await table.reset();
@@ -155,7 +172,6 @@ export class StoryBuilder {
             const rollMatch = regexRoll.exec(defValue)
             if (rollMatch) {
                 const rollFormula = rollMatch[1];
-                // console.log("roll formula ", rollFormula);
                 try {
                     valueResult = new Roll(rollFormula).roll().total || 0;
                 } catch (error) {

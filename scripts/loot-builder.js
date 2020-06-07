@@ -1,6 +1,7 @@
 import { BRTCONFIG } from './config.js';
 import { LootData } from './loot-item.js';
-
+import { findInCompendiumByName } from './utils.js';
+import { separateIdComendiumName } from './utils.js';
 /**
  * This class build a LootData object based on the tableEntity
  * call generateLoot() to return the created LootData object
@@ -175,22 +176,16 @@ export class LootBuilder {
         }
 
         const rollFormula = match[1];
-        let tableSplit = match[2].split(".");
 
-        const tableName = tableSplit.pop().trim();
-        const tableCompendiumName = tableSplit.join('.').trim();
+        const out = separateIdComendiumName(match[2]);
+        const tableName = out.nameOrId;
+        const tableCompendiumName = out.compendiumName;
 
         let table;
-        /**table is inside a compendium */
+        /**table is inside a compendium , syntax is [comp.endium.name.Table name]*/
         if (tableCompendiumName) {
-            const compendium = game.packs.find(t => t.collection === tableCompendiumName);
-            if (compendium) {
-                const compendiumIndex = await compendium.getIndex();
-                let entry = compendiumIndex.find(e => e.name === tableName);
-                if (entry) {
-                    table = await compendium.getEntity(entry._id);
-                }
-            } else {
+            table = await findInCompendiumByName(tableCompendiumName, tableName);
+            if (!table) {
                 ui.notifications.warn(`no compendium named ${tableCompendiumName} found`);
             }
         } else {

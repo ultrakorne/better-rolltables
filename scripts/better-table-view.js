@@ -176,9 +176,6 @@ export class BetterRT {
             }
             table.createEmbeddedEntity("TableResult", resultTableData);
         }
-
-
-
     }
 
 

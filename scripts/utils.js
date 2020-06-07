@@ -12,3 +12,24 @@ export function addRollModeToChatData(chatData) {
             break;
     }
 }
+
+export async function findInCompendiumByName(compendiumName, entityName){
+    const compendium = game.packs.find(t => t.collection === compendiumName);
+    if(compendium) {
+        const compendiumIndex = await compendium.getIndex();
+        let entry = compendiumIndex.find(e => e.name === entityName);
+        if (entry) {
+            return await compendium.getEntity(entry._id);
+        }
+    }
+}
+
+export function separateIdComendiumName(stringWithComendium) {
+    const split = stringWithComendium.split(".");
+    const nameOrId = split.pop().trim();
+    const compendiumName = split.join('.').trim();
+    return {
+        nameOrId: nameOrId,
+        compendiumName: compendiumName
+    }
+}

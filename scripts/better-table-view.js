@@ -1,11 +1,6 @@
 import { i18n } from './utils.js';
-import { LootBuilder } from './loot-builder.js'
 import { BRTCONFIG } from './config.js';
 import { BetterTables } from './better-tables.js';
-import { LootCreator } from './loot-creator.js';
-import { LootChatCard } from './loot-chat-card.js';
-import { StoryBuilder } from './story/story-builder.js';
-import { StoryChatCard } from './story/story-chat-card.js';
 
 export class BetterRT {
     static async enhanceRollTableView(rollTableConfig, html, rollTable) {

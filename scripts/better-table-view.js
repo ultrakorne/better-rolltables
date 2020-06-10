@@ -1,6 +1,7 @@
 import { i18n } from './utils.js';
 import { LootBuilder } from './loot-builder.js'
 import { BRTCONFIG } from './config.js';
+import { BetterTables } from './better-tables.js';
 import { LootCreator } from './loot-creator.js';
 import { LootChatCard } from './loot-chat-card.js';
 import { StoryBuilder } from './story/story-builder.js';
@@ -197,12 +198,8 @@ export class BetterRT {
     }
 
     static async generateLoot(tableEntity) {
-        const lootBuilder = new LootBuilder(tableEntity);
-        const generatedLoot = await lootBuilder.generateLoot();
-        const lootCreator = new LootCreator(generatedLoot);
-        await lootCreator.createActor();
-        await lootCreator.addCurrenciesToActor();
-        await lootCreator.addItemsToActor();
+        const betterTables = new BetterTables();
+        await betterTables.generateLoot(tableEntity);
     }
 
     static async onOptionTypeChanged(value, tableEntity) {
@@ -210,20 +207,12 @@ export class BetterRT {
     }
 
     static async onLootRollClicked(tableEntity) {
-        const lootBuilder = new LootBuilder(tableEntity);
-        const generatedLoot = await lootBuilder.generateLoot();
-        const lootChatCard = new LootChatCard(generatedLoot);
-        await lootChatCard.createChatCard(tableEntity);
+        const betterTables = new BetterTables();
+        await betterTables.generateChatLoot(tableEntity);
     }
 
     static async onStoryRollClicked(tableEntity) {
-        const storyBuilder = new StoryBuilder(tableEntity);
-        await storyBuilder.drawStory();
-        const storyHtml = storyBuilder.generatedStory();
-        const storyGMHtml = storyBuilder.generatedStoryGM();
-
-        const storyChat = new StoryChatCard(tableEntity);
-        storyChat.createChatCard(storyHtml);
-        storyChat.createChatCard(storyGMHtml, {gmOnly: true});
+        const betterTables = new BetterTables();
+        await betterTables.generateChatStory(tableEntity);
     }
 }

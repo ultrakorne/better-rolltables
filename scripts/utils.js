@@ -25,8 +25,6 @@ export async function findInCompendiumByName(compendiumName, entityName){
 }
 
 export async function findInCompendiumById(compendiumName, entityId){
-    console.log("findInCompendiumById compendiumName ", compendiumName);
-    console.log("findInCompendiumById entityId ", entityId);
     const compendium = game.packs.find(t => t.collection === compendiumName);
     if(compendium) {
         const compendiumIndex = await compendium.getIndex();

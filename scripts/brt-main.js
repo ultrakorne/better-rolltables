@@ -1,6 +1,7 @@
 import { BetterRT } from './better-table-view.js';
 import { BRTCONFIG } from './config.js';
 import { i18n } from './utils.js';
+import { BetterTables } from './better-tables.js';
 
 // CONFIG.debug.hooks = true;
 
@@ -11,6 +12,8 @@ Hooks.on("init", function () {
   });
 
   registerSettings();
+
+  game.betterTables = new BetterTables();
 });
 
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
@@ -48,3 +51,6 @@ function registerSettings() {
     type: String
   });
 }
+
+
+

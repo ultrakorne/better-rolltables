@@ -52,7 +52,7 @@ export class LootBuilder {
                 resultToDraw = Math.min(resultsLeft, amount);
             }
 
-            if(!table.formula) {
+            if(!table.data.formula) {
                 ui.notifications.error(`Roll table formula in table ${table.name} is not defined!`);
                 return;
             }

@@ -87,13 +87,14 @@ export class BetterRT {
         // console.log("TABLE ", table);
 
         const targetName = event.target.name;
+
         // console.log("targetName ", targetName);
         // const elements = event.target.form.elements;
         // const namedItem = elements.namedItem(targetName);
 
         let resultIndex = -1;
         /** dropping on a table result line the target will be results.2.type, results.2.collection, results.2.text*/
-        if (targetName && targetName.startsWith("results.")) {
+        if (targetName && targetName instanceof String && targetName.startsWith("results.")) {
             const splitString = targetName.split(".");
             if (splitString.length > 1) {
                 resultIndex = Number(splitString[1]);

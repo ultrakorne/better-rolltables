@@ -51,6 +51,11 @@ export class LootBuilder {
 
                 resultToDraw = Math.min(resultsLeft, amount);
             }
+
+            if(!table.formula) {
+                ui.notifications.error(`Roll table formula in table ${table.name} is not defined!`);
+                return;
+            }
             const draw = await table.drawMany(resultToDraw, { displayChat: false });
             amount -= resultToDraw;
             // console.log("draw roll ", draw);

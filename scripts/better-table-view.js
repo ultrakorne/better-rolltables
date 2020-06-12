@@ -41,6 +41,52 @@ export class BetterRT {
         const selectTypeElement = divElement.getElementsByTagName("select")[0];
         selectTypeElement.onchange = async function () { await BetterRT.onOptionTypeChanged(selectTypeElement.value, tableEntity); };
 
+        /**for every result, add an input field before the text to add a formula */
+        if (selectedTableType != BRTCONFIG.TABLE_TYPE_NONE) {
+            console.log("selectTypeElement ", selectTypeElement);
+            console.log("tableViewClass html ", tableViewClass);
+            const tableResultsHTML = tableViewClass.getElementsByClassName("table-result");
+
+            console.log("tableResultHTML  ", tableResultsHTML);
+            for (let resultHTML of tableResultsHTML) {
+                const resultId = resultHTML.getAttribute("data-result-id");
+                if (resultId) {
+
+                    // console.log("resultId  ", resultId);
+                    const detailsHTML = resultHTML.getElementsByClassName("result-details")[0];
+                    // detailsHTML.classList.add("flexrow"); //adding a new input we need to make the row flex
+
+                    const inputsHTML = detailsHTML.getElementsByTagName("input");
+                    // console.log("inputsHTML  ", inputsHTML);
+                    for (let tableText of inputsHTML) {
+                        if (tableText.getAttribute("type") == "text") {
+                            /** tableText is for each row the text of the table */
+
+                            const formulaInput = document.createElement("input");
+                            formulaInput.classList.add("result-target");
+                            formulaInput.placeholder = "formula";
+                            formulaInput.type = "text";
+                            formulaInput.style.width = "14%";
+                            if(tableText.classList.contains("result-target")){
+                                tableText.style.width = "43%";
+                            } else {
+                                tableText.style.width = "84%";
+                                tableText.style.marginLeft = "3px";
+                            }
+
+
+                            detailsHTML.insertBefore(formulaInput, tableText);
+                            console.log("tableText  ", tableText);
+                            break;
+                        }
+                    }
+                    console.log("detailsHTML  ", detailsHTML);
+               
+                }
+
+            }
+        }
+
         //create generate loot button
         if (selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) {
 
@@ -88,13 +134,17 @@ export class BetterRT {
 
         const targetName = event.target.name;
 
-        // console.log("targetName ", targetName);
+        console.log("targetName ", targetName);
         // const elements = event.target.form.elements;
         // const namedItem = elements.namedItem(targetName);
 
         let resultIndex = -1;
         /** dropping on a table result line the target will be results.2.type, results.2.collection, results.2.text*/
-        if (targetName && targetName instanceof String && targetName.startsWith("results.")) {
+
+        let isString = targetName instanceof String;
+        console.log("isString ", isString);
+
+        if (targetName && targetName.startsWith("results.")) {
             const splitString = targetName.split(".");
             if (splitString.length > 1) {
                 resultIndex = Number(splitString[1]);
@@ -103,7 +153,7 @@ export class BetterRT {
 
         let resultTableData = {};
         if (resultIndex >= 0) {
-            // console.log("table result dropped on ", resultIndex);
+            console.log("table result dropped on ", resultIndex);
             resultTableData._id = table.results[resultIndex]._id;
         }
         let entityToLink;

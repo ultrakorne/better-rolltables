@@ -3,7 +3,7 @@ import { BRTCONFIG } from './config.js';
 import { i18n } from './utils.js';
 import { BetterTables } from './better-tables.js';
 
-// CONFIG.debug.hooks = true;
+CONFIG.debug.hooks = true;
 
 Hooks.on("init", function () {
   Handlebars.registerHelper('ifeq', function (a, b, options) {

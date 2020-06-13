@@ -7,7 +7,9 @@
     "esmodules": [
         "./scripts/brt-main.js"
     ],
-    "styles": [],
+    "styles": [
+      "./styles/brt.css"
+    ],
     "packs": [
         {
           "name": "brt-loot",

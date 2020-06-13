@@ -10,26 +10,26 @@
     </select>
 </div>
 
-{{#ifeq better-rolltables.table-type "loot"}}
+{{#ifcontain better-rolltables.table-type "loot"}}
 <div class="form-group">
     <label>{{localize 'BRT.CurrencyLoot'}}</label>
     <input type="text" placeholder="{{localize 'BRT.CurrencyLootPlaceholder'}}" name="currency-input"
         value="{{better-rolltables.table-currency-string}}" {{#if disabled}}disabled{{/if}}>
 </div>
-{{/ifeq}}
+{{/ifcontain}}
 
-{{#ifeq better-rolltables.table-type "loot"}}
+{{#ifcontain better-rolltables.table-type "loot" "better"}}
 <div class="form-group">
     <label>{{localize 'BRT.LootRollAmount'}}</label>
     <input type="text" placeholder="{{localize 'BRT.LootRollAmountPlaceholder'}}" name="loot-rolls-amount-input"
         value="{{better-rolltables.loot-amount-key}}" {{#if disabled}}disabled{{/if}}>
 </div>
-{{/ifeq}}
+{{/ifcontain}}
 
-{{#ifeq better-rolltables.table-type "loot"}}
+{{#ifcontain better-rolltables.table-type "loot"}}
 <div class="form-group">
     <label>{{localize 'BRT.LootActorName'}}</label>
     <input type="text" placeholder="{{localize 'BRT.LootActorNamePlaceholder'}}" name="loot-name-input"
         value="{{better-rolltables.loot-actor-name}}" {{#if disabled}}disabled{{/if}}>
 </div>
-{{/ifeq}}
+{{/ifcontain}}

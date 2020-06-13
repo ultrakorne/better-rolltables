@@ -52,10 +52,14 @@ export class BetterRT {
                 const resultId = resultHTML.getAttribute("data-result-id");
                 if (resultId) {
 
-                    // console.log("resultId  ", resultId);
-                    const detailsHTML = resultHTML.getElementsByClassName("result-details")[0];
-                    // detailsHTML.classList.add("flexrow"); //adding a new input we need to make the row flex
+                    console.log("resultId  ", resultId);
+                    const tableResult = tableEntity.getEmbeddedEntity("TableResult", resultId);
+            
+                    console.log("tableResult  ", tableResult);
+                    // const formulaValue = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`);
+                    // console.log("formulaValue  ", formulaValue);
 
+                    const detailsHTML = resultHTML.getElementsByClassName("result-details")[0];
                     const inputsHTML = detailsHTML.getElementsByTagName("input");
                     // console.log("inputsHTML  ", inputsHTML);
                     for (let tableText of inputsHTML) {
@@ -66,7 +70,9 @@ export class BetterRT {
                             formulaInput.classList.add("result-brt-formula");
                             formulaInput.placeholder = "formula";
                             formulaInput.type = "text";
-                            formulaInput.name = `brt.${index}.formula`;
+                            formulaInput.value = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`);
+                            /** based on the name of the elents the value will be added in the preUpdateRollTable and override the table.data */
+                            formulaInput.name = `results.${index}.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
                             if (tableText.classList.contains("result-target")) {
                                 tableText.classList.add("result-target-short");
                             } else {
@@ -122,7 +128,6 @@ export class BetterRT {
         setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.LOOT_CURRENCY_KEY}`, updateData["currency-input"]);
         setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.ACTOR_NAME_KEY}`, updateData["loot-name-input"]);
         setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.ROLLS_AMOUNT_KEY}`, updateData["loot-rolls-amount-input"]);
-        // console.log("preUpdateRollTable updateData ", updateData);
     }
 
     static async showGenerateLootButton(htmlElement, tableEntity) {

@@ -30,4 +30,8 @@ export class BetterTables {
         storyChat.createChatCard(storyHtml);
         storyChat.createChatCard(storyGMHtml, { gmOnly: true });
     }
+
+    async betterTableRoll(tableEntity) {
+        console.log("Better roll clicked");
+    }
 }

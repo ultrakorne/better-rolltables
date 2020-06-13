@@ -40,79 +40,88 @@ export class BetterRT {
         const selectTypeElement = divElement.getElementsByTagName("select")[0];
         selectTypeElement.onchange = async function () { await BetterRT.onOptionTypeChanged(selectTypeElement.value, tableEntity); };
 
+
+        /** If we use default table, we stop here */
+        if (selectedTableType === BRTCONFIG.TABLE_TYPE_NONE) return;
+
         /**for every result, add an input field before the text to add a formula */
-        if (selectedTableType != BRTCONFIG.TABLE_TYPE_NONE) {
-            console.log("selectTypeElement ", selectTypeElement);
-            console.log("tableViewClass html ", tableViewClass);
-            const tableResultsHTML = tableViewClass.getElementsByClassName("table-result");
 
-            console.log("tableResultHTML  ", tableResultsHTML);
-            let index = 0;
-            for (let resultHTML of tableResultsHTML) {
-                const resultId = resultHTML.getAttribute("data-result-id");
-                if (resultId) {
+        console.log("selectTypeElement ", selectTypeElement);
+        console.log("tableViewClass html ", tableViewClass);
+        const tableResultsHTML = tableViewClass.getElementsByClassName("table-result");
 
-                    console.log("resultId  ", resultId);
-                    const tableResult = tableEntity.getEmbeddedEntity("TableResult", resultId);
-            
-                    console.log("tableResult  ", tableResult);
-                    // const formulaValue = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`);
-                    // console.log("formulaValue  ", formulaValue);
+        console.log("tableResultHTML  ", tableResultsHTML);
+        let index = 0;
+        for (let resultHTML of tableResultsHTML) {
+            const resultId = resultHTML.getAttribute("data-result-id");
+            if (resultId) {
 
-                    const detailsHTML = resultHTML.getElementsByClassName("result-details")[0];
-                    const inputsHTML = detailsHTML.getElementsByTagName("input");
-                    // console.log("inputsHTML  ", inputsHTML);
-                    for (let tableText of inputsHTML) {
-                        if (tableText.getAttribute("type") == "text") {
-                            /** tableText is for each row the text of the table */
+                console.log("resultId  ", resultId);
+                const tableResult = tableEntity.getEmbeddedEntity("TableResult", resultId);
 
-                            const formulaInput = document.createElement("input");
-                            formulaInput.classList.add("result-brt-formula");
-                            formulaInput.placeholder = "formula";
-                            formulaInput.type = "text";
-                            formulaInput.value = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`);
-                            /** based on the name of the elents the value will be added in the preUpdateRollTable and override the table.data */
-                            formulaInput.name = `results.${index}.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
-                            if (tableText.classList.contains("result-target")) {
-                                tableText.classList.add("result-target-short");
-                            } else {
-                                tableText.classList.add("result-target-mid");
-                            }
-                            detailsHTML.insertBefore(formulaInput, tableText);
-                            // console.log("tableText  ", tableText);
-                            break;
+                console.log("tableResult  ", tableResult);
+                // const formulaValue = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`);
+                // console.log("formulaValue  ", formulaValue);
+
+                const detailsHTML = resultHTML.getElementsByClassName("result-details")[0];
+                const inputsHTML = detailsHTML.getElementsByTagName("input");
+                // console.log("inputsHTML  ", inputsHTML);
+                for (let tableText of inputsHTML) {
+                    if (tableText.getAttribute("type") == "text") {
+                        /** tableText is for each row the text of the table */
+
+                        const formulaInput = document.createElement("input");
+                        formulaInput.classList.add("result-brt-formula");
+                        formulaInput.placeholder = "formula";
+                        formulaInput.type = "text";
+                        formulaInput.value = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`);
+                        /** based on the name of the elents the value will be added in the preUpdateRollTable and override the table.data */
+                        formulaInput.name = `results.${index}.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
+                        if (tableText.classList.contains("result-target")) {
+                            tableText.classList.add("result-target-short");
+                        } else {
+                            tableText.classList.add("result-target-mid");
                         }
+                        detailsHTML.insertBefore(formulaInput, tableText);
+                        // console.log("tableText  ", tableText);
+                        break;
                     }
-                    // console.log("detailsHTML  ", detailsHTML);
-
-                    index++;
                 }
+                // console.log("detailsHTML  ", detailsHTML);
 
+                index++;
             }
+
         }
 
-        //create generate loot button
-        if (selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) {
+        const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
+        const newRollButton = BetterRT.replaceRollButton(footer);
 
-            const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
-            const newRollButton = BetterRT.replaceRollButton(footer);
+        /** change footer with new click event on rolls */
+        switch (selectedTableType) {
+            case BRTCONFIG.TABLE_TYPE_LOOT:
+                newRollButton.getElementsByTagName("i")[0].className = "fas fa-gem";
+                newRollButton.onclick = async function () { await game.betterTables.generateChatLoot(tableEntity); };
 
-            newRollButton.getElementsByTagName("i")[0].className = "fas fa-gem";
-            newRollButton.onclick = async function () { await game.betterTables.generateChatLoot(tableEntity); };
+                /** Create additional Button to Generate Loot */
+                await BetterRT.showGenerateLootButton(footer, tableEntity);
 
-            /** Create additional Button to Generate Loot */
-            await BetterRT.showGenerateLootButton(footer, tableEntity);
+                /** Hide the element with displayRoll checkbox */
+                const inputElements = html[0].getElementsByTagName("input");
+                const displayRollElement = inputElements.namedItem("displayRoll").parentElement;
 
-            /** Hide the element with displayRoll checkbox */
-            const inputElements = html[0].getElementsByTagName("input");
-            const displayRollElement = inputElements.namedItem("displayRoll").parentElement;
+                displayRollElement.remove();
+                break;
+            case BRTCONFIG.TABLE_TYPE_STORY:
+                newRollButton.getElementsByTagName("i")[0].className = "fas fa-book";
+                newRollButton.onclick = async function () { await game.betterTables.generateChatStory(tableEntity); };
+                break;
 
-            displayRollElement.remove();
-        } else if (selectedTableType === BRTCONFIG.TABLE_TYPE_STORY) {
-            const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
-            const newRollButton = BetterRT.replaceRollButton(footer);
-            newRollButton.getElementsByTagName("i")[0].className = "fas fa-book";
-            newRollButton.onclick = async function () { await game.betterTables.generateChatStory(tableEntity); };
+            case BRTCONFIG.TABLE_TYPE_BETTER:
+                console.log("newRollButton", newRollButton);
+                newRollButton.getElementsByTagName("i")[0].className = "fas fa-dice";
+                newRollButton.onclick = async function () { await game.betterTables.betterTableRoll(tableEntity); };
+                break;
         }
     }
 

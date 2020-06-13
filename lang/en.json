@@ -1,6 +1,7 @@
 {
     "BRT.TypeLabel": "Better Table Type",
     "BRT.TypeDefault": "Default Table",
+    "BRT.BetterTable": "Better Table",
     "BRT.TypeLoot": "Loot Table",
     "BRT.StoryLoot": "Story Table",
     "BRT.CurrencyLoot": "Currency Loot",

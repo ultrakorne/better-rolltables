@@ -1,6 +1,6 @@
 import { BetterRT } from './better-table-view.js';
-import { BRTCONFIG } from './config.js';
-import { i18n } from './utils.js';
+import { BRTCONFIG } from './core/config.js';
+import { i18n } from './core/utils.js';
 import { BetterTables } from './better-tables.js';
 
 CONFIG.debug.hooks = true;

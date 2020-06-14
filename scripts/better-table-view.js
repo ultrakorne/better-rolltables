@@ -1,6 +1,5 @@
-import { i18n } from './utils.js';
-import { BRTCONFIG } from './config.js';
-import { BetterTables } from './better-tables.js';
+import { i18n } from './core/utils.js';
+import { BRTCONFIG } from './core/config.js';
 import { dropEventOnTable } from './core/brt-helper.js';
 
 export class BetterRT {
@@ -74,7 +73,7 @@ export class BetterRT {
                         formulaInput.classList.add("result-brt-formula");
                         formulaInput.placeholder = "formula";
                         formulaInput.type = "text";
-                        formulaInput.value = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`);
+                        formulaInput.value = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
                         /** based on the name of the elents the value will be added in the preUpdateRollTable and override the table.data */
                         formulaInput.name = `results.${index}.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
                         if (tableText.classList.contains("result-target")) {
@@ -118,8 +117,9 @@ export class BetterRT {
                 break;
 
             case BRTCONFIG.TABLE_TYPE_BETTER:
-                console.log("newRollButton", newRollButton);
-                newRollButton.getElementsByTagName("i")[0].className = "fas fa-dice";
+                console.log("newRollButton", newRollButton.innerHTML);
+                // newRollButton.getElementsByTagName("i")[0].className = "fas fa-dice";
+                newRollButton.innerHTML = `<i class ="fas fa-dice-d20"></i> Roll+`;
                 newRollButton.onclick = async function () { await game.betterTables.betterTableRoll(tableEntity); };
                 break;
         }

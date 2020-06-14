@@ -1,4 +1,4 @@
-import { addRollModeToChatData } from '../utils.js';
+import { addRollModeToChatData } from '../core/utils.js';
 
 export class StoryChatCard {
     constructor(tableEntity) {

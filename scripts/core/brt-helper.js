@@ -1,3 +1,5 @@
+import { BRTCONFIG } from './config.js';
+
 /**
  * when dropping a link entity on a rolltable if the drop is a tableResult, we assign the dropped entity to that result table.
  * If the drop happens in another part of the tableview we create a new table result 
@@ -108,4 +110,21 @@ export async function dropEventOnTable(event, table) {
         }
         table.createEmbeddedEntity("TableResult", resultTableData);
     }
+}
+
+export function tryRoll(rollFormula) {
+    try {
+        return new Roll(rollFormula).roll().total || 1;
+    } catch (error) {
+        return 1;
+    }
+}
+
+/**
+ * we can provide a formula on how many times we roll on the table.
+ * @returns {Number} how many times to roll on this table
+ */
+export function rollsAmount(table) {
+    const rollFormula = table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLLS_AMOUNT_KEY);
+    return tryRoll(rollFormula);
 }

@@ -45,8 +45,8 @@ export class BetterRT {
 
         /**for every result, add an input field before the text to add a formula */
 
-        console.log("selectTypeElement ", selectTypeElement);
-        console.log("tableViewClass html ", tableViewClass);
+        // console.log("selectTypeElement ", selectTypeElement);
+        // console.log("tableViewClass html ", tableViewClass);
         const tableResultsHTML = tableViewClass.getElementsByClassName("table-result");
 
         console.log("tableResultHTML  ", tableResultsHTML);
@@ -55,11 +55,10 @@ export class BetterRT {
             const resultId = resultHTML.getAttribute("data-result-id");
             if (resultId) {
 
-                console.log("resultId  ", resultId);
-                const tableResult = tableEntity.getEmbeddedEntity("TableResult", resultId);
+                // console.log("resultId  ", resultId);
+                const tableResult = tableEntity.getTableResult(resultId);
 
-                console.log("tableResult  ", tableResult);
-                // const formulaValue = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`);
+                // console.log("tableResult  ", tableResult);
                 // console.log("formulaValue  ", formulaValue);
 
                 const detailsHTML = resultHTML.getElementsByClassName("result-details")[0];

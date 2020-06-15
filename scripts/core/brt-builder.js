@@ -16,10 +16,16 @@ export class BRTBuilder {
         return this.results;
     }
 
-    async rollManyOnTable(amount, table) {
-        let drawnResults = [];
-        while (amount > 0) {
+    async rollManyOnTable(amount, table, { _depth = 0 } = {}) {
 
+        // Prevent infinite recursion
+        if (_depth > 5) {
+            throw new Error(`Recursion depth exceeded when attempting to draw from RollTable ${table._id}`);
+        }
+
+        let drawnResults = [];
+
+        while (amount > 0) {
             let resultToDraw = amount;
             /** if we draw without replacement we need to reset the table once all entries are drawn */
             if (!table.data.replacement) {
@@ -43,20 +49,21 @@ export class BRTBuilder {
             for (const entry of draw.results) {
                 const formulaAmount = getProperty(entry, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
                 const entryAmount = BRTHelper.tryRoll(formulaAmount);
-                for (let i = 0; i < entryAmount; i++) {
-                    drawnResults.push(entry);
+                if (entry.type === CONST.TABLE_RESULT_TYPES.ENTITY && entry.collection === "RollTable") {
+                    const innerTable = game.tables.get(entry.resultId);
+                    if (innerTable) {
+                        let innerResults = await this.rollManyOnTable(entryAmount, innerTable, { _depth: _depth + 1 });
+                        drawnResults = drawnResults.concat(innerResults);
+                    }
+                    //TODO draw from compendium rolltables recursively
+                } else {
+                    for (let i = 0; i < entryAmount; i++) {
+                        drawnResults.push(entry);
+                    }
                 }
             }
-
             amount -= resultToDraw;
-            // console.log("draw roll : ", draw);
-
-
         }
-
-        // for (const entry of drawnResults.results) {
-        //     // await this.processTableEntry(entry);
-        // }
 
         console.log("drawnResults", drawnResults);
         return drawnResults;

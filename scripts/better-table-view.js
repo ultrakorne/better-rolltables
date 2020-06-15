@@ -72,13 +72,17 @@ export class BetterRT {
                         formulaInput.classList.add("result-brt-formula");
                         formulaInput.placeholder = "formula";
                         formulaInput.type = "text";
-                        formulaInput.value = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
+                        
                         /** based on the name of the elents the value will be added in the preUpdateRollTable and override the table.data */
                         formulaInput.name = `results.${index}.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
                         if (tableText.classList.contains("result-target")) {
+                            formulaInput.value = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
                             tableText.classList.add("result-target-short");
-                        } else {
-                            tableText.classList.add("result-target-mid");
+                        } else { 
+                            /** text type result, we disable the formula field for text */
+                            formulaInput.value = "";
+                            formulaInput.hidden = true;
+                            // tableText.classList.add("result-target-mid");
                         }
                         detailsHTML.insertBefore(formulaInput, tableText);
                         // console.log("tableText  ", tableText);

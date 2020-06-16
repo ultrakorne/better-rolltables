@@ -7,34 +7,29 @@ export class BetterRT {
         const tableClassName = rollTable.cssClass;// "editable";
         const tableEntity = rollTableConfig.object;
         const selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE;
-        let tableViewClass = html[0].getElementsByClassName(tableClassName)[0];
 
-        //re-renders, without this the view has a scroll bar and its not sized correctly
-        if (tableViewClass) {
-            /**
-             * height size increase by type: 
-             * default 28
-             * better 55
-             * loot 80
-             * story 28
-             */
-            let addHeight = 0;
-            if(selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) addHeight = 80;
-            else addHeight = 28;
-            
-            const match = html[0].style.height.match(/\d+/);
-            const height = match[0];
-            html[0].style.height = (+height + addHeight) + "px";
-        }
+        console.log("html ", html);
+        const tableElement = document.getElementById(`app-${rollTableConfig.appId}`);
+        let tableViewClass = tableElement.getElementsByClassName(tableClassName)[0];
+        console.log("tableElement ", tableElement);
+        console.log("tableViewClass html ", tableViewClass);
 
-        if (!tableViewClass) { //when the table is updated, the html is different
-            if (html[0].getAttribute("class") === tableClassName) {
-                tableViewClass = html[0];
-            } else {
-                console.log(`cannot find table class element ${tableClassName}`);
-            }
+
+        /** height size increase by type: */
+        let addHeight = 0;
+        switch (selectedTableType) {
+            case BRTCONFIG.TABLE_TYPE_LOOT:
+                addHeight = 80;
+                break;
+            case BRTCONFIG.TABLE_TYPE_BETTER:
+                addHeight = 55;
+                break;
+            default:
+                addHeight = 28;
         }
-        // console.log("tableViewClass html ", tableViewClass);
+        const match = tableElement.style.height.match(/\d+/);
+        const height = match[0];
+        tableElement.style.height = (+height + addHeight) + "px";
 
         let divElement = document.createElement("div");
         let brtData = duplicate(tableEntity.data.flags);
@@ -84,13 +79,13 @@ export class BetterRT {
                         formulaInput.classList.add("result-brt-formula");
                         formulaInput.placeholder = "formula";
                         formulaInput.type = "text";
-                        
+
                         /** based on the name of the elents the value will be added in the preUpdateRollTable and override the table.data */
                         formulaInput.name = `results.${index}.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
                         if (tableText.classList.contains("result-target")) {
                             formulaInput.value = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
                             tableText.classList.add("result-target-short");
-                        } else { 
+                        } else {
                             /** text type result, we disable the formula field for text */
                             formulaInput.value = "";
                             formulaInput.hidden = true;

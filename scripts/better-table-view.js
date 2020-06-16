@@ -11,8 +11,20 @@ export class BetterRT {
 
         //re-renders, without this the view has a scroll bar and its not sized correctly
         if (tableViewClass) {
-            html[0].style.display = 'none';
-            html[0].style.display = 'block';
+            /**
+             * height size increase by type: 
+             * default 28
+             * better 55
+             * loot 80
+             * story 28
+             */
+            let addHeight = 0;
+            if(selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) addHeight = 80;
+            else addHeight = 28;
+            
+            const match = html[0].style.height.match(/\d+/);
+            const height = match[0];
+            html[0].style.height = (+height + addHeight) + "px";
         }
 
         if (!tableViewClass) { //when the table is updated, the html is different

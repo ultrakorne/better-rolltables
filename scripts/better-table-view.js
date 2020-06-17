@@ -9,34 +9,21 @@ export class BetterRT {
         const tableEntity = rollTableConfig.object;
         const selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE;
 
-        let tableViewClass = html[0].getElementsByClassName(tableClassName)[0];
+        const tableElement = document.getElementById(`app-${rollTableConfig.appId}`);
+        let tableViewClass = tableElement.getElementsByClassName(tableClassName)[0];
 
-        //re-renders, without this the view has a scroll bar and its not sized correctly
-        if (tableViewClass) {
-            /**
-             * height size increase by type: 
-             * default 28
-             * better 55
-             * loot 80
-             * story 28
-             */
-            let addHeight = 0;
-            if(selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) addHeight = 80;
-            else addHeight = 28;
-            
-            const match = html[0].style.height.match(/\d+/);
-            const height = match[0];
-            html[0].style.height = (+height + addHeight) + "px";
+        /** height size increase by type: */
+        let addHeight = 0;
+        switch (selectedTableType) {
+            case BRTCONFIG.TABLE_TYPE_LOOT:
+                addHeight = 80;
+                break;
+            default:
+                addHeight = 28;
         }
-
-        if (!tableViewClass) { //when the table is updated, the html is different
-            if (html[0].getAttribute("class") === tableClassName) {
-                tableViewClass = html[0];
-            } else {
-                console.log(`cannot find table class element ${tableClassName}`);
-            }
-        }
-        // console.log("tableViewClass html ", tableViewClass);
+        const match = tableElement.style.height.match(/\d+/);
+        const height = match[0];
+        tableElement.style.height = (+height + addHeight) + "px";
 
         let divElement = document.createElement("div");
         let brtData = duplicate(tableEntity.data.flags);

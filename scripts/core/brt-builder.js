@@ -1,4 +1,5 @@
 import * as BRTHelper from './brt-helper.js';
+import * as Utils from '../core/utils.js';
 import { ResultsData } from './results-data.js';
 import { drawMany } from './brt-api-changes.js';
 import { BRTCONFIG } from './config.js';
@@ -9,10 +10,11 @@ export class BRTBuilder {
         this.table = tableEntity;
         this.results = new ResultsData();
     }
+
     async betterRoll() {
-        console.log("better roll");
+        this.mainRoll = undefined;
         const tableResults = await this.rollManyOnTable(BRTHelper.rollsAmount(this.table), this.table);
-        await this.table.toMessage(tableResults);
+        await this.table.toMessage(tableResults, { roll: this.mainRoll });
         return this.results;
     }
 
@@ -45,18 +47,33 @@ export class BRTBuilder {
             }
             //change the implementation of drawMany with a patched version that can disable recursion on innerTables
             table.drawMany = drawMany;
+            console.log("table to draw  ", table);
             const draw = await table.drawMany(resultToDraw, { displayChat: false, expandInnerTables: false });
+            if (!this.mainRoll) {
+                this.mainRoll = draw.roll;
+            }
+            console.log("DRAW ", draw);
             for (const entry of draw.results) {
                 const formulaAmount = getProperty(entry, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
                 const entryAmount = BRTHelper.tryRoll(formulaAmount);
+
+                let innerTable;
                 if (entry.type === CONST.TABLE_RESULT_TYPES.ENTITY && entry.collection === "RollTable") {
-                    const innerTable = game.tables.get(entry.resultId);
-                    if (innerTable) {
-                        let innerResults = await this.rollManyOnTable(entryAmount, innerTable, { _depth: _depth + 1 });
-                        drawnResults = drawnResults.concat(innerResults);
+                    innerTable = game.tables.get(entry.resultId);
+                } else if (entry.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM) {
+                    const entityInCompendium = await Utils.findInCompendiumByName(entry.collection, entry.text);
+                    console.log("entityInCompendium", entityInCompendium);
+                    if (entityInCompendium.entity === "RollTable") {
+                        innerTable = entityInCompendium;
                     }
-                    //TODO draw from compendium rolltables recursively
-                } else {
+                }
+
+                if (innerTable) {
+                    let innerResults = await this.rollManyOnTable(entryAmount, innerTable, { _depth: _depth + 1 });
+                    console.log("innerResults ", innerResults);
+                    drawnResults = drawnResults.concat(innerResults);
+                }
+                else {
                     for (let i = 0; i < entryAmount; i++) {
                         drawnResults.push(entry);
                     }
@@ -65,7 +82,7 @@ export class BRTBuilder {
             amount -= resultToDraw;
         }
 
-        console.log("drawnResults", drawnResults);
+
         return drawnResults;
     }
 }

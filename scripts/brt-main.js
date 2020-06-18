@@ -3,7 +3,7 @@ import { BRTCONFIG } from './core/config.js';
 import { i18n } from './core/utils.js';
 import { BetterTables } from './better-tables.js';
 
-CONFIG.debug.hooks = true;
+// CONFIG.debug.hooks = true;
 
 Hooks.on("init", function () {
   /** checks if the first argument is equal to any of the subsequent arguments */

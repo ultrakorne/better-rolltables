@@ -8,12 +8,8 @@ export class BetterRT {
         const tableEntity = rollTableConfig.object;
         const selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE;
 
-        console.log("html ", html);
         const tableElement = document.getElementById(`app-${rollTableConfig.appId}`);
         let tableViewClass = tableElement.getElementsByClassName(tableClassName)[0];
-        console.log("tableElement ", tableElement);
-        console.log("tableViewClass html ", tableViewClass);
-
 
         /** height size increase by type: */
         let addHeight = 0;
@@ -51,56 +47,8 @@ export class BetterRT {
         if (selectedTableType === BRTCONFIG.TABLE_TYPE_NONE) return;
 
         /**for every result, add an input field before the text to add a formula */
-
-        // console.log("selectTypeElement ", selectTypeElement);
-        // console.log("tableViewClass html ", tableViewClass);
-        const tableResultsHTML = tableViewClass.getElementsByClassName("table-result");
-
-        console.log("tableResultHTML  ", tableResultsHTML);
-        let index = 0;
-        for (let resultHTML of tableResultsHTML) {
-            const resultId = resultHTML.getAttribute("data-result-id");
-            if (resultId) {
-
-                // console.log("resultId  ", resultId);
-                const tableResult = tableEntity.getTableResult(resultId);
-
-                // console.log("tableResult  ", tableResult);
-                // console.log("formulaValue  ", formulaValue);
-
-                const detailsHTML = resultHTML.getElementsByClassName("result-details")[0];
-                const inputsHTML = detailsHTML.getElementsByTagName("input");
-                // console.log("inputsHTML  ", inputsHTML);
-                for (let tableText of inputsHTML) {
-                    if (tableText.getAttribute("type") == "text") {
-                        /** tableText is for each row the text of the table */
-
-                        const formulaInput = document.createElement("input");
-                        formulaInput.classList.add("result-brt-formula");
-                        formulaInput.placeholder = "formula";
-                        formulaInput.type = "text";
-
-                        /** based on the name of the elents the value will be added in the preUpdateRollTable and override the table.data */
-                        formulaInput.name = `results.${index}.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
-                        if (tableText.classList.contains("result-target")) {
-                            formulaInput.value = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
-                            tableText.classList.add("result-target-short");
-                        } else {
-                            /** text type result, we disable the formula field for text */
-                            formulaInput.value = "";
-                            formulaInput.hidden = true;
-                            // tableText.classList.add("result-target-mid");
-                        }
-                        detailsHTML.insertBefore(formulaInput, tableText);
-                        // console.log("tableText  ", tableText);
-                        break;
-                    }
-                }
-                // console.log("detailsHTML  ", detailsHTML);
-
-                index++;
-            }
-
+        if (selectedTableType === BRTCONFIG.TABLE_TYPE_BETTER) {
+            BetterRT.ShowFormulaField(tableViewClass, tableEntity);
         }
 
         const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
@@ -125,13 +73,52 @@ export class BetterRT {
                 newRollButton.getElementsByTagName("i")[0].className = "fas fa-book";
                 newRollButton.onclick = async function () { await game.betterTables.generateChatStory(tableEntity); };
                 break;
-
             case BRTCONFIG.TABLE_TYPE_BETTER:
-                console.log("newRollButton", newRollButton.innerHTML);
                 // newRollButton.getElementsByTagName("i")[0].className = "fas fa-dice";
                 newRollButton.innerHTML = `<i class ="fas fa-dice-d20"></i> Roll+`;
                 newRollButton.onclick = async function () { await game.betterTables.betterTableRoll(tableEntity); };
                 break;
+        }
+    }
+
+    /**
+     * Injecting for each result row (beside a text result) a field formula to roll multiple times on multiple row table
+     */
+    static ShowFormulaField(tableViewClass, tableEntity) {
+        const tableResultsHTML = tableViewClass.getElementsByClassName("table-result");
+        let index = 0;
+        for (let resultHTML of tableResultsHTML) {
+            const resultId = resultHTML.getAttribute("data-result-id");
+            if (resultId) {
+                const tableResult = tableEntity.getTableResult(resultId);
+                const detailsHTML = resultHTML.getElementsByClassName("result-details")[0];
+                const inputsHTML = detailsHTML.getElementsByTagName("input");
+
+                for (let tableText of inputsHTML) {
+                    if (tableText.getAttribute("type") == "text") {
+                        /** tableText is for each row the text of the table */
+                        const formulaInput = document.createElement("input");
+                        formulaInput.classList.add("result-brt-formula");
+                        formulaInput.placeholder = "formula";
+                        formulaInput.type = "text";
+
+                        /** based on the name of the elents the value will be added in the preUpdateRollTable and override the table.data */
+                        formulaInput.name = `results.${index}.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
+                        if (tableText.classList.contains("result-target")) {
+                            formulaInput.value = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
+                            tableText.classList.add("result-target-short");
+                        } else {
+                            /** text type result, we disable the formula field for text */
+                            formulaInput.value = "";
+                            formulaInput.hidden = true;
+                            // tableText.classList.add("result-target-mid");
+                        }
+                        detailsHTML.insertBefore(formulaInput, tableText);
+                        break;
+                    }
+                }
+                index++;
+            }
         }
     }
 

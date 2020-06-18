@@ -30,7 +30,7 @@ export async function drawMany(number, { roll = null, displayChat = true, rollMo
     roll._rolled = true;
 
     // Commit results as drawn
-    if (updates.length) {
+    if (updates.length && !this.compendium) {
         await this.updateEmbeddedEntity("TableResult", updates, { diff: false });
     }
 

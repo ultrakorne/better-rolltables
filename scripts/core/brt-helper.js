@@ -15,14 +15,8 @@ export async function dropEventOnTable(event, table) {
         console.log("no entity dropped");
         return;
     }
-    // console.log("DATA ", data);
-    // console.log("TABLE ", table);
 
     const targetName = event.target.name;
-
-    console.log("targetName ", targetName);
-    // const elements = event.target.form.elements;
-    // const namedItem = elements.namedItem(targetName);
 
     let resultIndex = -1;
     /** dropping on a table result line the target will be results.2.type, results.2.collection, results.2.text*/
@@ -40,7 +34,6 @@ export async function dropEventOnTable(event, table) {
 
     let resultTableData = {};
     if (resultIndex >= 0) {
-        console.log("table result dropped on ", resultIndex);
         resultTableData._id = table.results[resultIndex]._id;
     }
     let entityToLink;

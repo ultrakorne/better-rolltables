@@ -47,12 +47,11 @@ export class BRTBuilder {
             }
             //change the implementation of drawMany with a patched version that can disable recursion on innerTables
             table.drawMany = drawMany;
-            console.log("table to draw  ", table);
             const draw = await table.drawMany(resultToDraw, { displayChat: false, expandInnerTables: false });
             if (!this.mainRoll) {
                 this.mainRoll = draw.roll;
             }
-            console.log("DRAW ", draw);
+
             for (const entry of draw.results) {
                 const formulaAmount = getProperty(entry, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
                 const entryAmount = BRTHelper.tryRoll(formulaAmount);
@@ -62,7 +61,6 @@ export class BRTBuilder {
                     innerTable = game.tables.get(entry.resultId);
                 } else if (entry.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM) {
                     const entityInCompendium = await Utils.findInCompendiumByName(entry.collection, entry.text);
-                    console.log("entityInCompendium", entityInCompendium);
                     if (entityInCompendium.entity === "RollTable") {
                         innerTable = entityInCompendium;
                     }
@@ -70,7 +68,6 @@ export class BRTBuilder {
 
                 if (innerTable) {
                     let innerResults = await this.rollManyOnTable(entryAmount, innerTable, { _depth: _depth + 1 });
-                    console.log("innerResults ", innerResults);
                     drawnResults = drawnResults.concat(innerResults);
                 }
                 else {

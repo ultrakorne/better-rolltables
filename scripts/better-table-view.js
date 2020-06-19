@@ -48,7 +48,7 @@ export class BetterRT {
 
         /**for every result, add an input field before the text to add a formula */
         if (selectedTableType === BRTCONFIG.TABLE_TYPE_BETTER) {
-            BetterRT.ShowFormulaField(tableViewClass, tableEntity);
+            BetterRT.ShowFormulaField(tableViewClass, tableEntity, rollTable.editable);
         }
 
         const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
@@ -84,7 +84,7 @@ export class BetterRT {
     /**
      * Injecting for each result row (beside a text result) a field formula to roll multiple times on multiple row table
      */
-    static ShowFormulaField(tableViewClass, tableEntity) {
+    static ShowFormulaField(tableViewClass, tableEntity, editable) {
         const tableResultsHTML = tableViewClass.getElementsByClassName("table-result");
         let index = 0;
         for (let resultHTML of tableResultsHTML) {
@@ -101,7 +101,7 @@ export class BetterRT {
                         formulaInput.classList.add("result-brt-formula");
                         formulaInput.placeholder = "formula";
                         formulaInput.type = "text";
-
+                        formulaInput.disabled = !editable;
                         /** based on the name of the elents the value will be added in the preUpdateRollTable and override the table.data */
                         formulaInput.name = `results.${index}.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
                         if (tableText.classList.contains("result-target")) {

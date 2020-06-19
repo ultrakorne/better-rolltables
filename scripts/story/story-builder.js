@@ -1,5 +1,5 @@
 import { StoryBoolCondition } from './story-bool-condition.js';
-import * as Utils from '../utils.js';
+import * as Utils from '../core/utils.js';
 
 export class StoryBuilder {
 

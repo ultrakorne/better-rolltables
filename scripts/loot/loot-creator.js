@@ -1,4 +1,4 @@
-import { BRTCONFIG } from './config.js';
+import { BRTCONFIG } from '../core/config.js';
 
 /**
  * create actor and items based on the content of the object LootData

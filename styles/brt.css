@@ -1,0 +1,33 @@
+/* for type entity or compendium, we need to make space for the new field formula so making the text field a bit shorter */
+
+.roll-table-config ol.table-results .table-result .result-details .result-target-short {
+  width: 43%;
+  margin-left: 3px;
+}
+
+/* the new text field display formula added for every row result */
+
+.roll-table-config ol.table-results .table-result .result-details .result-brt-formula {
+  width: 14%;
+  margin-left: 3px;
+}
+
+.roll-table-config ol.table-results .table-result .result-details .result-brt-formula::placeholder {
+  font-size: 12px;
+}
+.roll-table-config ol.table-results .table-result .result-details .result-brt-formula::-webkit-input-placeholder {
+  font-size: 12px;
+}
+.roll-table-config ol.table-results .table-result .result-details .result-brt-formula::-moz-placeholder {
+  font-size: 12px;
+}
+.roll-table-config ol.table-results .table-result .result-details .result-brt-formula:-ms-input-placeholder {
+  font-size: 12px;
+}
+
+/* used for the table result type text, where the text field was full size, we need to make it smaller to be able to display the result-brt-formula */
+
+.roll-table-config ol.table-results .table-result .result-details .result-target-mid {
+  width: 84%;
+  margin-left: 3px;
+}

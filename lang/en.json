@@ -1,6 +1,7 @@
 {
     "BRT.TypeLabel": "Better Table Type",
     "BRT.TypeDefault": "Default Table",
+    "BRT.BetterTable": "Better Table",
     "BRT.TypeLoot": "Loot Table",
     "BRT.StoryLoot": "Story Table",
     "BRT.CurrencyLoot": "Currency Loot",
@@ -14,7 +15,7 @@
     "BRT.Settings.SpellCompendium.Title": "Spell compendium to use for Random scrolls",
     "BRT.Settings.SpellCompendium.Description": "You can specify a spell compendium and when a scroll is picked from a loot table (they need to have a specific name) a random spell is rolled from this compendium",
     "BRT.LootRollAmount": "Amount of Rolls",
-    "BRT.LootRollAmountPlaceholder" : "Roll the entire table multiple times (add a formula)",
+    "BRT.LootRollAmountPlaceholder" : "Roll the entire table multiple times",
     "BRT.DrawResultPlural": "Draws {amount} results from {name}",
     "BRT.DrawResultSingular": "Draw {amount} result from {name}",
     "BRT.DrawResultZero": "Rolling on {name}"

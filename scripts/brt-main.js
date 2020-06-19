@@ -1,18 +1,21 @@
 import { BetterRT } from './better-table-view.js';
-import { BRTCONFIG } from './config.js';
-import { i18n } from './utils.js';
+import { BRTCONFIG } from './core/config.js';
+import { i18n } from './core/utils.js';
 import { BetterTables } from './better-tables.js';
 
 // CONFIG.debug.hooks = true;
 
 Hooks.on("init", function () {
-  Handlebars.registerHelper('ifeq', function (a, b, options) {
-    if (a == b) { return options.fn(this); }
+  /** checks if the first argument is equal to any of the subsequent arguments */
+  Handlebars.registerHelper('ifcontain', function () {
+    let options = arguments[arguments.length - 1];
+    for (let i = 1; i < arguments.length - 1; i++) {
+      if (arguments[0] == arguments[i]) { return options.fn(this); }
+    }
     return options.inverse(this);
   });
 
   registerSettings();
-
   game.betterTables = new BetterTables();
 });
 

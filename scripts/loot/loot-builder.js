@@ -1,7 +1,8 @@
-import { BRTCONFIG } from './config.js';
+import { BRTCONFIG } from '../core/config.js';
 import { LootData } from './loot-item.js';
-import { findInCompendiumByName } from './utils.js';
-import { separateIdComendiumName } from './utils.js';
+import * as Utils from '../core/utils.js';
+import * as BRTHelper from '../core/brt-helper.js';
+
 /**
  * This class build a LootData object based on the tableEntity
  * call generateLoot() to return the created LootData object
@@ -23,8 +24,7 @@ export class LootBuilder {
         const currenciesToAdd = this.generateCurrency(currencyString);
         this.loot.addCurrency(currenciesToAdd);
 
-        await this.rollManyOnTable(this.tableRollsAmount(), this.table);
-
+        await this.rollManyOnTable(BRTHelper.rollsAmount(this.table), this.table);
         return this.loot;
     }
 
@@ -51,6 +51,11 @@ export class LootBuilder {
 
                 resultToDraw = Math.min(resultsLeft, amount);
             }
+
+            if(!table.data.formula) {
+                ui.notifications.error(`Roll table formula in table ${table.name} is not defined!`);
+                return;
+            }
             const draw = await table.drawMany(resultToDraw, { displayChat: false });
             amount -= resultToDraw;
             // console.log("draw roll ", draw);
@@ -61,27 +66,11 @@ export class LootBuilder {
         }
     }
 
-    tryToRollString(textWithRollFormula) {
-        try {
-            return new Roll(textWithRollFormula).roll().total || 1;
-        } catch (error) {
-            return 1;
-        }
-    }
-
     /**
      * @returns {string} the name of the actor to which to add the loot. if this is empty or undefined a new actor will be created instead of adding to an existing one
      */
     actorName() {
         return this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ACTOR_NAME_KEY);
-    }
-    /**
-     * we can provide a formula on how many times we roll on the table.
-     * @returns {Number} how many times to roll on this table
-     */
-    tableRollsAmount() {
-        const rollFormula = this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLLS_AMOUNT_KEY);
-        return this.tryToRollString(rollFormula);
     }
 
     /**
@@ -100,7 +89,7 @@ export class LootBuilder {
                 }
                 const rollFormula = match[1];
                 const currencyString = match[2];
-                const amount = this.tryToRollString(rollFormula);
+                const amount = BRTHelper.tryRoll(rollFormula);
                 currenciesToAdd[currencyString] = (currenciesToAdd[currencyString] || 0) + amount;
             }
         }
@@ -177,14 +166,14 @@ export class LootBuilder {
 
         const rollFormula = match[1];
 
-        const out = separateIdComendiumName(match[2]);
+        const out = Utils.separateIdComendiumName(match[2]);
         const tableName = out.nameOrId;
         const tableCompendiumName = out.compendiumName;
 
         let table;
         /**table is inside a compendium , syntax is [comp.endium.name.Table name]*/
         if (tableCompendiumName) {
-            table = await findInCompendiumByName(tableCompendiumName, tableName);
+            table = await Utils.findInCompendiumByName(tableCompendiumName, tableName);
         } else {
             table = game.tables.getName(tableName);
         }
@@ -194,7 +183,7 @@ export class LootBuilder {
             return; 
         }
 
-        let numberItems = this.tryToRollString(rollFormula);
+        let numberItems = BRTHelper.tryRoll(rollFormula);
         this.rollManyOnTable(numberItems, table);
     }
 

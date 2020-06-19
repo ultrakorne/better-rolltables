@@ -6,8 +6,11 @@ BRTCONFIG.TABLE_TYPE_KEY = "table-type";
 BRTCONFIG.LOOT_CURRENCY_KEY = "table-currency-string";
 BRTCONFIG.ROLLS_AMOUNT_KEY = "loot-amount-key";
 BRTCONFIG.ACTOR_NAME_KEY = "loot-actor-name";
+BRTCONFIG.RESULTS_FORMULA_KEY = "brt-result-formula";
+
 //different type of table type the mod will support. none will basically keep the basic rolltable functionality
 BRTCONFIG.TABLE_TYPE_NONE = "none";
+BRTCONFIG.TABLE_TYPE_BETTER = "better";
 BRTCONFIG.TABLE_TYPE_LOOT = "loot";
 BRTCONFIG.TABLE_TYPE_STORY = "story";
 

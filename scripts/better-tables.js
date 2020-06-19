@@ -1,8 +1,9 @@
-import { LootCreator } from './loot-creator.js';
-import { LootBuilder } from './loot-builder.js'
-import { LootChatCard } from './loot-chat-card.js';
+import { LootCreator } from './loot/loot-creator.js';
+import { LootBuilder } from './loot/loot-builder.js'
+import { LootChatCard } from './loot/loot-chat-card.js';
 import { StoryBuilder } from './story/story-builder.js';
 import { StoryChatCard } from './story/story-chat-card.js';
+import { BRTBuilder } from './core/brt-builder.js';
 
 export class BetterTables {
     async generateLoot(tableEntity) {
@@ -29,5 +30,10 @@ export class BetterTables {
         const storyChat = new StoryChatCard(tableEntity);
         storyChat.createChatCard(storyHtml);
         storyChat.createChatCard(storyGMHtml, { gmOnly: true });
+    }
+
+    async betterTableRoll(tableEntity) {
+        const brtBuilder = new BRTBuilder(tableEntity);
+        await brtBuilder.betterRoll();
     }
 }

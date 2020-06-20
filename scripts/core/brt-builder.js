@@ -77,6 +77,9 @@ export class BRTBuilder {
                 }
             }
             amount -= resultToDraw;
+            
+            delete table.drawMany;
+            delete table.roll;
         }
 
 

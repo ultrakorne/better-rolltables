@@ -34,21 +34,16 @@ export class LootBuilder {
      * @param {RollTable} table table to roll on
      */
     async rollManyOnTable(amount, table) {
-        // console.log("table ", table);
-
-        for (let i = 0; i < 50 && amount > 0; i++) {
-
+        while (amount > 0) {
             let resultToDraw = amount;
             /** if we draw without replacement we need to reset the table once all entries are drawn */
             if (!table.data.replacement) {
                 const resultsLeft = table.data.results.reduce(function (n, r) { return n + (!r.drawn) }, 0);
                 // console.log("tableRes ", resultsLeft);
-
                 if (resultsLeft === 0) {
                     await table.reset();
                     continue;
                 }
-
                 resultToDraw = Math.min(resultsLeft, amount);
             }
 
@@ -58,7 +53,6 @@ export class LootBuilder {
             }
             const draw = await table.drawMany(resultToDraw, { displayChat: false });
             amount -= resultToDraw;
-            // console.log("draw roll ", draw);
 
             for (const entry of draw.results) {
                 await this.processTableEntry(entry);
@@ -118,6 +112,7 @@ export class LootBuilder {
      * @param {String} img the image path assigned to the text table Entry selected
      */
     async processTextTableEntry(complexText, img) {
+
         /**extract currency first */
         complexText = this.processTextAsCurrency(complexText);
 
@@ -148,6 +143,7 @@ export class LootBuilder {
                 commands.push({ "command": matches[2], "arg": matches[3] });
             }
         }
+
 
         if (commands.length > 0 || compendiumName) {
             this.loot.createLootTextItem(itemName, commands, img, compendiumName);
@@ -184,7 +180,7 @@ export class LootBuilder {
         }
 
         let numberItems = BRTHelper.tryRoll(rollFormula);
-        this.rollManyOnTable(numberItems, table);
+        await this.rollManyOnTable(numberItems, table);
     }
 
     /** Currency is defined as a text entry in the table inside { } , the format inside brackets it's the same as the global currency set

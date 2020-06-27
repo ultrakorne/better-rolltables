@@ -2,10 +2,12 @@ import { BetterRT } from './better-table-view.js';
 import { BRTCONFIG } from './core/config.js';
 import { i18n } from './core/utils.js';
 import { BetterTables } from './better-tables.js';
+import VersionCheck from './versioning/version-check.mjs';
+import renderWelcomeScreen from "./versioning/welcome-screen.mjs";
 
 // CONFIG.debug.hooks = true;
 
-Hooks.on("init", function () {
+Hooks.on("init", () => {
   /** checks if the first argument is equal to any of the subsequent arguments */
   Handlebars.registerHelper('ifcontain', function () {
     let options = arguments[arguments.length - 1];
@@ -17,6 +19,12 @@ Hooks.on("init", function () {
 
   registerSettings();
   game.betterTables = new BetterTables();
+});
+
+Hooks.on("ready", () => {
+  if (VersionCheck.check(BRTCONFIG.NAMESPACE) && game.user.isGM) {
+    renderWelcomeScreen();
+  }
 });
 
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);

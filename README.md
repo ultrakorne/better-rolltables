@@ -6,6 +6,7 @@
 The module adds functionality to rolltables to enhance loot generation capabilities and rolling on multiple tables with 1 click!(implementing for example the Treasure Hoard" Tables from the DMG becomes possible)
 
 Overview video: https://www.youtube.com/watch?v=TRg4y0joOKA
+
 Wiki: https://github.com/ultrakorne/better-rolltables/wiki
 
 ## Install ##

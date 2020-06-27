@@ -1,51 +1,56 @@
 {
-    "name": "better-rolltables",
-    "title": "Better Roll Tables",
-    "description": "Adding functionality to roll tables, especially to roll treasure and magic items",
-    "version": "1.3.0",
-    "author": "Ultrakorne#6240",
-    "esmodules": [
-        "./scripts/brt-main.js"
-    ],
-    "styles": [
-      "./styles/brt.css"
-    ],
-    "packs": [
-        {
-          "name": "brt-loot",
-          "label": "Loot Tables",
-          "system": "dnd5e",
-          "path": "./packs/loot-tables.db",
-          "entity": "RollTable"
-        },
-        {
-          "name": "brt-story",
-          "label": "Story Tables",
-          "path": "./packs/story-tables.db",
-          "entity": "RollTable"
-        },
-        {
-          "name": "brt-gen",
-          "label": "Story Generators",
-          "path": "./packs/story-generators.db",
-          "entity": "JournalEntry"
-        }
-    ],
-    "minimumCoreVersion": "0.5.6",
-    "compatibleCoreVersion": "0.6.2",
-    "languages": [
-        {
-          "lang": "en",
-          "name": "English",
-          "path": "lang/en.json"
-        },
-        {
-          "lang": "ko",
-          "name": "Korean",
-          "path": "lang/ko.json"
-        }
-    ],
-    "url": "https://github.com/ultrakorne/better-rolltables",
-    "manifest": "https://raw.githubusercontent.com/ultrakorne/better-rolltables/master/module.json",
-    "download": "https://github.com/ultrakorne/better-rolltables/releases/download/v1.3.0/better-rolltables.zip"
+  "name": "better-rolltables",
+  "title": "Better Roll Tables",
+  "description": "Adding functionality to roll tables, especially to roll treasure and magic items",
+  "version": "1.3.0",
+  "author": "Ultrakorne#6240",
+  "esmodules": [
+    "./scripts/brt-main.js"
+  ],
+  "styles": [
+    "./styles/brt.css"
+  ],
+  "packs": [
+    {
+      "name": "brt-loot",
+      "label": "Loot Tables",
+      "system": "dnd5e",
+      "path": "./packs/loot-tables.db",
+      "entity": "RollTable"
+    },
+    {
+      "name": "brt-story",
+      "label": "Story Tables",
+      "path": "./packs/story-tables.db",
+      "entity": "RollTable"
+    },
+    {
+      "name": "brt-gen",
+      "label": "Story Generators",
+      "path": "./packs/story-generators.db",
+      "entity": "JournalEntry"
+    }
+  ],
+  "minimumCoreVersion": "0.5.6",
+  "compatibleCoreVersion": "0.6.2",
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "ko",
+      "name": "Korean",
+      "path": "lang/ko.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    }
+  ],
+  "url": "https://github.com/ultrakorne/better-rolltables",
+  "manifest": "https://raw.githubusercontent.com/ultrakorne/better-rolltables/master/module.json",
+  "download": "https://github.com/ultrakorne/better-rolltables/releases/download/v1.3.0/better-rolltables.zip"
 }

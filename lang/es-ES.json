@@ -1,0 +1,22 @@
+{
+    "BRT.TypeLabel": "Tipo de tabla mejorada",
+    "BRT.TypeDefault": "Tabla por defecto",
+    "BRT.BetterTable": "Tabla mejorada",
+    "BRT.TypeLoot": "Tabla de botín",
+    "BRT.StoryLoot": "Tabla de historia",
+    "BRT.CurrencyLoot": "Tabla de botín de monedas",
+    "BRT.Currency": "Monedas:",
+    "BRT.CurrencyLootPlaceholder": "Agrega fórmulas separadas por comas, p.e.: 1d4[gp], (1d4+1)*10[sp]",
+    "BRT.LootActorName": "Agregar botín al actor",
+    "BRT.LootActorNamePlaceholder": "Si está vació, se creará un nuevo actor de botín cada vez",
+    "BRT.GenerateLoot.Button": " Generar botín",
+    "BRT.Settings.LootSheet.Title": "Hoja a usar para el botín generado",
+    "BRT.Settings.LootSheet.Description": "Puedes seleccionar hojas de PNJ alternativas para ser usadas para los botines generados",
+    "BRT.Settings.SpellCompendium.Title": "Compendio de conjuros a usar para los pergaminos alteatorios de conjuros",
+    "BRT.Settings.SpellCompendium.Description": "Puedes especificar un compendio de conjuros y cuando se tome un pergamino de conjuros de una tabla de botín (han de tener un nombre específico) un conjuro aleatorio es elegido de ese compendio",
+    "BRT.LootRollAmount": "Cantidad de lanzamientos de dados",
+    "BRT.LootRollAmountPlaceholder" : "Lanzar por la tabla al completo múltiples veces",
+    "BRT.DrawResultPlural": "Obtiene {amount} resultados de {name}",
+    "BRT.DrawResultSingular": "Obtiene {amount} resultado de {name}",
+    "BRT.DrawResultZero": "Lanzar de {name}"
+}

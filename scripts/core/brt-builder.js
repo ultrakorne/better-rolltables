@@ -1,6 +1,5 @@
 import * as BRTHelper from './brt-helper.js';
 import * as Utils from '../core/utils.js';
-import { ResultsData } from './results-data.js';
 import { drawMany } from './brt-api-changes.js';
 import { BRTCONFIG } from './config.js';
 
@@ -8,14 +7,17 @@ export class BRTBuilder {
 
     constructor(tableEntity) {
         this.table = tableEntity;
-        this.results = new ResultsData();
     }
 
-    async betterRoll() {
+    async betterRoll(rollsAmount = undefined) {
         this.mainRoll = undefined;
-        const tableResults = await this.rollManyOnTable(BRTHelper.rollsAmount(this.table), this.table);
-        await this.table.toMessage(tableResults, { roll: this.mainRoll });
+        rollsAmount = rollsAmount || BRTHelper.rollsAmount(this.table);
+        this.results = await this.rollManyOnTable(rollsAmount, this.table);
         return this.results;
+    }
+
+    async createChatCard(results) {
+        await this.table.toMessage(results, { roll: this.mainRoll });
     }
 
     async rollManyOnTable(amount, table, { _depth = 0 } = {}) {

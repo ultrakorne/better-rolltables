@@ -1,5 +1,4 @@
 import { LootCreator } from './loot/loot-creator.js';
-import { LootBuilder } from './loot/loot-builder.js'
 import { LootChatCard } from './loot/loot-chat-card.js';
 import { StoryBuilder } from './story/story-builder.js';
 import { StoryChatCard } from './story/story-chat-card.js';
@@ -14,8 +13,8 @@ export class BetterTables {
         const br = new BetterResults(results);
         const betterResults = await br.buildResults(tableEntity);
         const currencyData = br.getCurrencyData();
-        console.log("++BETTER RESULTS ", betterResults);
-        console.log("++ currencyData", currencyData);
+        // console.log("++BETTER RESULTS ", betterResults);
+        // console.log("++ currencyData", currencyData);
 
         const lootCreator = new LootCreator(betterResults, currencyData);
         await lootCreator.createActor(tableEntity);
@@ -48,7 +47,6 @@ export class BetterTables {
     async betterTableRoll(tableEntity) {
         const brtBuilder = new BRTBuilder(tableEntity);
         const results = await brtBuilder.betterRoll();
-        console.log("RESULTS ", results);
         await brtBuilder.createChatCard(results);
     }
 

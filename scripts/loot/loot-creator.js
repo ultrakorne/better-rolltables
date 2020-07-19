@@ -1,18 +1,19 @@
 import { BRTCONFIG } from '../core/config.js';
+import { LootManipulator } from './loot-manipulation.js';
 
 export class LootCreator {
     /**
      * Will create an actor carring items based on the content of the object lootData
      * @param {object} betterResults check BetterResults 
      */
-    constructor(betterResults, currencyData, table) {
+    constructor(betterResults, currencyData) {
         this.betterResults = betterResults;
-        this.table = table;
         this.currencyData = currencyData;
+        this.lootManipulator = new LootManipulator();
     }
 
-    async createActor(overrideName = undefined) {
-        const actorName = overrideName ? overrideName : this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ACTOR_NAME_KEY);
+    async createActor(table, overrideName = undefined) {
+        const actorName = overrideName ? overrideName : table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ACTOR_NAME_KEY);
         this.actor = game.actors.getName(actorName);
         if (!this.actor) {
             this.actor = await Actor.create({
@@ -20,7 +21,7 @@ export class LootCreator {
                 type: "npc",
                 img: "modules/better-rolltables/artwork/chest.png",
                 sort: 12000,
-                token: {actorLink: true}
+                token: { actorLink: true }
             });
         }
 
@@ -45,7 +46,7 @@ export class LootCreator {
     async addItemsToActor(stackSame = true) {
         let items = [];
         for (const item of this.betterResults) {
-            const newItem = await this.createLootItem(item, this.actor, stackSame);
+            const newItem = await this._createLootItem(item, this.actor, stackSame);
             items.push(newItem);
         }
         return items;
@@ -58,7 +59,7 @@ export class LootCreator {
      * @param {boolean} stackSame if true add quantity to an existing item of same name in the current actor
      * @returns {Item} the create Item (foundry item)
      */
-    async createLootItem(item, actor, stackSame = true) {
+    async _createLootItem(item, actor, stackSame = true) {
         const itemData = await this.buildItemData(item);
 
         const itemPrice = getProperty(itemData, BRTCONFIG.PRICE_PROPERTY_PATH) || 0;
@@ -109,15 +110,15 @@ export class LootCreator {
         }
 
         if (item.hasOwnProperty('commands') && item.commands) {
-            itemData = this.applyCommandToItemData(itemData, item.commands);
+            itemData = this._applyCommandToItemData(itemData, item.commands);
         }
 
         if (!itemData) return;
-        itemData = await this.preItemCreationDataManipulation(itemData);
+        itemData = await this.lootManipulator.preItemCreationDataManipulation(itemData);
         return itemData;
     }
 
-    applyCommandToItemData(itemData, commands) {
+    _applyCommandToItemData(itemData, commands) {
         for (let cmd of commands) {
             //TODO check the type of command, that is a command to be rolled and a valid command
             let rolledValue;
@@ -128,70 +129,6 @@ export class LootCreator {
             }
             setProperty(itemData, `data.${cmd.command.toLowerCase()}`, rolledValue);
         }
-        return itemData;
-    }
-
-    rndSpellIdx = [];
-    async getSpellCompendiumIndex() {
-        const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
-        const spellCompendiumIndex = await game.packs.find(t => t.collection === spellCompendiumName).getIndex();
-
-        for (var i = 0; i < spellCompendiumIndex.length; i++) {
-            this.rndSpellIdx[i] = i;
-        }
-        this.rndSpellIdx.sort(() => Math.random() - 0.5);
-        return spellCompendiumIndex;
-    }
-
-    async preItemCreationDataManipulation(itemData) {
-        // const match = BRTCONFIG.SCROLL_REGEX.exec(itemData.name);
-        let match = /\s*Spell\s*Scroll\s*(\d+|cantrip)/gi.exec(itemData.name);
-
-        if (!match) {
-            //pf2e temporary FIXME add this in a proper config
-            match = /\s*Scroll\s*of\s*(\d+)/gi.exec(itemData.name);
-        }
-
-        if (!match) {
-            // console.log("not a SCROLL ", itemData.name);
-            // console.log("match ",match);
-            return itemData; //not a scroll
-        }
-
-        //if its a scorll then open compendium
-        let level = match[1].toLowerCase() === "cantrip" ? 0 : match[1];
-
-        const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
-        const compendium = game.packs.find(t => t.collection === spellCompendiumName);
-        if (!compendium) {
-            console.log(`Spell Compendium ${spellCompendiumName} not found`);
-            return itemData;
-        }
-        let index = await this.getSpellCompendiumIndex();
-
-        let spellFound = false;
-        let itemEntity;
-
-        while (this.rndSpellIdx.length > 0 && !spellFound) {
-
-            let rnd = this.rndSpellIdx.pop();
-            let entry = await compendium.getEntity(index[rnd]._id);
-            const spellLevel = getProperty(entry.data, BRTCONFIG.SPELL_LEVEL_PATH);
-            if (spellLevel == level) {
-                itemEntity = entry;
-                spellFound = true;
-            }
-        }
-
-        if (!itemEntity) {
-            ui.notifications.warn(`no spell of level ${level} found in compendium  ${spellCompendiumName} `);
-            return itemData;
-        }
-
-        //make the name shorter by removing some text
-        itemData.name = itemData.name.replace(/^(Spell\s)/, "");
-        itemData.name = itemData.name.replace(/(Cantrip\sLevel)/, "Cantrip");
-        itemData.name += ` (${itemEntity.data.name})`
         return itemData;
     }
 }

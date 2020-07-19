@@ -7,23 +7,26 @@ import { BRTCONFIG } from '../core/config.js';
  */
 export class LootChatCard {
     /**
-     * @param {LootData} lootData 
+     * @param {object} betterResults 
+     * @param {object} currencyData
      */
-    constructor(lootData) {
-        this.loot = lootData;
+    constructor(betterResults, currencyData) {
+        this.betterResults = betterResults;
+        this.currencyData = currencyData;
+
         this.itemsData = [];
         this.numberOfDraws = 0;
     }
 
     async findOrCreateItems() {
-        const lootCreator = new LootCreator(this.loot);
-        for (const item of this.loot.lootItems) {
+        const lootCreator = new LootCreator(this.betterResults, this.currencyData);
+        for (const item of this.betterResults) {
             this.numberOfDraws++;
             /** we pass though the data, since we might have some data manipulation that changes an existing item, in that case even if it was initially 
              * existing or in a compendium we have to create a new one */
             const data = await lootCreator.buildItemData(item);
-            if (item.compendium) {
-                const compendium = game.packs.find(t => t.collection === item.compendium);
+            if (item.collection) {
+                const compendium = game.packs.find(t => t.collection === item.collection);
                 if (compendium) {
                     let indexes = await compendium.getIndex();
                     let entry = indexes.find(e => e.name === data.name);
@@ -81,9 +84,9 @@ export class LootChatCard {
         await this.findOrCreateItems();
 
         let currencyString = "";
-        for (var key in this.loot.currencyData) {
+        for (var key in this.currencyData) {
             if (currencyString !== "") currencyString += ", ";
-            currencyString += `${this.loot.currencyData[key]}${key}`;
+            currencyString += `${this.currencyData[key]}${key}`;
         }
 
         const chatCardData = {

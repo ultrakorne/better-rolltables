@@ -1,5 +1,4 @@
 import { LootCreator } from './loot/loot-creator.js';
-import { LootCreatorNew } from './loot/loot-creator-new.js';
 import { LootBuilder } from './loot/loot-builder.js'
 import { LootChatCard } from './loot/loot-chat-card.js';
 import { StoryBuilder } from './story/story-builder.js';
@@ -9,18 +8,30 @@ import { BetterResults } from './core/brt-table-results.js';
 
 export class BetterTables {
     async generateLoot(tableEntity) {
-        const lootBuilder = new LootBuilder(tableEntity);
-        const generatedLoot = await lootBuilder.generateLoot();
-        const lootCreator = new LootCreator(generatedLoot);
-        await lootCreator.createActor();
+        const brtBuilder = new BRTBuilder(tableEntity);
+        const results = await brtBuilder.betterRoll();
+
+        const br = new BetterResults(results);
+        const betterResults = await br.buildResults(tableEntity);
+        const currencyData = br.getCurrencyData();
+        console.log("++BETTER RESULTS ", betterResults);
+        console.log("++ currencyData", currencyData);
+
+        const lootCreator = new LootCreator(betterResults, currencyData);
+        await lootCreator.createActor(tableEntity);
         await lootCreator.addCurrenciesToActor();
         await lootCreator.addItemsToActor();
     }
 
     async generateChatLoot(tableEntity) {
-        const lootBuilder = new LootBuilder(tableEntity);
-        const generatedLoot = await lootBuilder.generateLoot();
-        const lootChatCard = new LootChatCard(generatedLoot);
+        const brtBuilder = new BRTBuilder(tableEntity);
+        const results = await brtBuilder.betterRoll();
+
+        const br = new BetterResults(results);
+        const betterResults = await br.buildResults(tableEntity);
+        const currencyData = br.getCurrencyData();
+
+        const lootChatCard = new LootChatCard(betterResults, currencyData);
         await lootChatCard.createChatCard(tableEntity);
     }
 
@@ -41,19 +52,6 @@ export class BetterTables {
         await brtBuilder.createChatCard(results);
     }
 
-    async betterLootRoll(tableEntity) {
-        const brtBuilder = new BRTBuilder(tableEntity);
-        const results = await brtBuilder.betterRoll();
-
-        const br = new BetterResults(results);
-        const betterResults = await br.buildResults();
-        console.log("++BETTER RESULTS ", betterResults);
-
-        const lootCreator = new LootCreatorNew(betterResults, tableEntity);
-        await lootCreator.createActor();
-        await lootCreator.addCurrenciesToActor();
-        await lootCreator.addItemsToActor();
-    }
 
     /**
      * create a new RollTable by extracting entry from a compendium to use 

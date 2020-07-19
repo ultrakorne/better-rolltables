@@ -1,19 +1,24 @@
 import * as Utils from './utils.js';
 import * as BRTHelper from './brt-helper.js';
 import { BRTBuilder } from './brt-builder.js';
+import { BRTCONFIG } from './config.js';
 
 export class BetterResults {
 
     constructor(tableResults) {
         this.results = [];
+        this.currencyData = {};
         this.tableResults = tableResults;
     }
 
-    async buildResults() {
-
+    async buildResults(table) {
         console.log("buildResults from ", this.tableResults);
+
+        const currencyString = table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_CURRENCY_KEY);
+        this.currencyData = this._generateCurrency(currencyString);
+
         for (let i = 0; i < this.tableResults.length; i++) {
-            const betterResults = await this.parseResult(this.tableResults[i]);
+            const betterResults = await this._parseResult(this.tableResults[i]);
             //if a inner table is rolled, the result returned is undefined but the array this.tableResult is extended with the new results
 
             for (const r of betterResults) {
@@ -23,12 +28,20 @@ export class BetterResults {
         return this.results;
     }
 
-    async parseResult(result) {
+    getCurrencyData() {
+        return this.currencyData;
+    }
+
+    async _parseResult(result) {
         console.log("parsing result ", result);
         let betterResults = [];
         if (result.type === CONST.TABLE_RESULT_TYPES.TEXT) {
             const textResults = result.text.split("|");
-            for (const t of textResults) {
+
+            for (let t of textResults) {
+                //if the text is a currency, we process that first
+                t = this._processTextAsCurrency(t);
+
                 const regex = /(\s*[^\[@]+\s*)*@*(\w+)*\[([^\]\[]+)\]/g;
                 let matches;
 
@@ -76,8 +89,8 @@ export class BetterResults {
                     console.log("innerResults ", innerResults);
                     this.tableResults = this.tableResults.concat(innerResults);
                 } else if (textString) {
+
                     //if no table definition is found, the textString is the item name
-                    
                     betterResult.img = result.img;
                     betterResult.text = textString.trim();
                     betterResult.commands = commands;
@@ -94,5 +107,42 @@ export class BetterResults {
         }
 
         return betterResults;
+    }
+
+    _processTextAsCurrency(tableText) {
+        const regex = /{([^}]+)}/g
+        const input = tableText;
+
+        let matches;
+        while (matches = regex.exec(input)) {
+            const currencyToAdd = this._generateCurrency(matches[1]);
+            this._addCurrency(currencyToAdd);
+        }
+        return tableText.replace(regex, '');
+    }
+
+    _addCurrency(currencyData) {
+        for (var key in currencyData) {
+            this.currencyData[key] = (this.currencyData[key] || 0) + currencyData[key];
+        }
+    }
+
+    _generateCurrency(currencyString) {
+        const currenciesToAdd = {};
+        if (currencyString) {
+            const currenciesPieces = currencyString.split(",");
+            for (const currency of currenciesPieces) {
+                const match = /(.*)\[(.*?)\]/g.exec(currency); //capturing 2 groups, the formula and then the currency symbol in brakets []
+                if (!match || match.length < 3) {
+                    ui.notifications.warn(`Currency loot field contain wrong formatting, currencies need to be define as "diceFormula[currencyType]" => "1d100[gp]" but was ${currency}`);
+                    continue;
+                }
+                const rollFormula = match[1];
+                const currencyString = match[2];
+                const amount = BRTHelper.tryRoll(rollFormula);
+                currenciesToAdd[currencyString] = (currenciesToAdd[currencyString] || 0) + amount;
+            }
+        }
+        return currenciesToAdd;
     }
 }

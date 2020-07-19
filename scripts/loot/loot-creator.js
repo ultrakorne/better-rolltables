@@ -1,19 +1,18 @@
 import { BRTCONFIG } from '../core/config.js';
 
-/**
- * create actor and items based on the content of the object LootData
- */
 export class LootCreator {
     /**
      * Will create an actor carring items based on the content of the object lootData
-     * @param {LootData} lootData 
+     * @param {object} betterResults check BetterResults 
      */
-    constructor(lootData) {
-        this.loot = lootData;
+    constructor(betterResults, currencyData, table) {
+        this.betterResults = betterResults;
+        this.table = table;
+        this.currencyData = currencyData;
     }
 
     async createActor(overrideName = undefined) {
-        const actorName = overrideName ? overrideName : this.loot.actorName;
+        const actorName = overrideName ? overrideName : this.table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ACTOR_NAME_KEY);
         this.actor = game.actors.getName(actorName);
         if (!this.actor) {
             this.actor = await Actor.create({
@@ -31,33 +30,62 @@ export class LootCreator {
         }
     }
 
+    async addCurrenciesToActor() {
+        let currencyData = duplicate(this.actor.data.data.currency);
+        const lootCurrency = this.currencyData;
+        for (var key in lootCurrency) {
+            if (currencyData.hasOwnProperty(key)) {
+                const amount = Number(currencyData[key].value || 0) + Number(lootCurrency[key]);
+                currencyData[key] = { "value": amount.toString() };
+            }
+        }
+        await this.actor.update({ "data.currency": currencyData });
+    }
+
     async addItemsToActor(stackSame = true) {
         let items = [];
-        for (const item of this.loot.lootItems) {
+        for (const item of this.betterResults) {
             const newItem = await this.createLootItem(item, this.actor, stackSame);
             items.push(newItem);
         }
         return items;
     }
 
-    async addCurrenciesToActor() {
-        let currencyData = duplicate(this.actor.data.data.currency);
-        for (var key in this.loot.currencyData) {
-            if (currencyData.hasOwnProperty(key)) {
-                const amount = Number(currencyData[key].value || 0) + Number(this.loot.currencyData[key]);
-                currencyData[key] = { "value": amount.toString() };
-            }
-        }
+    /**
+     * 
+     * @param {object} item rapresentation 
+     * @param {Actor} actor to which to add items to
+     * @param {boolean} stackSame if true add quantity to an existing item of same name in the current actor
+     * @returns {Item} the create Item (foundry item)
+     */
+    async createLootItem(item, actor, stackSame = true) {
+        const itemData = await this.buildItemData(item);
 
-        await this.actor.update({ "data.currency": currencyData });
+        const itemPrice = getProperty(itemData, BRTCONFIG.PRICE_PROPERTY_PATH) || 0;
+        /** if the item is already owned by the actor (same name and same PRICE) */
+        const sameItemOwnedAlready = actor.getEmbeddedCollection("OwnedItem").find(i => i.name === itemData.name && itemPrice == getProperty(i, BRTCONFIG.PRICE_PROPERTY_PATH));
+
+        if (sameItemOwnedAlready && stackSame) {
+            /** add quantity to existing item*/
+            const itemQuantity = getProperty(itemData, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
+            const sameItemOwnedAlreadyQuantity = getProperty(sameItemOwnedAlready, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
+            let updateItem = { _id: sameItemOwnedAlready._id };
+            setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, +sameItemOwnedAlreadyQuantity + +itemQuantity);
+
+            await actor.updateEmbeddedEntity("OwnedItem", updateItem);
+            return actor.getOwnedItem(sameItemOwnedAlready._id);
+        } else {
+            /**we create a new item if we don't own already */
+            return await actor.createOwnedItem(itemData);
+        }
     }
 
     async buildItemData(item) {
         let itemData;
 
         /** Try first to load item from compendium */
-        if (item.compendium) {
-            const compendium = game.packs.find(t => t.collection === item.compendium);
+        if (item.collection) {
+            const compendium = game.packs.find(t => t.collection === item.collection);
             if (compendium) {
                 let indexes = await compendium.getIndex();
                 let entry = indexes.find(e => e.name.toLowerCase() === item.text.toLowerCase());
@@ -89,48 +117,6 @@ export class LootCreator {
         return itemData;
     }
 
-    /**
-     * 
-     * @param {LootData.lootItem} item rapresentation 
-     * @param {Actor} actor to which to add items to
-     * @param {boolean} stackSame if true add quantity to an existing item of same name in the current actor
-     * @returns {Item} the create Item (foundry item)
-     */
-    async createLootItem(item, actor, stackSame = true) {
-        const itemData = await this.buildItemData(item);
-
-        const itemPrice = getProperty(itemData, BRTCONFIG.PRICE_PROPERTY_PATH) || 0;
-        /** if the item is already owned by the actor (same name and same PRICE) */
-        const sameItemOwnedAlready = actor.getEmbeddedCollection("OwnedItem").find(i => i.name === itemData.name && itemPrice == getProperty(i, BRTCONFIG.PRICE_PROPERTY_PATH));
-
-        if (sameItemOwnedAlready && stackSame) {
-            /** add quantity to existing item*/
-            const itemQuantity = getProperty(itemData, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
-            const sameItemOwnedAlreadyQuantity = getProperty(sameItemOwnedAlready, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
-            let updateItem = { _id: sameItemOwnedAlready._id };
-            setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, +sameItemOwnedAlreadyQuantity + +itemQuantity);
-
-            await actor.updateEmbeddedEntity("OwnedItem", updateItem);
-            return actor.getOwnedItem(sameItemOwnedAlready._id);
-        } else {
-            /**we create a new item if we don't own already */
-            return await actor.createOwnedItem(itemData);
-        }
-    }
-
-    rndSpellIdx = [];
-    async getSpellCompendiumIndex() {
-        const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
-        const spellCompendiumIndex = await game.packs.find(t => t.collection === spellCompendiumName).getIndex();
-
-        for (var i = 0; i < spellCompendiumIndex.length; i++) {
-            this.rndSpellIdx[i] = i;
-        }
-
-        this.rndSpellIdx.sort(() => Math.random() - 0.5);
-        return spellCompendiumIndex;
-    }
-
     applyCommandToItemData(itemData, commands) {
         for (let cmd of commands) {
             //TODO check the type of command, that is a command to be rolled and a valid command
@@ -143,6 +129,18 @@ export class LootCreator {
             setProperty(itemData, `data.${cmd.command.toLowerCase()}`, rolledValue);
         }
         return itemData;
+    }
+
+    rndSpellIdx = [];
+    async getSpellCompendiumIndex() {
+        const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
+        const spellCompendiumIndex = await game.packs.find(t => t.collection === spellCompendiumName).getIndex();
+
+        for (var i = 0; i < spellCompendiumIndex.length; i++) {
+            this.rndSpellIdx[i] = i;
+        }
+        this.rndSpellIdx.sort(() => Math.random() - 0.5);
+        return spellCompendiumIndex;
     }
 
     async preItemCreationDataManipulation(itemData) {

@@ -20,8 +20,7 @@ export class BetterResults {
                 this.results.push(r);
             }
         }
-
-        console.log("better result ", this.results);
+        return this.results;
     }
 
     async parseResult(result) {
@@ -36,6 +35,8 @@ export class BetterResults {
                 let textString;
                 let commands = [];
                 let table;
+                let betterResult = {};
+
                 while (matches = regex.exec(t)) {
                     //matches[1] is undefined in case we are matching [tablename]
                     //if we are matching @command[string] then matches[2] is the command and [3] is the arg inside []
@@ -60,7 +61,10 @@ export class BetterResults {
                         }
                         break;
                     } else if(commandName) {
-                        commands.push({"command": commandName, "arg": matches[3]});
+                        commands.push({"command": commandName.toLowerCase(), "arg": matches[3]});
+                        if(commandName.toLowerCase() === "compendium") {
+                            betterResult.collection = matches[3];
+                        }
                     }
                 }
 
@@ -73,7 +77,7 @@ export class BetterResults {
                     this.tableResults = this.tableResults.concat(innerResults);
                 } else if (textString) {
                     //if no table definition is found, the textString is the item name
-                    let betterResult = {};
+                    
                     betterResult.img = result.img;
                     betterResult.text = textString.trim();
                     betterResult.commands = commands;

@@ -1,4 +1,5 @@
 import { LootCreator } from './loot/loot-creator.js';
+import { LootCreatorNew } from './loot/loot-creator-new.js';
 import { LootBuilder } from './loot/loot-builder.js'
 import { LootChatCard } from './loot/loot-chat-card.js';
 import { StoryBuilder } from './story/story-builder.js';
@@ -43,8 +44,15 @@ export class BetterTables {
     async betterLootRoll(tableEntity) {
         const brtBuilder = new BRTBuilder(tableEntity);
         const results = await brtBuilder.betterRoll();
-        const betterResults = new BetterResults(results);
-        await betterResults.buildResults();
+
+        const br = new BetterResults(results);
+        const betterResults = await br.buildResults();
+        console.log("++BETTER RESULTS ", betterResults);
+
+        const lootCreator = new LootCreatorNew(betterResults, tableEntity);
+        await lootCreator.createActor();
+        await lootCreator.addCurrenciesToActor();
+        await lootCreator.addItemsToActor();
     }
 
     /**

@@ -47,7 +47,7 @@ export class BetterRT {
         if (selectedTableType === BRTCONFIG.TABLE_TYPE_NONE) return;
 
         /**for every result, add an input field before the text to add a formula */
-        if (selectedTableType === BRTCONFIG.TABLE_TYPE_BETTER) {
+        if (selectedTableType === BRTCONFIG.TABLE_TYPE_BETTER || selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) {
             BetterRT.ShowFormulaField(tableViewClass, tableEntity, rollTable.editable);
         }
 

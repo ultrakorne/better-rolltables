@@ -13,11 +13,11 @@ export class BetterResults {
 
         console.log("buildResults from ", this.tableResults);
         for (let i = 0; i < this.tableResults.length; i++) {
-            const betterResult = await this.parseResult(this.tableResults[i]);
+            const betterResults = await this.parseResult(this.tableResults[i]);
             //if a inner table is rolled, the result returned is undefined but the array this.tableResult is extended with the new results
-            
-            if(betterResult) {
-                this.results.push(betterResult);
+
+            for (const r of betterResults) {
+                this.results.push(r);
             }
         }
 
@@ -25,15 +25,17 @@ export class BetterResults {
     }
 
     async parseResult(result) {
-    console.log("parsing result ", result);
-        let betterResult = {};
+        console.log("parsing result ", result);
+        let betterResults = [];
         if (result.type === CONST.TABLE_RESULT_TYPES.TEXT) {
             const textResults = result.text.split("|");
             for (const t of textResults) {
-                const regex = /(\s*\w+\s*)*@*(\w+)*\[([^\]\[]+)\]/g;
+                const regex = /(\s*[^\[@]+\s*)*@*(\w+)*\[([^\]\[]+)\]/g;
                 let matches;
-                
+
                 let textString;
+                let commands = [];
+                let table;
                 while (matches = regex.exec(t)) {
                     //matches[1] is undefined in case we are matching [tablename]
                     //if we are matching @command[string] then matches[2] is the command and [3] is the arg inside []
@@ -42,39 +44,51 @@ export class BetterResults {
                     textString = textString || matches[1]; //the first match is the text outside [], a rollformula
                     const commandName = matches[2];
                     const innerTableName = matches[3];
-                    if(!commandName && innerTableName) {
+                    if (!commandName && innerTableName) {
                         const out = Utils.separateIdComendiumName(innerTableName);
                         const tableName = out.nameOrId;
                         const tableCompendiumName = out.compendiumName;
-                        let table;
+
                         if (tableCompendiumName) {
                             table = await Utils.findInCompendiumByName(tableCompendiumName, tableName);
                         } else {
                             table = game.tables.getName(tableName);
                         }
 
-                        if (!table) { 
-                            ui.notifications.warn(`no table named ${tableName} found in compendium ${tableCompendiumName}, did you misspell your table name in brackets?`); 
-                            return; 
+                        if (!table) {
+                            ui.notifications.warn(`no table named ${tableName} found in compendium ${tableCompendiumName}, did you misspell your table name in brackets?`);
                         }
-                       
-                        const numberRolls = BRTHelper.tryRoll(textString);
-                        const brtBuilder = new BRTBuilder(table);
-                        const innerResults = await brtBuilder.betterRoll(numberRolls);
-                        console.log("innerResults ", innerResults);
-                        this.tableResults = this.tableResults.concat(innerResults);
+                        break;
+                    } else if(commandName) {
+                        commands.push({"command": commandName, "arg": matches[3]});
                     }
+                }
+
+                //if a table definition is found, the textString is the rollFormula to be rolled on that table
+                if (table) {
+                    const numberRolls = BRTHelper.tryRoll(textString);
+                    const brtBuilder = new BRTBuilder(table);
+                    const innerResults = await brtBuilder.betterRoll(numberRolls);
+                    console.log("innerResults ", innerResults);
+                    this.tableResults = this.tableResults.concat(innerResults);
+                } else if (textString) {
+                    //if no table definition is found, the textString is the item name
+                    let betterResult = {};
+                    betterResult.img = result.img;
+                    betterResult.text = textString.trim();
+                    betterResult.commands = commands;
+                    betterResults.push(betterResult);
                 }
             }
         } else {
 
+            let betterResult = {};
             betterResult.img = result.img;
             betterResult.collection = result.collection;
             betterResult.text = result.text;
-
-            return betterResult;
+            betterResults.push(betterResult);
         }
 
-        return undefined;
+        return betterResults;
     }
 }

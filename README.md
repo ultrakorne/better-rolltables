@@ -18,11 +18,11 @@ Wiki: https://github.com/ultrakorne/better-rolltables/wiki
 
 ### How to use it ###
 
-Check the [Wiki](https://github.com/ultrakorne/better-rolltables/wiki) and start with [How to Loot Tables](https://github.com/ultrakorne/better-rolltables/wiki/Loot-Tables)
+Check the [**Wiki**](https://github.com/ultrakorne/better-rolltables/wiki) and start with [How to Loot Tables](https://github.com/ultrakorne/better-rolltables/wiki/Loot-Tables)
 
 To use the functionality in your macros, check out the [Macro guide](https://github.com/ultrakorne/better-rolltables/wiki/API-for-macros-and-modules#how-to-roll-tables-from-macros)
 
-* I strongly suggest to use [loot sheet NPC module](https://github.com/jopeek/fvtt-loot-sheet-npc-5e). if you have that module installed, better rolltable will automatically use it.
+I suggest to use [loot sheet NPC module](https://github.com/jopeek/fvtt-loot-sheet-npc-5e). if you have that module installed, better rolltable will automatically use it.
 
 FAQs
 https://github.com/ultrakorne/better-rolltables/wiki/FAQ

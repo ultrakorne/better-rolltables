@@ -7,7 +7,7 @@ Implementing for example the Treasure Hoard" Tables from the Dungeon master manu
 ### Intro video
 [![Overview video](https://img.youtube.com/vi/TRg4y0joOKA/0.jpg)](https://www.youtube.com/watch?v=TRg4y0joOKA)
 
-Wiki: https://github.com/ultrakorne/better-rolltables/wiki
+[How to Wiki](https://github.com/ultrakorne/better-rolltables/wiki)
 
 ## Features ##
 

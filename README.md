@@ -24,8 +24,8 @@ To use the functionality in your macros, check out the [Macro guide](https://git
 
 I suggest to use [loot sheet NPC module](https://github.com/jopeek/fvtt-loot-sheet-npc-5e). if you have that module installed, better rolltable will automatically use it.
 
-FAQs
-https://github.com/ultrakorne/better-rolltables/wiki/FAQ
+
+[FAQs](https://github.com/ultrakorne/better-rolltables/wiki/FAQ)
 
 ### Contacts
 Ultrakorne#6240

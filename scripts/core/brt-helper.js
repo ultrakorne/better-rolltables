@@ -20,9 +20,7 @@ export async function dropEventOnTable(event, table) {
 
     let resultIndex = -1;
     /** dropping on a table result line the target will be results.2.type, results.2.collection, results.2.text*/
-
     let isString = targetName && typeof targetName.startsWith === "function";
-    console.log("isString ", isString);
 
     /** brt.x.formula is the input text field added by brt to have 1 formula added per table row */
     if (isString && (targetName.startsWith("results.") || targetName.startsWith("brt."))) {

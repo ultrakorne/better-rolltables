@@ -33,9 +33,9 @@ export class BetterRT {
         let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.hbs", brtData);
         divElement.innerHTML = selectTypeHtml;
 
-        tableViewClass.addEventListener('drop', async function (event) {
-            await dropEventOnTable(event, tableEntity);
-        });
+        // tableViewClass.addEventListener('drop', async function (event) {
+        //     await dropEventOnTable(event, tableEntity);
+        // });
 
         tableViewClass.insertBefore(divElement, tableViewClass.children[2]);
 

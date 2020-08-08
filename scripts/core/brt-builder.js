@@ -49,7 +49,7 @@ export class BRTBuilder {
             }
             //change the implementation of drawMany with a patched version that can disable recursion on innerTables
             table.drawMany = drawMany;
-            const draw = await table.drawMany(resultToDraw, { displayChat: false, expandInnerTables: false });
+            const draw = await table.drawMany(resultToDraw, { displayChat: false, recursive: false });
             if (!this.mainRoll) {
                 this.mainRoll = draw.roll;
             }
@@ -81,7 +81,6 @@ export class BRTBuilder {
             amount -= resultToDraw;
             
             delete table.drawMany;
-            delete table.roll;
         }
 
 

@@ -1,7 +1,7 @@
 import * as Utils from './utils.js';
 import * as BRTHelper from './brt-helper.js';
-import { BRTBuilder } from './brt-builder.js';
-import { BRTCONFIG } from './config.js';
+import {BRTBuilder} from './brt-builder.js';
+import {BRTCONFIG} from './config.js';
 
 export class BetterResults {
 
@@ -39,10 +39,10 @@ export class BetterResults {
                 //if the text is a currency, we process that first
                 t = this._processTextAsCurrency(t);
 
-                const regex = /(\s*[^\[@]+\s*)*@*(\w+)*\[([^\]\[]+)\]/g;
+                const regex = /(\s*[^\[@]*)@*(\w+)*\[([\w.,*+-]+)\]/g;
                 let matches;
 
-                let textString;
+                let textString = t;
                 let commands = [];
                 let table;
                 let betterResult = {};
@@ -52,7 +52,10 @@ export class BetterResults {
                     //if we are matching @command[string] then matches[2] is the command and [3] is the arg inside []
                     // console.log(`match 0: ${matches[0]}, 1: ${matches[1]}, 2: ${matches[2]}, 3: ${matches[3]}`);
 
-                    textString = textString || matches[1]; //the first match is the text outside [], a rollformula
+                    if (matches[1] != undefined && matches[1].trim() != '') {
+                        textString = matches[1]
+                    }
+                    // textString = matches[1] || textString; //the first match is the text outside [], a rollformula
                     const commandName = matches[2];
                     const innerTableName = matches[3];
                     if (!commandName && innerTableName) {
@@ -70,9 +73,9 @@ export class BetterResults {
                             ui.notifications.warn(`no table named ${tableName} found in compendium ${tableCompendiumName}, did you misspell your table name in brackets?`);
                         }
                         break;
-                    } else if(commandName) {
+                    } else if (commandName) {
                         commands.push({"command": commandName.toLowerCase(), "arg": matches[3]});
-                        if(commandName.toLowerCase() === "compendium") {
+                        if (commandName.toLowerCase() === "compendium") {
                             betterResult.collection = matches[3];
                         }
                     }
@@ -85,8 +88,8 @@ export class BetterResults {
                     const innerResults = await brtBuilder.betterRoll(numberRolls);
                     this.tableResults = this.tableResults.concat(innerResults);
                 } else if (textString) {
-
                     //if no table definition is found, the textString is the item name
+                    console.log(`results text ${textString.trim()} and commands ${commands}`);
                     betterResult.img = result.img;
                     betterResult.text = textString.trim();
                     betterResult.commands = commands;

@@ -13,9 +13,9 @@ export function addRollModeToChatData(chatData) {
     }
 }
 
-export async function findInCompendiumByName(compendiumName, entityName){
+export async function findInCompendiumByName(compendiumName, entityName) {
     const compendium = game.packs.find(t => t.collection === compendiumName);
-    if(compendium) {
+    if (compendium) {
         const compendiumIndex = await compendium.getIndex();
         let entry = compendiumIndex.find(e => e.name === entityName);
         if (entry) {
@@ -24,9 +24,9 @@ export async function findInCompendiumByName(compendiumName, entityName){
     }
 }
 
-export async function findInCompendiumById(compendiumName, entityId){
+export async function findInCompendiumById(compendiumName, entityId) {
     const compendium = game.packs.find(t => t.collection === compendiumName);
-    if(compendium) {
+    if (compendium) {
         const compendiumIndex = await compendium.getIndex();
         let entry = compendiumIndex.find(e => e._id === entityId);
         if (entry) {

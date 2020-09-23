@@ -32,7 +32,7 @@
     }
   ],
   "minimumCoreVersion": "0.5.6",
-  "compatibleCoreVersion": "0.6.5",
+  "compatibleCoreVersion": "0.6.6",
   "languages": [
     {
       "lang": "en",

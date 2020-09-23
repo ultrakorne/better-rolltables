@@ -39,7 +39,7 @@ export class BetterResults {
                 //if the text is a currency, we process that first
                 t = this._processTextAsCurrency(t);
 
-                const regex = /(\s*[^\[@]*)@*(\w+)*\[([\w.,*+-]+)\]/g;
+                const regex = /(\s*[^\[@]*)@*(\w+)*\[([\w.,*+-\/\(\)]+)\]/g;
                 let matches;
 
                 let textString = t;

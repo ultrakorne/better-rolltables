@@ -1,6 +1,5 @@
 import * as BRTHelper from './brt-helper.js';
 import * as Utils from '../core/utils.js';
-import { drawMany } from './brt-api-changes.js';
 import { BRTCONFIG } from './config.js';
 
 export class BRTBuilder {
@@ -47,8 +46,7 @@ export class BRTBuilder {
                 ui.notifications.error(`Roll table formula in table ${table.name} is not defined!`);
                 return;
             }
-            //change the implementation of drawMany with a patched version that can disable recursion on innerTables
-            table.drawMany = drawMany;
+
             const draw = await table.drawMany(resultToDraw, { displayChat: false, recursive: false });
             if (!this.mainRoll) {
                 this.mainRoll = draw.roll;
@@ -79,8 +77,6 @@ export class BRTBuilder {
                 }
             }
             amount -= resultToDraw;
-            
-            delete table.drawMany;
         }
 
 

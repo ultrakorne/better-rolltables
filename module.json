@@ -2,7 +2,7 @@
   "name": "better-rolltables",
   "title": "Better Roll Tables",
   "description": "Adding functionality to roll tables, especially to roll treasure and magic items",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "author": "Ultrakorne#6240",
   "esmodules": [
     "./scripts/brt-main.js"
@@ -31,8 +31,8 @@
       "entity": "JournalEntry"
     }
   ],
-  "minimumCoreVersion": "0.5.6",
-  "compatibleCoreVersion": "0.6.6",
+  "minimumCoreVersion": "0.7.2",
+  "compatibleCoreVersion": "0.7.2",
   "languages": [
     {
       "lang": "en",
@@ -56,6 +56,6 @@
     }
   ],
   "url": "https://github.com/ultrakorne/better-rolltables",
-  "manifest": "https://raw.githubusercontent.com/ultrakorne/better-rolltables/v1.6.1/module.json",
-  "download": "https://github.com/ultrakorne/better-rolltables/releases/download/v1.6.1/better-rolltables.zip"
+  "manifest": "https://raw.githubusercontent.com/ultrakorne/better-rolltables/v1.6.2/module.json",
+  "download": "https://github.com/ultrakorne/better-rolltables/releases/download/v1.6.2/better-rolltables.zip"
 }

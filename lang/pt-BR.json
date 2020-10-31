@@ -1,6 +1,6 @@
 {
     "BRT.TypeLabel": "Tipo de Tabela Melhorada",
-    "BRT.TypeDefault": "Tabela padrão",
+    "BRT.TypeDefault": "Tabela Padrão",
     "BRT.BetterTable": "Tabela Melhorada",
     "BRT.TypeLoot": "Tabela de Pilhagem",
     "BRT.StoryLoot": "Tabela de História",
@@ -16,7 +16,7 @@
     "BRT.Settings.SpellCompendium.Description": "Você pode especificar um compêndio de feitiços e, quando um pergaminho é selecionado em uma tabela de itens (eles precisam ter um nome específico), um feitiço aleatório é rolado nesse compêndio",
     "BRT.LootRollAmount": "Quantidade de Rolagens",
     "BRT.LootRollAmountPlaceholder" : "Role a tabela inteira várias vezes",
-    "BRT.DrawResultPlural": "Desenha {amount} resultados de {name}",
-    "BRT.DrawResultSingular": "Desenha {amount} resultado de {name}",
+    "BRT.DrawResultPlural": "Sacar {amount} resultados de {name}",
+    "BRT.DrawResultSingular": "Sacar {amount} resultado de {name}",
     "BRT.DrawResultZero": "Rolagem em {name}"
 }

@@ -34,7 +34,7 @@ export class BetterTables {
         await lootChatCard.createChatCard(tableEntity);
     }
 
-    async _getStoryResults(tableEntity){
+    async getStoryResults(tableEntity){
         const storyBuilder = new StoryBuilder(tableEntity);
         await storyBuilder.drawStory();
         const storyHtml = storyBuilder.generatedStory();
@@ -52,7 +52,7 @@ export class BetterTables {
         storyChat.createChatCard(storyGMHtml, { gmOnly: true });
     }
 
-    async _getBetterTableResults(tableEntity){
+    async getBetterTableResults(tableEntity){
         const brtBuilder = new BRTBuilder(tableEntity);
         return await brtBuilder.betterRoll();
     }

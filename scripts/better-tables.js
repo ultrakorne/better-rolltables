@@ -34,6 +34,14 @@ export class BetterTables {
         await lootChatCard.createChatCard(tableEntity);
     }
 
+    async _getStoryResults(tableEntity){
+        const storyBuilder = new StoryBuilder(tableEntity);
+        await storyBuilder.drawStory();
+        const storyHtml = storyBuilder.generatedStory();
+        const storyGMHtml = storyBuilder.generatedStoryGM();
+        return { storyHtml, storyGMHtml };
+    }
+
     async generateChatStory(tableEntity) {
         const storyBuilder = new StoryBuilder(tableEntity);
         await storyBuilder.drawStory();
@@ -42,6 +50,11 @@ export class BetterTables {
         const storyChat = new StoryChatCard(tableEntity);
         storyChat.createChatCard(storyHtml);
         storyChat.createChatCard(storyGMHtml, { gmOnly: true });
+    }
+
+    async _getBetterTableResults(tableEntity){
+        const brtBuilder = new BRTBuilder(tableEntity);
+        return await brtBuilder.betterRoll();
     }
 
     async betterTableRoll(tableEntity) {

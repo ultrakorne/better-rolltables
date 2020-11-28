@@ -1,10 +1,10 @@
-import { BRTCONFIG } from '../core/config.js';
-import { LootManipulator } from './loot-manipulation.js';
+import {BRTCONFIG} from '../core/config.js';
+import {LootManipulator} from './loot-manipulation.js';
 
 export class LootCreator {
     /**
      * Will create an actor carring items based on the content of the object lootData
-     * @param {object} betterResults check BetterResults 
+     * @param {object} betterResults check BetterResults
      */
     constructor(betterResults, currencyData) {
         this.betterResults = betterResults;
@@ -21,7 +21,7 @@ export class LootCreator {
                 type: "npc",
                 img: "modules/better-rolltables/artwork/chest.png",
                 sort: 12000,
-                token: { actorLink: true }
+                token: {actorLink: true}
             });
         }
 
@@ -37,10 +37,10 @@ export class LootCreator {
         for (var key in lootCurrency) {
             if (currencyData.hasOwnProperty(key)) {
                 const amount = Number(currencyData[key].value || 0) + Number(lootCurrency[key]);
-                currencyData[key] = { "value": amount.toString() };
+                currencyData[key] = {"value": amount.toString()};
             }
         }
-        await this.actor.update({ "data.currency": currencyData });
+        await this.actor.update({"data.currency": currencyData});
     }
 
     async addItemsToActor(stackSame = true) {
@@ -53,8 +53,8 @@ export class LootCreator {
     }
 
     /**
-     * 
-     * @param {object} item rapresentation 
+     *
+     * @param {object} item rapresentation
      * @param {Actor} actor to which to add items to
      * @param {boolean} stackSame if true add quantity to an existing item of same name in the current actor
      * @returns {Item} the create Item (foundry item)
@@ -70,7 +70,7 @@ export class LootCreator {
             /** add quantity to existing item*/
             const itemQuantity = getProperty(itemData, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
             const sameItemOwnedAlreadyQuantity = getProperty(sameItemOwnedAlready, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
-            let updateItem = { _id: sameItemOwnedAlready._id };
+            let updateItem = {_id: sameItemOwnedAlready._id};
             setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, +sameItemOwnedAlreadyQuantity + +itemQuantity);
 
             await actor.updateEmbeddedEntity("OwnedItem", updateItem);
@@ -106,7 +106,7 @@ export class LootCreator {
 
         /** Create item from text since the item does not exist */
         if (!itemData) {
-            itemData = { name: item.text, type: BRTCONFIG.ITEM_LOOT_TYPE, img: item.img }; //"icons/svg/mystery-man.svg"
+            itemData = {name: item.text, type: BRTCONFIG.ITEM_LOOT_TYPE, img: item.img}; //"icons/svg/mystery-man.svg"
         }
 
         if (item.hasOwnProperty('commands') && item.commands) {
@@ -130,5 +130,46 @@ export class LootCreator {
             setProperty(itemData, `data.${cmd.command.toLowerCase()}`, rolledValue);
         }
         return itemData;
+    }
+
+    async addCurrenciesToToken(token) {
+        //needed for base key set in the event that a token has no currency properties
+        let currencyDataInitial = {
+            cp: {value: "0"},
+            ep: {value: "0"},
+            gp: {value: "0"},
+            pp: {value: "0"},
+            sp: {value: "0"}
+        }
+
+        let currencyData = undefined;
+
+        if (token.data.actorData.data == undefined) {
+            token.data.actorData['data'] = {}
+        }
+        if (token.data.actorData.data.currency == undefined) {
+            currencyData = currencyDataInitial;
+        } else {
+            currencyData = duplicate(token.data.actorData.data.currency);
+        }
+        const lootCurrency = this.currencyData;
+
+        for (var key in currencyDataInitial) {
+            const amount = Number(currencyData[key].value || 0) + Number(lootCurrency[key] || 0);
+            currencyData[key] = {"value": amount.toString()};
+        }
+        await token.update({"actorData.data.currency": currencyData});
+
+    }
+
+    async addItemsToToken(token, stackSame = true) {
+        let items = [];
+        for (const item of this.betterResults) {
+            //Create the item making sure to pass the token actor and not the base actor
+            const newItem = await this._createLootItem(item, token.actor, stackSame);
+            items.push(newItem);
+        }
+
+        return items;
     }
 }

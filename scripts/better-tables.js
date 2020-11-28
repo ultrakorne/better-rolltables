@@ -22,6 +22,33 @@ export class BetterTables {
         await lootCreator.addItemsToActor();
     }
 
+    async addLootToSelectedToken(tableEntity) {
+        //VaderDojo: Only allow if tokens are selected
+        //TODO:  This check could be enhanced to only function if a UI toggle to use
+        // token logic is enabled
+        if (canvas.tokens.controlled.length === 0)
+            return ui.notifications.error("Please select a token first");
+
+        ui.notifications.info("Loot generation started.");
+        const brtBuilder = new BRTBuilder(tableEntity);
+
+        for ( let token of canvas.tokens.controlled ) {
+            const results = await brtBuilder.betterRoll();
+
+            const br = new BetterResults(results);
+            const betterResults = await br.buildResults(tableEntity);
+            const currencyData = br.getCurrencyData();
+            // console.log("++BETTER RESULTS ", betterResults);
+            // console.log("++ currencyData", currencyData);
+
+            const lootCreator = new LootCreator(betterResults, currencyData);
+
+            await lootCreator.addCurrenciesToToken(token);
+            await lootCreator.addItemsToToken(token);
+        }
+        ui.notifications.info("Loot generation complete.");
+    }
+
     async generateChatLoot(tableEntity) {
         const brtBuilder = new BRTBuilder(tableEntity);
         const results = await brtBuilder.betterRoll();

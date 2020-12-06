@@ -1,4 +1,5 @@
 import { StoryBoolCondition } from './story-bool-condition.js';
+import { BRTCONFIG } from '../core/config.js';
 import * as Utils from '../core/utils.js';
 
 export class StoryBuilder {
@@ -152,7 +153,20 @@ export class StoryBuilder {
                 ui.notifications.error(`table with id ${tableId} not found in the world, check the generation journal for broken links`);
                 return;
             }
-            const draw = await table.drawMany(1, { displayChat: false });
+            const selectedTableType = table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE;
+            let draw;
+            switch (selectedTableType) {
+                case BRTCONFIG.TABLE_TYPE_STORY:
+                    const html = await game.betterTables.getStoryResults(table);
+                    draw = { results: [{ type: 0, text: html.storyHtml }] };
+                    break;
+                case BRTCONFIG.TABLE_TYPE_BETTER:
+                    const roll = await game.betterTables.getBetterTableResults(table);
+                    draw = { results: roll };
+                    break;
+                default:
+                    draw = await table.drawMany(1, { displayChat: false });
+            }
             if (!draw) {
                 await table.reset();
                 draw = await table.drawMany(1, { displayChat: false });

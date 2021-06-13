@@ -8,7 +8,7 @@ export class BetterRT {
         const tableEntity = rollTableConfig.object;
         const selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE;
 
-        const tableElement = document.getElementById(`app-${rollTableConfig.appId}`);
+        const tableElement = document.querySelector(`[data-appid="${rollTableConfig.appId}"]`)
         let tableViewClass = tableElement.getElementsByClassName(tableClassName)[0];
 
         /** height size increase by type: */

@@ -32,8 +32,8 @@ export class BetterResults {
 
     async _parseResult(result) {
         let betterResults = [];
-        if (result.type === CONST.TABLE_RESULT_TYPES.TEXT) {
-            const textResults = result.text.split("|");
+        if (result.data.type === CONST.TABLE_RESULT_TYPES.TEXT) {
+            const textResults = result.data.text.split("|");
 
             for (let t of textResults) {
                 //if the text is a currency, we process that first
@@ -46,7 +46,6 @@ export class BetterResults {
                 let commands = [];
                 let table;
                 let betterResult = {};
-
                 while (matches = regex.exec(t)) {
                     //matches[1] is undefined in case we are matching [tablename]
                     //if we are matching @command[string] then matches[2] is the command and [3] is the arg inside []
@@ -90,7 +89,7 @@ export class BetterResults {
                 } else if (textString) {
                     //if no table definition is found, the textString is the item name
                     console.log(`results text ${textString.trim()} and commands ${commands}`);
-                    betterResult.img = result.img;
+                    betterResult.img = result.data.img;
                     betterResult.text = textString.trim();
                     betterResult.commands = commands;
                     betterResults.push(betterResult);
@@ -99,9 +98,9 @@ export class BetterResults {
         } else {
 
             let betterResult = {};
-            betterResult.img = result.img;
-            betterResult.collection = result.collection;
-            betterResult.text = result.text;
+            betterResult.img = result.data.img;
+            betterResult.collection = result.data.collection;
+            betterResult.text = result.data.text;
             betterResults.push(betterResult);
         }
 

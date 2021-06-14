@@ -53,14 +53,14 @@ export class BRTBuilder {
             }
 
             for (const entry of draw.results) {
-                const formulaAmount = getProperty(entry, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
+                const formulaAmount = getProperty(entry, `data.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
                 const entryAmount = BRTHelper.tryRoll(formulaAmount);
 
                 let innerTable;
-                if (entry.type === CONST.TABLE_RESULT_TYPES.ENTITY && entry.collection === "RollTable") {
-                    innerTable = game.tables.get(entry.resultId);
-                } else if (entry.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM) {
-                    const entityInCompendium = await Utils.findInCompendiumByName(entry.collection, entry.text);
+                if (entry.data.type === CONST.TABLE_RESULT_TYPES.ENTITY && entry.data.collection === "RollTable") {
+                    innerTable = game.tables.get(entry.data.resultId);
+                } else if (entry.data.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM) {
+                    const entityInCompendium = await Utils.findInCompendiumByName(entry.data.collection, entry.data.text);
                     if (entityInCompendium.entity === "RollTable") {
                         innerTable = entityInCompendium;
                     }

@@ -105,7 +105,7 @@ export class BetterRT {
                         /** based on the name of the elents the value will be added in the preUpdateRollTable and override the table.data */
                         formulaInput.name = `results.${index}.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
                         if (tableText.classList.contains("result-target")) {
-                            formulaInput.value = getProperty(tableResult, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
+                            formulaInput.value = getProperty(tableResult, `data.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
                             tableText.classList.add("result-target-short");
                         } else {
                             /** text type result, we disable the formula field for text */
@@ -131,6 +131,7 @@ export class BetterRT {
     }
 
     static preUpdateRollTable(tableEntity, updateData, diff, tableId) {
+        // console.log("preUpdateRollTable");
         setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.LOOT_CURRENCY_KEY}`, updateData["currency-input"]);
         setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.ACTOR_NAME_KEY}`, updateData["loot-name-input"]);
         setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.ROLLS_AMOUNT_KEY}`, updateData["loot-rolls-amount-input"]);
@@ -147,6 +148,8 @@ export class BetterRT {
     }
 
     static async onOptionTypeChanged(value, tableEntity) {
+        // console.log("onOptionTypeChanged");
+        // console.log(tableEntity);
         await tableEntity.setFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY, value);
     }
 }

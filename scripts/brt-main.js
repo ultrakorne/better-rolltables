@@ -28,7 +28,8 @@ Hooks.on("ready", () => {
 });
 
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
-Hooks.on("preUpdateRollTable", BetterRT.preUpdateRollTable);
+// likely obsolete with https://gitlab.com/foundrynet/foundryvtt/-/issues/5499 and updated names in the template
+Hooks.on("preUpdateRollTable", BetterRT.preUpdateRollTable); 
 
 function registerSettings() {
   let defaultLootSheet = "dnd5e.LootSheet5eNPC";

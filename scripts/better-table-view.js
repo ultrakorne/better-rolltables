@@ -4,9 +4,11 @@ import { dropEventOnTable } from './core/brt-helper.js';
 
 export class BetterRT {
     static async enhanceRollTableView(rollTableConfig, html, rollTable) {
-        const tableClassName = rollTable.cssClass;// "editable";
-        const tableEntity = rollTableConfig.object;
-        const selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE;
+        const tableClassName = rollTable.cssClass,// "editable";
+              tableEntity = rollTableConfig.object,
+              json_data = JSON.parse(tableEntity.getFlag(BRTCONFIG.NAMESPACE, 'json')),
+              selectedTableType = json_data[BRTCONFIG.NAMESPACE][BRTCONFIG.TABLE_TYPE_KEY] || BRTCONFIG.TABLE_TYPE_NONE;
+              //selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE;
 
         const tableElement = document.querySelector(`[data-appid="${rollTableConfig.appId}"]`)
         let tableViewClass = tableElement.getElementsByClassName(tableClassName)[0];
@@ -27,8 +29,11 @@ export class BetterRT {
         const height = match[0];
         tableElement.style.height = (+height + addHeight) + "px";
 
-        let divElement = document.createElement("div");
-        let brtData = duplicate(tableEntity.data.flags);
+        let divElement = document.createElement("div"),
+            brtData = {};
+        
+        brtData = duplicate(json_data);
+        //back with 0.8.8: brtData = duplicate(tableEntity.data.flags);
         brtData.disabled = !rollTable.editable;
         let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.hbs", brtData);
         divElement.innerHTML = selectTypeHtml;
@@ -90,7 +95,7 @@ export class BetterRT {
         for (let resultHTML of tableResultsHTML) {
             const resultId = resultHTML.getAttribute("data-result-id");
             if (resultId) {
-                const tableResult = tableEntity.getTableResult(resultId);
+                const tableResult = tableEntity.results.get(resultId);
                 const detailsHTML = resultHTML.getElementsByClassName("result-details")[0];
                 const inputsHTML = detailsHTML.getElementsByTagName("input");
 
@@ -130,10 +135,26 @@ export class BetterRT {
         return rollButtonClone;
     }
 
+    /**
+     * @deprecated since 0.8.8
+     * @param {*} tableEntity 
+     * @param {*} updateData 
+     * @param {*} diff 
+     * @param {*} tableId 
+     */
     static preUpdateRollTable(tableEntity, updateData, diff, tableId) {
-        setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.LOOT_CURRENCY_KEY}`, updateData["currency-input"]);
-        setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.ACTOR_NAME_KEY}`, updateData["loot-name-input"]);
-        setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.ROLLS_AMOUNT_KEY}`, updateData["loot-rolls-amount-input"]);
+        
+        let arr = { "better-rolltables": {}},
+            udf = updateData.flags[BRTCONFIG.NAMESPACE],
+            json_data = JSON.parse(tableEntity.getFlag(BRTCONFIG.NAMESPACE, 'json'));
+        arr[BRTCONFIG.NAMESPACE][BRTCONFIG.TABLE_TYPE_KEY] = udf[BRTCONFIG.TABLE_TYPE_KEY] || json_data[BRTCONFIG.NAMESPACE][BRTCONFIG.TABLE_TYPE_KEY];
+        arr[BRTCONFIG.NAMESPACE][BRTCONFIG.LOOT_CURRENCY_KEY] = udf[BRTCONFIG.LOOT_CURRENCY_KEY] || json_data[BRTCONFIG.NAMESPACE][BRTCONFIG.LOOT_CURRENCY_KEY];
+        arr[BRTCONFIG.NAMESPACE][BRTCONFIG.ROLLS_AMOUNT_KEY] = udf[BRTCONFIG.ROLLS_AMOUNT_KEY] || json_data[BRTCONFIG.NAMESPACE][BRTCONFIG.ROLLS_AMOUNT_KEY];
+        arr[BRTCONFIG.NAMESPACE][BRTCONFIG.ACTOR_NAME_KEY] =  udf[BRTCONFIG.ACTOR_NAME_KEY] || json_data[BRTCONFIG.NAMESPACE][BRTCONFIG.ACTOR_NAME_KEY];
+        arr[BRTCONFIG.NAMESPACE][BRTCONFIG.RESULTS_FORMULA_KEY] = udf[BRTCONFIG.RESULTS_FORMULA_KEY] || json_data[BRTCONFIG.NAMESPACE][BRTCONFIG.RESULTS_FORMULA_KEY];
+        arr[BRTCONFIG.NAMESPACE]._rnd = Math.random().toString(36).substring(7); // we want to make sure the json is always different
+
+        setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.`+'json', JSON.stringify(arr));
     }
 
     static async showGenerateLootButton(htmlElement, tableEntity) {

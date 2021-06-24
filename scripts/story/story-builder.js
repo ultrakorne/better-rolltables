@@ -20,18 +20,18 @@ export class StoryBuilder {
         let errorString;
         for (const entry of draw.results) {
             /** entity type 2 is when an entity in the world is linked */
-            if (entry.type == 1 && entry.collection == "JournalEntry") {
+            if (entry.data.type == 1 && entry.data.collection == "JournalEntry") {
                 const storyJournal = game.journal.get(entry.resultId);
                 if (storyJournal) {
                     journalContent = storyJournal.data.content;
                 } else {
                     errorString = `Journal Entry ${entry.name} not found inside your world`;
                 }
-            } else if (entry.type == 2) {
+            } else if (entry.data.type == 2) {
                 /** entity type 2 is when an entity inside a compendium is linked */
-                const entity = await Utils.findInCompendiumByName(entry.collection, entry.text);
+                const entity = await Utils.findInCompendiumByName(entry.data.collection, entry.data.text);
                 if (!entity) {
-                    errorString = `entity ${entry.text} not found in compendium ${entry.collection}`;
+                    errorString = `entity ${entry.data.text} not found in compendium ${entry.data.collection}`;
                 }
                 else if (entity.entity == "JournalEntry") {
                     journalContent = entity.data.content;
@@ -152,7 +152,7 @@ export class StoryBuilder {
                 ui.notifications.error(`table with id ${tableId} not found in the world, check the generation journal for broken links`);
                 return;
             }
-            const draw = await table.drawMany(1, { displayChat: false });
+            let draw = await table.drawMany(1, { displayChat: false });
             if (!draw) {
                 await table.reset();
                 draw = await table.drawMany(1, { displayChat: false });
@@ -164,10 +164,10 @@ export class StoryBuilder {
             }
 
             const tableResult = draw.results[0];
-            if (tableResult.type != 0) {
+            if (tableResult.data.type != 0) {
                 ui.notifications.warn(`only text result from table are supported at the moment, check table ${table.name}`);
             }
-            valueResult = tableResult.text;
+            valueResult = tableResult.data.text;
 
         } else {
             const regexRoll = /\s*\[\[ *([^\]]*?) *\]\]/;

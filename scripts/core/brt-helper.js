@@ -92,7 +92,7 @@ export async function dropEventOnTable(event, table) {
         /**create a new embedded entity if we dropped the entity on the sheet but not on a specific result */
         const lastTableResult = table.results[table.results.length - 1];
         if (lastTableResult) {
-            const rangeLenght = lastTableResult.range[1] - lastTableResult.range[0]
+            const rangeLenght = lastTableResult.range[1] - lastTableResult.range[0];
             resultTableData.weight = lastTableResult.weight;
             resultTableData.range = [lastTableResult.range[1], lastTableResult.range[1] + rangeLenght];
         } else {

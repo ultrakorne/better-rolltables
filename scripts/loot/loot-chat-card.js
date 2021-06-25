@@ -57,7 +57,7 @@ export class LootChatCard {
         const existingItem = this.itemsData.find(i => i.item.id === itemEntity.id);
         const quantity = getProperty(data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
         if (existingItem) {
-            existingItem.quantity = +existingItem.quantity + +quantity;
+            existingItem.quantity = existingItem.quantity + quantity;
         } else {
             //we will scale down the font size if an item name is too long
             const fontSize = Math.max(60, 100 - Math.max(0, itemEntity.name.length - 27) * 2);
@@ -93,7 +93,8 @@ export class LootChatCard {
             tableData: table.data,
             itemsData: this.itemsData,
             currency: currencyString
-        }
+        };
+
         const cardHtml = await renderTemplate("modules/better-rolltables/templates/loot-chat-card.hbs", chatCardData);
 
         let flavorString;
@@ -102,7 +103,7 @@ export class LootChatCard {
         } else if (this.numberOfDraws > 0) {
             flavorString = game.i18n.format('BRT.DrawResultSingular', { amount: this.numberOfDraws, name: table.data.name });
         } else {
-            flavorString = game.i18n.format('BRT.DrawResultZero', { name: table.data.name });;
+            flavorString = game.i18n.format('BRT.DrawResultZero', { name: table.data.name });
         }
 
         let chatData = {
@@ -110,7 +111,8 @@ export class LootChatCard {
             sound: "sounds/dice.wav",
             user: game.user._id,
             content: cardHtml
-        }
+        };
+        
         addRollModeToChatData(chatData);
         ChatMessage.create(chatData);
     }

@@ -110,7 +110,7 @@ export class StoryBuilder {
 
         const match = /{ *([^}]*?) *}/.exec(definitionName);
         if (!match) {
-            ui.notifications.error(`definition error, ${definitionName} is malformed. After keyword AS we expect a name in brackets {}`)
+            ui.notifications.error(`definition error, ${definitionName} is malformed. After keyword AS we expect a name in brackets {}`);
             return;
         }
         const definition = match[1];
@@ -172,7 +172,7 @@ export class StoryBuilder {
         } else {
             const regexRoll = /\s*\[\[ *([^\]]*?) *\]\]/;
             /** if no table match, lets check for a formula */
-            const rollMatch = regexRoll.exec(defValue)
+            const rollMatch = regexRoll.exec(defValue);
             if (rollMatch) {
                 const rollFormula = rollMatch[1];
                 try {
@@ -202,12 +202,14 @@ export class StoryBuilder {
         if (!story) return story;
 
         const input = story;
-        const regex = /{ *([^}]*?) *}/g
+        const regex = /{ *([^}]*?) *}/g;
 
         let replacedStory = story;
 
         let matches;
-        while (matches = regex.exec(input)) {
+        matches = regex.exec(input);
+        
+        while (matches) {
             const value = getProperty(this._storyTokens, matches[1]);
             if (!value) {
                 ui.notifications.error(`cannot find a value for token ${matches[1]} in #story definition`);

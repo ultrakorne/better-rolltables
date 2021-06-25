@@ -4,11 +4,11 @@ import { dropEventOnTable } from './core/brt-helper.js';
 
 export class BetterRT {
     static async enhanceRollTableView(rollTableConfig, html, rollTable) {
-        const tableClassName = rollTable.cssClass;// "editable";
-        const tableEntity = rollTableConfig.object;
-        const selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE;
-
-        const tableElement = document.querySelector(`[data-appid="${rollTableConfig.appId}"]`)
+        const tableClassName = rollTable.cssClas,// "editable";
+            tableEntity = rollTableConfig.object,
+            selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE,
+            tableElement = document.querySelector(`[data-appid="${rollTableConfig.appId}"]`);
+            
         let tableViewClass = tableElement.getElementsByClassName(tableClassName)[0];
 
         /** height size increase by type: */

@@ -27,7 +27,6 @@ export class BetterRT {
         const height = match[0];
         tableElement.style.height = (+height + addHeight) + "px";
 
-        debugger;
         let divElement = document.createElement("div");
         let brtData = duplicate(tableEntity.data.flags);
         brtData.disabled = !rollTable.editable;

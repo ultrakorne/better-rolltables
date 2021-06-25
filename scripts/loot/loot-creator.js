@@ -150,7 +150,7 @@ export class LootCreator {
         let currencyData = undefined;
 
         if (token.data.actorData.data == undefined) {
-            token.data.actorData['data'] = {}
+            token.data.actorData.data = {}
         }
         if (token.data.actorData.data.currency == undefined) {
             currencyData = currencyDataInitial;

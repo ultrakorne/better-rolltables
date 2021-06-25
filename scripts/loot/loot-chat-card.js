@@ -57,7 +57,7 @@ export class LootChatCard {
         const existingItem = this.itemsData.find(i => i.item.id === itemEntity.id);
         const quantity = getProperty(data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
         if (existingItem) {
-            existingItem.quantity = existingItem.quantity + quantity;
+            existingItem.quantity = +existingItem.quantity + +quantity;
         } else {
             //we will scale down the font size if an item name is too long
             const fontSize = Math.max(60, 100 - Math.max(0, itemEntity.name.length - 27) * 2);
@@ -112,7 +112,7 @@ export class LootChatCard {
             user: game.user._id,
             content: cardHtml
         };
-        
+
         addRollModeToChatData(chatData);
         ChatMessage.create(chatData);
     }

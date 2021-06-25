@@ -130,13 +130,6 @@ export class BetterRT {
         return rollButtonClone;
     }
 
-    static preUpdateRollTable(tableEntity, updateData, diff, tableId) {
-        // console.log("preUpdateRollTable");
-        setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.LOOT_CURRENCY_KEY}`, updateData["currency-input"]);
-        setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.ACTOR_NAME_KEY}`, updateData["loot-name-input"]);
-        setProperty(updateData, `flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.ROLLS_AMOUNT_KEY}`, updateData["loot-rolls-amount-input"]);
-    }
-
     static async showGenerateLootButton(htmlElement, tableEntity) {
         const generateLootBtn = document.createElement("button");
         generateLootBtn.setAttribute("class", "generate");

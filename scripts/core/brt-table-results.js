@@ -40,13 +40,13 @@ export class BetterResults {
                 t = this._processTextAsCurrency(t);
 
                 const regex = /(\s*[^\[@]*)@*(\w+)*\[([\w.,*+-\/\(\)]+)\]/g;
-                let matches;
+                let textString = t,
+                    commands = [],
+                    table,
+                    betterResult = {},
+                    matches = regex.exec(t);
 
-                let textString = t;
-                let commands = [];
-                let table;
-                let betterResult = {};
-                while (matches = regex.exec(t)) {
+                while (matches) {
                     //matches[1] is undefined in case we are matching [tablename]
                     //if we are matching @command[string] then matches[2] is the command and [3] is the arg inside []
                     // console.log(`match 0: ${matches[0]}, 1: ${matches[1]}, 2: ${matches[2]}, 3: ${matches[3]}`);
@@ -55,12 +55,13 @@ export class BetterResults {
                         textString = matches[1]
                     }
                     // textString = matches[1] || textString; //the first match is the text outside [], a rollformula
-                    const commandName = matches[2];
-                    const innerTableName = matches[3];
+                    const commandName = matches[2],
+                          innerTableName = matches[3];
+
                     if (!commandName && innerTableName) {
-                        const out = Utils.separateIdComendiumName(innerTableName);
-                        const tableName = out.nameOrId;
-                        const tableCompendiumName = out.compendiumName;
+                        const out = Utils.separateIdComendiumName(innerTableName),
+                            tableName = out.nameOrId,
+                            tableCompendiumName = out.compendiumName;
 
                         if (tableCompendiumName) {
                             table = await Utils.findInCompendiumByName(tableCompendiumName, tableName);
@@ -82,9 +83,10 @@ export class BetterResults {
 
                 //if a table definition is found, the textString is the rollFormula to be rolled on that table
                 if (table) {
-                    const numberRolls = BRTHelper.tryRoll(textString);
-                    const brtBuilder = new BRTBuilder(table);
-                    const innerResults = await brtBuilder.betterRoll(numberRolls);
+                    const numberRolls = BRTHelper.tryRoll(textString),
+                        brtBuilder = new BRTBuilder(table),
+                        innerResults = await brtBuilder.betterRoll(numberRolls);
+
                     this.tableResults = this.tableResults.concat(innerResults);
                 } else if (textString) {
                     //if no table definition is found, the textString is the item name
@@ -96,7 +98,6 @@ export class BetterResults {
                 }
             }
         } else {
-
             let betterResult = {};
             betterResult.img = result.data.img;
             betterResult.collection = result.data.collection;
@@ -107,24 +108,40 @@ export class BetterResults {
         return betterResults;
     }
 
+    /**
+     * 
+     * @param {String} tableText 
+     * @returns 
+     */
     _processTextAsCurrency(tableText) {
-        const regex = /{([^}]+)}/g
-        const input = tableText;
+        let regex = /{([^}]+)}/g,
+            matches = regex.exec(tableText);
 
-        let matches;
-        while (matches = regex.exec(input)) {
-            const currencyToAdd = this._generateCurrency(matches[1]);
-            this._addCurrency(currencyToAdd);
+        while (matches) {
+            this._addCurrency(this._generateCurrency(matches[1]));
         }
+
         return tableText.replace(regex, '');
     }
 
+    /**
+     * Add given currency to existing currency
+     * 
+     * @param {array} currencyData 
+     */
     _addCurrency(currencyData) {
-        for (var key in currencyData) {
+        for (let key in currencyData) {
             this.currencyData[key] = (this.currencyData[key] || 0) + currencyData[key];
         }
     }
 
+    /**
+     * Check given string and parse it against a regex to generate currency array
+     * 
+     * @param {String} currencyString 
+     * 
+     * @returns 
+     */
     _generateCurrency(currencyString) {
         const currenciesToAdd = {};
         if (currencyString) {
@@ -135,9 +152,10 @@ export class BetterResults {
                     ui.notifications.warn(`Currency loot field contain wrong formatting, currencies need to be define as "diceFormula[currencyType]" => "1d100[gp]" but was ${currency}`);
                     continue;
                 }
-                const rollFormula = match[1];
-                const currencyString = match[2];
-                const amount = BRTHelper.tryRoll(rollFormula);
+                const rollFormula = match[1],
+                    currencyString = match[2],
+                    amount = BRTHelper.tryRoll(rollFormula);
+
                 currenciesToAdd[currencyString] = (currenciesToAdd[currencyString] || 0) + amount;
             }
         }

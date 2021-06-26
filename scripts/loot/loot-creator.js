@@ -34,15 +34,11 @@ export class LootCreator {
     async addCurrenciesToActor() {
         let currencyData = duplicate(this.actor.data.data.currency);
         const lootCurrency = this.currencyData;
-        for (var key in lootCurrency) {
+
+        for (let key in lootCurrency) {
             if (currencyData.hasOwnProperty(key)) {
-                if (typeof(currencyData[key]) == 'object') {
-                    const amount = Number(currencyData[key].value || 0) + Number(lootCurrency[key]);
-                    currencyData[key] = {"value": amount.toString()};
-                } else {
-                    const amount = Number(currencyData[key] || 0) + Number(lootCurrency[key]);
-                    currencyData[key] = amount.toString();
-                }
+                const amount = Number(currencyData[key].value || 0) + Number(lootCurrency[key]);
+                currencyData[key] = {"value": amount.toString()};
             }
         }
         await this.actor.update({"data.currency": currencyData});

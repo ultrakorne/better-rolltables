@@ -27,8 +27,9 @@ export class BetterRT {
         const height = match[0];
         tableElement.style.height = (+height + addHeight) + "px";
 
-        let divElement = document.createElement("div");
-        let brtData = duplicate(tableEntity.data.flags);
+        let divElement = document.createElement("div"),
+            brtData = duplicate(tableEntity.data.flags);
+
         brtData.disabled = !rollTable.editable;
         let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.hbs", brtData);
         divElement.innerHTML = selectTypeHtml;
@@ -42,7 +43,6 @@ export class BetterRT {
         const selectTypeElement = divElement.getElementsByTagName("select")[0];
         selectTypeElement.onchange = async function () { await BetterRT.onOptionTypeChanged(selectTypeElement.value, tableEntity); };
 
-
         /** If we use default table, we stop here */
         if (selectedTableType === BRTCONFIG.TABLE_TYPE_NONE) return;
 
@@ -51,8 +51,8 @@ export class BetterRT {
             BetterRT.ShowFormulaField(tableViewClass, tableEntity, rollTable.editable);
         }
 
-        const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0];
-        const newRollButton = BetterRT.replaceRollButton(footer);
+        const footer = html[0].getElementsByClassName("sheet-footer flexrow")[0],
+            newRollButton = BetterRT.replaceRollButton(footer);
 
         /** change footer with new click event on rolls */
         switch (selectedTableType) {
@@ -90,14 +90,15 @@ export class BetterRT {
         for (let resultHTML of tableResultsHTML) {
             const resultId = resultHTML.getAttribute("data-result-id");
             if (resultId) {
-                const tableResult = tableEntity.getTableResult(resultId);
-                const detailsHTML = resultHTML.getElementsByClassName("result-details")[0];
-                const inputsHTML = detailsHTML.getElementsByTagName("input");
+                const tableResult = tableEntity.results.get(resultId),
+                    detailsHTML = resultHTML.getElementsByClassName("result-details")[0],
+                    inputsHTML = detailsHTML.getElementsByTagName("input");
 
                 for (let tableText of inputsHTML) {
                     if (tableText.getAttribute("type") == "text") {
                         /** tableText is for each row the text of the table */
                         const formulaInput = document.createElement("input");
+
                         formulaInput.classList.add("result-brt-formula");
                         formulaInput.placeholder = "formula";
                         formulaInput.type = "text";
@@ -122,6 +123,11 @@ export class BetterRT {
         }
     }
 
+    /**
+     * 
+     * @param {document} footer 
+     * @returns 
+     */
     static replaceRollButton(footer) {
         const rollButton = footer.getElementsByClassName("roll")[0];
         //remove the default listener by cloning the button
@@ -130,6 +136,11 @@ export class BetterRT {
         return rollButtonClone;
     }
 
+    /**
+     * 
+     * @param {html} htmlElement 
+     * @param {tableEntity} tableEntity 
+     */
     static async showGenerateLootButton(htmlElement, tableEntity) {
         const generateLootBtn = document.createElement("button");
         generateLootBtn.setAttribute("class", "generate");

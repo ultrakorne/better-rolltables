@@ -31,8 +31,8 @@ class WelcomeScreen extends Application {
       let version = "0.0.0";
       if (event.currentTarget.checked)
         version = VersionCheck.get(BRTCONFIG.NAMESPACE);
-      VersionCheck.set(BRTCONFIG.NAMESPACE, version)
-    })
+      VersionCheck.set(BRTCONFIG.NAMESPACE, version);
+    });
   }
 }
 

@@ -44,15 +44,15 @@ export class BetterResults {
                     commands = [],
                     table,
                     betterResult = {},
-                    matches = regex.exec(t);
+                    matches;
 
-                while (matches) {
+                while (matches = regex.exec(t) !== null) {
                     //matches[1] is undefined in case we are matching [tablename]
                     //if we are matching @command[string] then matches[2] is the command and [3] is the arg inside []
                     // console.log(`match 0: ${matches[0]}, 1: ${matches[1]}, 2: ${matches[2]}, 3: ${matches[3]}`);
 
                     if (matches[1] != undefined && matches[1].trim() != '') {
-                        textString = matches[1]
+                        textString = matches[1];
                     }
                     // textString = matches[1] || textString; //the first match is the text outside [], a rollformula
                     const commandName = matches[2],
@@ -115,9 +115,9 @@ export class BetterResults {
      */
     _processTextAsCurrency(tableText) {
         let regex = /{([^}]+)}/g,
-            matches = regex.exec(tableText);
+            matches;
 
-        while (matches) {
+        while ((matches = regex.exec(tableText)) != null) {
             this._addCurrency(this._generateCurrency(matches[1]));
         }
 

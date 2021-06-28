@@ -8,9 +8,8 @@ import { BRTCONFIG } from './config.js';
  */
 export async function dropEventOnTable(event, table) {
     // console.log("EVENT ", event);
-    let data;
     try {
-        data = JSON.parse(event.dataTransfer.getData('text/plain'));
+        let data = JSON.parse(event.dataTransfer.getData('text/plain'));
     } catch (err) {
         console.log("no entity dropped");
         return;
@@ -53,29 +52,7 @@ export async function dropEventOnTable(event, table) {
         resultTableData.type = 1;
         resultTableData.collection = data.type;
 
-        switch (data.type) {
-            case "RollTable":
-                entityToLink = game.tables.get(data.id);
-                break;
-            case "Actor":
-                entityToLink = game.actors.get(data.id);
-                break;
-            case "Item":
-                entityToLink = game.items.get(data.id);
-                break;
-            case "JournalEntry":
-                entityToLink = game.journal.get(data.id);
-                break;
-            case "Playlist":
-                entityToLink = game.playlists.get(data.id);
-                break;
-            case "Scene":
-                entityToLink = game.scenes.get(data.id);
-                break;
-            case "Macro":
-                entityToLink = game.macros.get(data.id);
-                break;
-        }
+        entityToLink = getEntityByType(data);
     }
 
     if (entityToLink) {
@@ -118,4 +95,30 @@ export function tryRoll(rollFormula) {
 export function rollsAmount(table) {
     const rollFormula = table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLLS_AMOUNT_KEY);
     return tryRoll(rollFormula);
+}
+
+export function getEntityByType(data) {
+    switch (data.type) {
+        case "RollTable":
+            entityToLink = game.tables.get(data.id);
+            break;
+        case "Actor":
+            entityToLink = game.actors.get(data.id);
+            break;
+        case "Item":
+            entityToLink = game.items.get(data.id);
+            break;
+        case "JournalEntry":
+            entityToLink = game.journal.get(data.id);
+            break;
+        case "Playlist":
+            entityToLink = game.playlists.get(data.id);
+            break;
+        case "Scene":
+            entityToLink = game.scenes.get(data.id);
+            break;
+        case "Macro":
+            entityToLink = game.macros.get(data.id);
+            break;
+    }
 }

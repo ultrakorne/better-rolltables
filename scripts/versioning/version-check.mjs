@@ -24,7 +24,7 @@ export default class VersionCheck {
     let oV = game.settings.get(mN, "version");
 
     return isNewerVersion(mV, oV);
-  };
+  }
 
   static set(mN, v) {
     if (!this._r) this._reg(mN);

@@ -56,7 +56,7 @@ export class LootCreator {
 
     /**
      *
-     * @param {object} item rapresentation
+     * @param {object} item representation
      * @param {Actor} actor to which to add items to
      * @param {boolean} stackSame if true add quantity to an existing item of same name in the current actor
      * @returns {Item} the create Item (foundry item)

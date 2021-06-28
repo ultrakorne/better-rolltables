@@ -34,15 +34,11 @@ export class LootCreator {
     async addCurrenciesToActor() {
         let currencyData = duplicate(this.actor.data.data.currency);
         const lootCurrency = this.currencyData;
-        for (var key in lootCurrency) {
+
+        for (let key in lootCurrency) {
             if (currencyData.hasOwnProperty(key)) {
-                if (typeof(currencyData[key]) == 'object') {
-                    const amount = Number(currencyData[key].value || 0) + Number(lootCurrency[key]);
-                    currencyData[key] = {"value": amount.toString()};
-                } else {
-                    const amount = Number(currencyData[key] || 0) + Number(lootCurrency[key]);
-                    currencyData[key] = amount.toString();
-                }
+                const amount = Number(currencyData[key].value || 0) + Number(lootCurrency[key]);
+                currencyData[key] = {"value": amount.toString()};
             }
         }
         await this.actor.update({"data.currency": currencyData});
@@ -66,23 +62,22 @@ export class LootCreator {
      */
     async _createLootItem(item, actor, stackSame = true) {
         const itemData = await this.buildItemData(item);
-
         const itemPrice = getProperty(itemData, BRTCONFIG.PRICE_PROPERTY_PATH) || 0;
         /** if the item is already owned by the actor (same name and same PRICE) */
-        const sameItemOwnedAlready = actor.getEmbeddedCollection("OwnedItem").find(i => i.name === itemData.name && itemPrice == getProperty(i, BRTCONFIG.PRICE_PROPERTY_PATH));
 
+        const embeddedItems = [...actor.getEmbeddedCollection("Item").values()];
+        const sameItemOwnedAlready = embeddedItems.find(i => i.name === itemData.name && itemPrice == getProperty(i.data, BRTCONFIG.PRICE_PROPERTY_PATH));
         if (sameItemOwnedAlready && stackSame) {
             /** add quantity to existing item*/
             const itemQuantity = getProperty(itemData, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
-            const sameItemOwnedAlreadyQuantity = getProperty(sameItemOwnedAlready, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
-            let updateItem = {_id: sameItemOwnedAlready._id};
+            const sameItemOwnedAlreadyQuantity = getProperty(sameItemOwnedAlready.data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
+            let updateItem = {_id: sameItemOwnedAlready.id};
             setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, +sameItemOwnedAlreadyQuantity + +itemQuantity);
-
-            await actor.updateEmbeddedEntity("OwnedItem", updateItem);
-            return actor.getOwnedItem(sameItemOwnedAlready._id);
+            await actor.updateEmbeddedDocuments("Item", [updateItem]);
+            return actor.items.get(sameItemOwnedAlready.id);
         } else {
             /**we create a new item if we don't own already */
-            return await actor.createOwnedItem(itemData);
+            return await actor.createEmbeddedDocuments("Item", [itemData]);
         }
     }
 

@@ -1,5 +1,6 @@
-import {BRTCONFIG} from '../core/config.js';
-import {LootManipulator} from './loot-manipulation.js';
+import { getItemFromCompendium } from '../core/utils.js';
+import { BRTCONFIG } from '../core/config.js';
+import { LootManipulator } from './loot-manipulation.js';
 
 export class LootCreator {
     /**
@@ -55,7 +56,7 @@ export class LootCreator {
 
     /**
      *
-     * @param {object} item rapresentation
+     * @param {object} item representation
      * @param {Actor} actor to which to add items to
      * @param {boolean} stackSame if true add quantity to an existing item of same name in the current actor
      * @returns {Item} the create Item (foundry item)
@@ -81,18 +82,17 @@ export class LootCreator {
         }
     }
 
+    /**
+     * 
+     * @param {object} item 
+     * @returns 
+     */
     async buildItemData(item) {
         let itemData;
 
         /** Try first to load item from compendium */
         if (item.collection) {
-            const compendium = game.packs.find(t => t.collection === item.collection);
-            if (compendium) {
-                let indexes = await compendium.getIndex();
-                let entry = indexes.find(e => e.name.toLowerCase() === item.text.toLowerCase());
-                const itemEntity = await compendium.getEntity(entry._id);
-                itemData = duplicate(itemEntity.data);
-            }
+            itemData = await getItemFromCompendium(item);
         }
 
         /** Try first to load item from item list */
@@ -118,6 +118,12 @@ export class LootCreator {
         return itemData;
     }
 
+    /**
+     * 
+     * @param {object} itemData 
+     * @param {object[]} commands 
+     * @returns {object} itemData
+     */
     _applyCommandToItemData(itemData, commands) {
         for (let cmd of commands) {
             //TODO check the type of command, that is a command to be rolled and a valid command
@@ -125,27 +131,31 @@ export class LootCreator {
             try {
                 rolledValue = new Roll(cmd.arg).roll().total;
             } catch (error) {
-                continue;
+                continue;   
             }
             setProperty(itemData, `data.${cmd.command.toLowerCase()}`, rolledValue);
         }
         return itemData;
     }
 
+    /**
+     * 
+     * @param {Token} token 
+     */
     async addCurrenciesToToken(token) {
         //needed for base key set in the event that a token has no currency properties
-        let currencyDataInitial = {
+        const currencyDataInitial = {
             cp: {value: "0"},
             ep: {value: "0"},
             gp: {value: "0"},
             pp: {value: "0"},
             sp: {value: "0"}
-        }
+        };
 
-        let currencyData = undefined;
+        let currencyData;
 
         if (token.data.actorData.data == undefined) {
-            token.data.actorData['data'] = {}
+            token.data.actorData.data = {};
         }
         if (token.data.actorData.data.currency == undefined) {
             currencyData = currencyDataInitial;
@@ -162,6 +172,13 @@ export class LootCreator {
 
     }
 
+    /**
+     * 
+     * @param {token} token 
+     * @param {boolean} stackSame
+     * 
+     * @returns {object[]} items
+     */
     async addItemsToToken(token, stackSame = true) {
         let items = [];
         for (const item of this.betterResults) {

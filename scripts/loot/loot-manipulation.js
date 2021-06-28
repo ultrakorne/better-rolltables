@@ -1,7 +1,6 @@
 import { BRTCONFIG } from '../core/config.js';
 
-export class LootManipulator
-{
+export class LootManipulator {
     async _getSpellCompendiumIndex() {
         const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
         const spellCompendiumIndex = await game.packs.find(t => t.collection === spellCompendiumName).getIndex();
@@ -42,8 +41,8 @@ export class LootManipulator
         }
         let index = await this._getSpellCompendiumIndex();
 
-        let spellFound = false;
-        let itemEntity;
+        let spellFound = false,
+            itemEntity;
 
         while (this.rndSpellIdx.length > 0 && !spellFound) {
 
@@ -64,7 +63,7 @@ export class LootManipulator
         //make the name shorter by removing some text
         itemData.name = itemData.name.replace(/^(Spell\s)/, "");
         itemData.name = itemData.name.replace(/(Cantrip\sLevel)/, "Cantrip");
-        itemData.name += ` (${itemEntity.data.name})`
+        itemData.name += ` (${itemEntity.data.name})`;
         return itemData;
     }
 }

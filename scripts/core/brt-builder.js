@@ -8,6 +8,11 @@ export class BRTBuilder {
         this.table = tableEntity;
     }
 
+    /**
+     * 
+     * @param {*} rollsAmount 
+     * @returns {array} results
+     */
     async betterRoll(rollsAmount = undefined) {
         this.mainRoll = undefined;
         rollsAmount = rollsAmount || BRTHelper.rollsAmount(this.table);
@@ -15,15 +20,27 @@ export class BRTBuilder {
         return this.results;
     }
 
+    /**
+     * 
+     * @param {array} results
+     */
     async createChatCard(results) {
         await this.table.toMessage(results, { roll: this.mainRoll });
     }
 
+    /**
+     * 
+     * @param {number} amount 
+     * @param {tableEntity} table 
+     * @param {object} options 
+     * 
+     * @returns {array}
+     */
     async rollManyOnTable(amount, table, { _depth = 0 } = {}) {
-
+        let maxRecursions = 5;
         // Prevent infinite recursion
-        if (_depth > 5) {
-            throw new Error(`Recursion depth exceeded when attempting to draw from RollTable ${table._id}`);
+        if (_depth > maxRecursions) {
+            throw new Error(`Recursion depth of ${maxRecursions} exceeded when attempting to draw from RollTable ${table._id}`);
         }
 
         let drawnResults = [];
@@ -32,7 +49,7 @@ export class BRTBuilder {
             let resultToDraw = amount;
             /** if we draw without replacement we need to reset the table once all entries are drawn */
             if (!table.data.replacement) {
-                const resultsLeft = table.data.results.reduce(function (n, r) { return n + (!r.drawn) }, 0);
+                const resultsLeft = table.data.results.reduce(function (n, r) { return n + (!r.drawn); }, 0);
 
                 if (resultsLeft === 0) {
                     await table.reset();
@@ -53,15 +70,15 @@ export class BRTBuilder {
             }
 
             for (const entry of draw.results) {
-                const formulaAmount = getProperty(entry, `data.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "";
-                const entryAmount = BRTHelper.tryRoll(formulaAmount);
+                const formulaAmount = getProperty(entry, `data.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "",
+                    entryAmount = BRTHelper.tryRoll(formulaAmount);
 
                 let innerTable;
                 if (entry.data.type === CONST.TABLE_RESULT_TYPES.ENTITY && entry.data.collection === "RollTable") {
                     innerTable = game.tables.get(entry.data.resultId);
                 } else if (entry.data.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM) {
                     const entityInCompendium = await Utils.findInCompendiumByName(entry.data.collection, entry.data.text);
-                    if (entityInCompendium.entity === "RollTable") {
+                    if (entityInCompendium.documentName === "RollTable") {
                         innerTable = entityInCompendium;
                     }
                 }

@@ -13,11 +13,16 @@ export class StoryBuilder {
         this._storyGm = "";
     }
 
+    /**
+     * Draw story from entity
+     * 
+     */
     async drawStory() {
         const draw = await this.table.drawMany(1, { displayChat: false });
 
-        let journalContent;
-        let errorString;
+        let journalContent,
+            errorString;
+
         for (const entry of draw.results) {
             /** entity type 2 is when an entity in the world is linked */
             if (entry.data.type == 1 && entry.data.collection == "JournalEntry") {
@@ -54,6 +59,10 @@ export class StoryBuilder {
         // console.log("story ", this._story);
     }
 
+    /**
+     * 
+     * @param {string} storyDefinition 
+     */
     async _parseStoryDefinition(storyDefinition) {
 
         const PARSE_MODE = {
@@ -103,14 +112,19 @@ export class StoryBuilder {
         }
     }
 
-
+    /**
+     * 
+     * @param {*} defValue 
+     * @param {string} definitionName 
+     * @returns 
+     */
     async _processDefinition(defValue, definitionName) {
 
         // console.log("value ", defValue);
 
         const match = /{ *([^}]*?) *}/.exec(definitionName);
         if (!match) {
-            ui.notifications.error(`definition error, ${definitionName} is malformed. After keyword AS we expect a name in brackets {}`)
+            ui.notifications.error(`definition error, ${definitionName} is malformed. After keyword AS we expect a name in brackets {}`);
             return;
         }
         const definition = match[1];
@@ -172,7 +186,7 @@ export class StoryBuilder {
         } else {
             const regexRoll = /\s*\[\[ *([^\]]*?) *\]\]/;
             /** if no table match, lets check for a formula */
-            const rollMatch = regexRoll.exec(defValue)
+            const rollMatch = regexRoll.exec(defValue);
             if (rollMatch) {
                 const rollFormula = rollMatch[1];
                 try {
@@ -190,24 +204,26 @@ export class StoryBuilder {
         }
     }
 
-    generatedStory() {
+    getGeneratedStory() {
         return this._generateStory(this._story);
     }
 
-    generatedStoryGM() {
+    getGeneratedStoryGM() {
         return this._generateStory(this._storyGm);
     }
 
+    /**
+     * @param {*} story
+     * @returns {}
+     */
     _generateStory(story) {
         if (!story) return story;
 
-        const input = story;
-        const regex = /{ *([^}]*?) *}/g
-
-        let replacedStory = story;
-
-        let matches;
-        while (matches = regex.exec(input)) {
+        const regex = /{ *([^}]*?) *}/g;
+        let replacedStory = story,
+            matches;
+            
+        while ((matches = regex.exec(story)) != null) {
             const value = getProperty(this._storyTokens, matches[1]);
             if (!value) {
                 ui.notifications.error(`cannot find a value for token ${matches[1]} in #story definition`);

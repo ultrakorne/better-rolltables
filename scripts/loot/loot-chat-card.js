@@ -1,5 +1,5 @@
 import { LootCreator } from './loot-creator.js';
-import { addRollModeToChatData } from '../core/utils.js';
+import { addRollModeToChatData, getItemFromCompendium } from '../core/utils.js';
 import { BRTCONFIG } from '../core/config.js';
 
 /**
@@ -25,17 +25,13 @@ export class LootChatCard {
             /** we pass though the data, since we might have some data manipulation that changes an existing item, in that case even if it was initially 
              * existing or in a compendium we have to create a new one */
             const data = await lootCreator.buildItemData(item);
-            if (item.collection) {
-                const compendium = game.packs.find(t => t.collection === item.collection);
-                if (compendium) {
-                    let indexes = await compendium.getIndex();
-                    let entry = indexes.find(e => e.name === data.name);
-                    if (entry) { //since the data from buildItemData could have been changed (e.g. the name of the scroll item that was coming from a compendium originally, entry can be undefined)
-                        const itemEntity = await compendium.getEntity(entry._id);
-                        this.addToItemData(itemEntity, data);
-                        continue;
-                    }
-                }
+            if (item.collection) {                
+                const itemEntity = await getItemFromCompendium(item);
+
+                if (itemEntity) {
+                    this.addToItemData(itemEntity, data);
+                    continue;
+                }                         
             }
 
             const itemEntity = game.items.getName(data.name);
@@ -54,8 +50,8 @@ export class LootChatCard {
     }
 
     addToItemData(itemEntity, data) {
-        const existingItem = this.itemsData.find(i => i.item.id === itemEntity.id);
-        const quantity = getProperty(data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
+        const existingItem = this.itemsData.find(i => i.item.id === itemEntity.id),
+            quantity = getProperty(data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
         if (existingItem) {
             existingItem.quantity = +existingItem.quantity + +quantity;
         } else {
@@ -93,7 +89,8 @@ export class LootChatCard {
             tableData: table.data,
             itemsData: this.itemsData,
             currency: currencyString
-        }
+        };
+
         const cardHtml = await renderTemplate("modules/better-rolltables/templates/loot-chat-card.hbs", chatCardData);
 
         let flavorString;
@@ -102,15 +99,16 @@ export class LootChatCard {
         } else if (this.numberOfDraws > 0) {
             flavorString = game.i18n.format('BRT.DrawResultSingular', { amount: this.numberOfDraws, name: table.data.name });
         } else {
-            flavorString = game.i18n.format('BRT.DrawResultZero', { name: table.data.name });;
+            flavorString = game.i18n.format('BRT.DrawResultZero', { name: table.data.name });
         }
 
         let chatData = {
             flavor: flavorString,
             sound: "sounds/dice.wav",
-            user: game.user._id,
+            user: game.user.data._id,
             content: cardHtml
-        }
+        };
+
         addRollModeToChatData(chatData);
         ChatMessage.create(chatData);
     }

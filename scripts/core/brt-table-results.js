@@ -46,7 +46,7 @@ export class BetterResults {
                     betterResult = {},
                     matches;
 
-                while (matches = regex.exec(t) !== null) {
+                while ((matches = regex.exec(t)) !== null) {
                     //matches[1] is undefined in case we are matching [tablename]
                     //if we are matching @command[string] then matches[2] is the command and [3] is the arg inside []
                     // console.log(`match 0: ${matches[0]}, 1: ${matches[1]}, 2: ${matches[2]}, 3: ${matches[3]}`);

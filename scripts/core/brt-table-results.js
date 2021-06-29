@@ -38,6 +38,7 @@ export class BetterResults {
             for (let t of textResults) {
                 //if the text is a currency, we process that first
                 t = this._processTextAsCurrency(t);
+                t = this._rollInlineDice(t);
 
                 const regex = /(\s*[^\[@]*)@*(\w+)*\[([\w.,*+-\/\(\)]+)\]/g;
                 let textString = t,
@@ -133,6 +134,21 @@ export class BetterResults {
         for (let key in currencyData) {
             this.currencyData[key] = (this.currencyData[key] || 0) + currencyData[key];
         }
+    }
+
+    /**
+     * 
+     * @param {string} tableText 
+     * @returns 
+     */
+    _rollInlineDice(tableText) {
+        let regex = /\[{2}(\w*[^\]])\]{2}/g,
+            matches;
+        while ((matches = regex.exec(tableText)) != null) {
+            tableText = tableText.replace(matches[0], BRTHelper.tryRoll(matches[1]));
+        }
+
+        return tableText;
     }
 
     /**

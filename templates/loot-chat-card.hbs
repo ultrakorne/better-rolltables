@@ -15,9 +15,9 @@
             <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
                 <a class="entity-link" draggable="true" data-entity="Item" 
                 {{#if itemData.item.compendium}}
-                    data-pack="{{itemData.item.compendium.collection}}" data-lookup="{{itemData.item.id}}" 
+                    data-pack="{{itemData.item.compendium.collection}}" data-lookup="{{itemData.item._id}}" 
                     {{else}}
-                    data-id="{{itemData.item.id}}" 
+                    data-id="{{itemData.item._id}}" 
                     {{/if}}>
                     <i class="fas fa-suitcase"></i> {{itemData.item.name}}
                 </a>

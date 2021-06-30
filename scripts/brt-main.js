@@ -28,6 +28,7 @@ Hooks.on("ready", () => {
 });
 
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
+Hooks.on('getCompendiumDirectoryEntryContext', BetterTables.enhanceCompendiumContextMenu);
 
 function registerSettings() {
   let defaultLootSheet = "dnd5e.LootSheet5eNPC";

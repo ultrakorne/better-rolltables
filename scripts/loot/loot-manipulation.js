@@ -1,11 +1,16 @@
 import { BRTCONFIG } from '../core/config.js';
 
 export class LootManipulator {
+
+    __constructor(){
+        this.rndSpellIdx = false;
+    }
+
     async _getSpellCompendiumIndex() {
         const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
         const spellCompendiumIndex = await game.packs.find(t => t.collection === spellCompendiumName).getIndex();
 
-        for (var i = 0; i < spellCompendiumIndex.length; i++) {
+        for (var i = 0; i < spellCompendiumIndex.size; i++) {
             if(!this.rndSpellIdx) {
                 this.rndSpellIdx = [];
             }
@@ -34,7 +39,7 @@ export class LootManipulator {
         let level = match[1].toLowerCase() === "cantrip" ? 0 : match[1];
 
         const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
-        const compendium = game.packs.find(t => t.collection === spellCompendiumName);
+        const compendium = await game.packs.find(t => t.collection === spellCompendiumName);
         if (!compendium) {
             console.log(`Spell Compendium ${spellCompendiumName} not found`);
             return itemData;
@@ -47,7 +52,8 @@ export class LootManipulator {
         while (this.rndSpellIdx.length > 0 && !spellFound) {
 
             let rnd = this.rndSpellIdx.pop();
-            let entry = await compendium.getEntity(index[rnd]._id);
+            let rndIndexKey = Array.from(index.keys())[rnd];
+            let entry = await compendium.getEntity(Array.from(index.keys())[rnd]);
             const spellLevel = getProperty(entry.data, BRTCONFIG.SPELL_LEVEL_PATH);
             if (spellLevel == level) {
                 itemEntity = entry;
@@ -60,10 +66,12 @@ export class LootManipulator {
             return itemData;
         }
 
+        let itemLink = `@Compendium[${spellCompendiumName}.${itemEntity.data._id}]`;
         //make the name shorter by removing some text
         itemData.name = itemData.name.replace(/^(Spell\s)/, "");
         itemData.name = itemData.name.replace(/(Cantrip\sLevel)/, "Cantrip");
         itemData.name += ` (${itemEntity.data.name})`;
+        itemData.data.description.value = '<blockquote>' + itemLink + '<br />'+ itemEntity.data.data.description.value + '<hr />' + itemData.data.description.value + '</blockquote>';
         return itemData;
     }
 }

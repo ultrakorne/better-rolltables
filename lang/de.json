@@ -1,0 +1,22 @@
+{
+    "BRT.TypeLabel": "`Better Table` Typ",
+    "BRT.TypeDefault": "Standard Tabelle",
+    "BRT.BetterTable": "`Better Table` Tabelle",
+    "BRT.TypeLoot": "Beute Tabelle (loot)",
+    "BRT.StoryLoot": "Story Tabelle",
+    "BRT.CurrencyLoot": "Währungsbeute",
+    "BRT.Currency": "Währung:",
+    "BRT.CurrencyLootPlaceholder": "Komma separierte Formel(n) z.B.: 1d4[gp], (1d4+1)*10[sp]",
+    "BRT.LootActorName": "Beute zu Akteur hinzufügen",
+    "BRT.LootActorNamePlaceholder": "Wenn leer, wird immer ein neuer Akteur erzeugt",
+    "BRT.GenerateLoot.Button": " Beute generieren",
+    "BRT.Settings.LootSheet.Title": "Bogen der für generierte Beute genutzt wird",
+    "BRT.Settings.LootSheet.Description": "Du kannst einen alternativen Bogen für die Beuteerzeugung wählen.",
+    "BRT.Settings.SpellCompendium.Title": "Kompendium für zufällige Zauberrollen",
+    "BRT.Settings.SpellCompendium.Description": "Du kannst ein Kompendium wählen das für Zauber genutzt wenn zufällige Zauberschriftrollen erzeugt werden.",
+    "BRT.LootRollAmount": "Anzahl an Würfen",
+    "BRT.LootRollAmountPlaceholder" : "Mehrfach auf die Tabelle würfeln.",
+    "BRT.DrawResultPlural": "Zieht {amount} Ergebnisse aus {name}",
+    "BRT.DrawResultSingular": "Zieht {amount} Ergebnis aus {name}",
+    "BRT.DrawResultZero": "Würfle auf {name}"
+}

@@ -92,43 +92,74 @@ export class BetterTables {
 
 
     /**
-     * create a new RollTable by extracting entry from a compendium to use 
+     * Create a new RollTable by extracting entries from a compendium.
+     *  
      * @param {string} tableName the name of the table entity that will be created
      * @param {string} compendiumName the name of the compendium to use for the table generation
      * @param {function(Entity)} weightPredicate a function that returns a weight (number) that will be used 
      * for the tableResult weight for that given entity. returning 0 will exclude the entity from appearing in the table
      */
     async createTableFromCompendium(tableName, compendiumName, { weightPredicate = null } = {}) {
-        let data = { name: tableName };
-        const newTable = await RollTable.create(data);
+        let data = { name: tableName },
+            tableArray = [];
+        const compendium = game.packs.find(t => t.collection === compendiumName);        
 
-        const compendium = game.packs.find(t => t.collection === compendiumName);
-        if (compendium) {
-            const compendiumIndex = await compendium.getIndex();
-            const firstEntity = await compendium.getEntity(compendiumIndex[0]._id);
+        if (compendium && (compendium.size > 0)) {  
+            const newTable = await RollTable.create(data);
+
+            ui.notifications.info(`Starting generation of rolltable for ${compendiumName} with ${compendium.size} entries.`);
+
+            const compendiumItems = await compendium.getDocuments();
+            // const compendiumIndex = await compendium.getIndex();
+            // const firstEntity = await compendium.getEntity(compendiumIndex[0]._id);
             // console.log("FIRST ENTITY ", firstEntity);
 
-            for (let entry of compendiumIndex) {
-                const entity = await compendium.getEntity(entry._id);
-
+            for (let item of compendiumItems) {
                 let weight = 1;
                 if (weightPredicate) {
-                    weight = weightPredicate(entity);
+                    weight = weightPredicate(item);
                 }
                 if (weight == 0) continue;
 
-                let resultTableData = {};
-                resultTableData.type = 2;
-                resultTableData.collection = compendiumName;
-                resultTableData.text = entity.name;
-                resultTableData.img = entity.img;
-                resultTableData.weight = weight;
-                resultTableData.range = [1, 1];
-                await newTable.createEmbeddedEntity("TableResult", resultTableData);
+                let tableEntryData = {};
+                tableEntryData.type = 2;
+                tableEntryData.collection = compendiumName;
+                tableEntryData.text = item.name;
+                tableEntryData.img = item.img;
+                tableEntryData.weight = weight;
+                tableEntryData.range = [1, 1];
+
+                tableArray.push(tableEntryData);
             }
+            await newTable.createEmbeddedDocuments("TableResult", tableArray);
             await newTable.normalize();
+
+            ui.notifications.info(`Rolltable ${tableName} with ${tableArray.length} entries was generated.`);
         } else {
             ui.notifications.warn(`Compendium named ${compendiumName} not found`);
         }
+    }
+
+    /**
+     * 
+     * @param {html} html 
+     * @param {Array} options 
+     */
+    static async enhanceCompendiumContextMenu(html, options) {
+        options.push({
+            "name": "Generate rolltable",
+            "icon": '<i class="fas fa-th-list"></i>',
+            "callback": li => {
+                BetterTables.menuCallBackCreateTable(li.data('pack'));
+            }            
+        });        
+    }
+
+    /**
+     * 
+     * @param {String} compendium 
+     */
+    static async menuCallBackCreateTable(compendium_id){
+        await game.betterTables.createTableFromCompendium('BRT | '+ compendium_id,compendium_id);
     }
 }

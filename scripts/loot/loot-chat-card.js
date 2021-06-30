@@ -6,6 +6,7 @@ import { BRTCONFIG } from '../core/config.js';
  * create a chat card based on the content of the object LootData
  */
 export class LootChatCard {
+
     /**
      * @param {object} betterResults 
      * @param {object} currencyData
@@ -24,34 +25,35 @@ export class LootChatCard {
             this.numberOfDraws++;
             /** we pass though the data, since we might have some data manipulation that changes an existing item, in that case even if it was initially 
              * existing or in a compendium we have to create a new one */
-            const data = await lootCreator.buildItemData(item);
+            const itemData = await lootCreator.buildItemData(item);
             if (item.collection) {                
                 const itemEntity = await getItemFromCompendium(item);
 
-                if (itemEntity) {
-                    this.addToItemData(itemEntity, data);
+                if (itemEntity && (itemEntity.name == itemData.name)) {
+                    this.addToItemData(itemEntity, itemData);
                     continue;
                 }                         
             }
 
-            const itemEntity = game.items.getName(data.name);
+            const itemEntity = game.items.getName(itemData.name);
             if (itemEntity) {
-                this.addToItemData(itemEntity, data);
+                this.addToItemData(itemEntity, itemData);
                 continue;
             }
 
             const itemFolder = await this.getBRTFolder();
-            data.folder = itemFolder.id;
+            itemData.folder = itemFolder.id;
 
-            setProperty(data, "permission.default", CONST.ENTITY_PERMISSIONS.OBSERVER);
-            const newItem = await Item.create(data);
-            this.addToItemData(newItem, data);
+            setProperty(itemData, "permission.default", CONST.ENTITY_PERMISSIONS.OBSERVER);
+            const newItem = await Item.create(itemData);
+            this.addToItemData(newItem, itemData);
         }
     }
 
     addToItemData(itemEntity, data) {
         const existingItem = this.itemsData.find(i => i.item.id === itemEntity.id),
             quantity = getProperty(data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
+
         if (existingItem) {
             existingItem.quantity = +existingItem.quantity + +quantity;
         } else {

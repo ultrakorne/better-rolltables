@@ -35,6 +35,11 @@
   "compatibleCoreVersion": "0.8.8",
   "languages": [
     {
+      "lang": "de",
+      "name": "Deutsch (German)",
+      "path": "lang/de.json"
+    },
+    {
       "lang": "en",
       "name": "English",
       "path": "lang/en.json"

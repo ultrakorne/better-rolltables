@@ -31,3 +31,8 @@
   width: 84%;
   margin-left: 3px;
 }
+
+.story-text-selectable * {
+  user-select: text;
+  -moz-user-select: text;
+}

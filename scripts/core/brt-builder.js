@@ -78,7 +78,7 @@ export class BRTBuilder {
                     innerTable = game.tables.get(entry.data.resultId);
                 } else if (entry.data.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM) {
                     const entityInCompendium = await Utils.findInCompendiumByName(entry.data.collection, entry.data.text);
-                    if (entityInCompendium.documentName === "RollTable") {
+                    if ((entityInCompendium != undefined) && entityInCompendium.documentName === "RollTable") {
                         innerTable = entityInCompendium;
                     }
                 }

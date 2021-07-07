@@ -51,7 +51,7 @@ export class LootChatCard {
     }
 
     addToItemData(itemEntity, data) {
-        const existingItem = this.itemsData.find(i => i.item.id === itemEntity.id),
+        const existingItem = this.itemsData.find(i => i.item._id === itemEntity._id),
             quantity = getProperty(data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1;
 
         if (existingItem) {

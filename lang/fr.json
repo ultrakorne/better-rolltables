@@ -1,0 +1,22 @@
+{
+    "BRT.TypeLabel": "Type de table",
+    "BRT.TypeDefault": "Table par défaut",
+    "BRT.BetterTable": "Table améliorée",
+    "BRT.TypeLoot": "Table de butin",
+    "BRT.StoryLoot": "Table d'histoire",
+    "BRT.CurrencyLoot": "Butin d'argent",
+    "BRT.Currency": "Monnaies :",
+    "BRT.CurrencyLootPlaceholder": "Ajouter des formules séparées par des virgules : 1d4[gp], (1d4+1)*10[sp]",
+    "BRT.LootActorName": "Ajouter le butin à un acteur",
+    "BRT.LootActorNamePlaceholder": "Si vide, un nouvel acteur sera créé à chaque fois",
+    "BRT.GenerateLoot.Button": " Générer le butin",
+    "BRT.Settings.LootSheet.Title": "Feuille à utiliser pour les butins générés",
+    "BRT.Settings.LootSheet.Description": "Vous pouvez configurer une feuille alternative pour les acteurs créés pour la génération des butins",
+    "BRT.Settings.SpellCompendium.Title": "Compendium à utiliser pour les parchemins de sorts aléatoires",
+    "BRT.Settings.SpellCompendium.Description": "Vous pouvez préciser le nom du compendium contenant des sorts à utiliser pour la création de parchemins aléatoires",
+    "BRT.LootRollAmount": "Nombre de jets",
+    "BRT.LootRollAmountPlaceholder" : "Jette un jet sur l'intégralité de la table plusieurs fois",
+    "BRT.DrawResultPlural": "Vous avez tiré {amount} résultats de {name}",
+    "BRT.DrawResultSingular": "Vous avez tiré {amount} résultat de {name}",
+    "BRT.DrawResultZero": "Tirage sur {name}"
+}

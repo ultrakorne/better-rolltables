@@ -13,7 +13,7 @@ export class BetterResults {
 
     async buildResults(table) {
         const currencyString = table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_CURRENCY_KEY);
-        this.currencyData = this._generateCurrency(currencyString);
+        this.currencyData = await this._generateCurrency(currencyString);
 
         for (let i = 0; i < this.tableResults.length; i++) {
             const betterResults = await this._parseResult(this.tableResults[i]);
@@ -37,8 +37,8 @@ export class BetterResults {
 
             for (let t of textResults) {
                 //if the text is a currency, we process that first
-                t = this._processTextAsCurrency(t);
-                t = this._rollInlineDice(t);
+                t = await this._processTextAsCurrency(t);
+                t = await this._rollInlineDice(t);
 
                 const regex = /(\s*[^\[@]*)@*(\w+)*\[([\w.,*+-\/\(\)]+)\]/g;
                 let textString = t,
@@ -84,7 +84,7 @@ export class BetterResults {
 
                 //if a table definition is found, the textString is the rollFormula to be rolled on that table
                 if (table) {
-                    const numberRolls = BRTHelper.tryRoll(textString),
+                    const numberRolls = await BRTHelper.tryRoll(textString),
                         brtBuilder = new BRTBuilder(table),
                         innerResults = await brtBuilder.betterRoll(numberRolls);
 
@@ -114,12 +114,12 @@ export class BetterResults {
      * @param {String} tableText 
      * @returns 
      */
-    _processTextAsCurrency(tableText) {
+    async _processTextAsCurrency(tableText) {
         let regex = /{([^}]+)}/g,
             matches;
 
         while ((matches = regex.exec(tableText)) != null) {
-            this._addCurrency(this._generateCurrency(matches[1]));
+            this._addCurrency(await this._generateCurrency(matches[1]));
         }
 
         return tableText.replace(regex, '');
@@ -141,11 +141,11 @@ export class BetterResults {
      * @param {string} tableText 
      * @returns 
      */
-    _rollInlineDice(tableText) {
+    async _rollInlineDice(tableText) {
         let regex = /\[{2}(\w*[^\]])\]{2}/g,
             matches;
         while ((matches = regex.exec(tableText)) != null) {
-            tableText = tableText.replace(matches[0], BRTHelper.tryRoll(matches[1]));
+            tableText = tableText.replace(matches[0], await BRTHelper.tryRoll(matches[1]));
         }
 
         return tableText;
@@ -158,7 +158,7 @@ export class BetterResults {
      * 
      * @returns 
      */
-    _generateCurrency(currencyString) {
+    async _generateCurrency(currencyString) {
         const currenciesToAdd = {};
         if (currencyString) {
             const currenciesPieces = currencyString.split(",");
@@ -170,7 +170,7 @@ export class BetterResults {
                 }
                 const rollFormula = match[1],
                     currencyString = match[2],
-                    amount = BRTHelper.tryRoll(rollFormula);
+                    amount = await BRTHelper.tryRoll(rollFormula);
 
                 currenciesToAdd[currencyString] = (currenciesToAdd[currencyString] || 0) + amount;
             }

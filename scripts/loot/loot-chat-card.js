@@ -30,6 +30,7 @@ export class LootChatCard {
                 const itemEntity = await getItemFromCompendium(item);
 
                 if (itemEntity && (itemEntity.name == itemData.name)) {
+                    itemEntity.compendium = item.collection;
                     this.addToItemData(itemEntity, itemData);
                     continue;
                 }                         

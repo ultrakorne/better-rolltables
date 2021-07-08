@@ -53,7 +53,7 @@ export class LootManipulator {
 
             let rnd = this.rndSpellIdx.pop();
             let rndIndexKey = Array.from(index.keys())[rnd];
-            let entry = await compendium.getEntity(Array.from(index.keys())[rnd]);
+            let entry = await compendium.getDocument(Array.from(index.keys())[rnd]);
             const spellLevel = getProperty(entry.data, BRTCONFIG.SPELL_LEVEL_PATH);
             if (spellLevel == level) {
                 itemEntity = entry;
@@ -65,6 +65,9 @@ export class LootManipulator {
             ui.notifications.warn(`no spell of level ${level} found in compendium  ${spellCompendiumName} `);
             return itemData;
         }
+
+        // we duplicate item now in order to modify it
+        itemData = duplicate(itemData);
 
         let itemLink = `@Compendium[${spellCompendiumName}.${itemEntity.data._id}]`;
         //make the name shorter by removing some text

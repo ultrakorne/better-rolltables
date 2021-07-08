@@ -60,7 +60,9 @@ export function separateIdComendiumName(stringWithComendium) {
         if (entry) { //since the data from buildItemData could have been changed (e.g. the name of the scroll item that was coming from a compendium originally, entry can be undefined)
             const itemEntity = await itemCompendium.getDocument(entry._id);
 
-            return duplicate(itemEntity.data);
+            // duplicate() method erase itemEntity type interface
+            // Item will be duplicate only for randomised spell scrolls.
+            return itemEntity;
         }
     }
 

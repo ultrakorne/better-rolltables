@@ -58,6 +58,11 @@
       "lang": "es-ES",
       "name": "Castellano",
       "path": "lang/es-ES.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
     }
   ],
   "url": "https://github.com/ultrakorne/better-rolltables",

@@ -13,12 +13,11 @@
         <li class="table-result flexrow">
             <img class="result-image" src="{{itemData.item.img}}">
             <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
-                <a class="entity-link" draggable="true" data-entity="Item" 
-                {{#if itemData.item.compendium}}
-                    data-pack="{{itemData.item.compendium.collection}}" data-lookup="{{itemData.item._id}}" 
+                <a class="entity-link" draggable="true" {{#if itemData.item.compendium}}
+                    data-pack="{{itemData.item.compendium.collection}}"
                     {{else}}
-                    data-id="{{itemData.item._id}}" 
-                    {{/if}}>
+                    data-entity="Item"
+                    {{/if}} data-id="{{itemData.item.id}}">
                     <i class="fas fa-suitcase"></i> {{itemData.item.name}}
                 </a>
                 <strong>&nbsp; &#xD7; {{itemData.quantity}}</strong>

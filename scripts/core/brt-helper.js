@@ -80,9 +80,9 @@ export async function dropEventOnTable(event, table) {
     }
 }
 
-export function tryRoll(rollFormula) {
+export async function tryRoll(rollFormula) {
     try {
-        return new Roll(rollFormula).roll().total || 1;
+        return (await (new Roll(rollFormula)).roll({async: true})).total || 1;
     } catch (error) {
         return 1;
     }
@@ -92,7 +92,7 @@ export function tryRoll(rollFormula) {
  * we can provide a formula on how many times we roll on the table.
  * @returns {Number} how many times to roll on this table
  */
-export function rollsAmount(table) {
+export async function rollsAmount(table) {
     const rollFormula = table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLLS_AMOUNT_KEY);
     return tryRoll(rollFormula);
 }

@@ -15,7 +15,7 @@ export class BRTBuilder {
      */
     async betterRoll(rollsAmount = undefined) {
         this.mainRoll = undefined;
-        rollsAmount = rollsAmount || BRTHelper.rollsAmount(this.table);
+        rollsAmount = rollsAmount || await BRTHelper.rollsAmount(this.table);
         this.results = await this.rollManyOnTable(rollsAmount, this.table);
         return this.results;
     }
@@ -71,7 +71,7 @@ export class BRTBuilder {
 
             for (const entry of draw.results) {
                 const formulaAmount = getProperty(entry, `data.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || "",
-                    entryAmount = BRTHelper.tryRoll(formulaAmount);
+                    entryAmount = await BRTHelper.tryRoll(formulaAmount);
 
                 let innerTable;
                 if (entry.data.type === CONST.TABLE_RESULT_TYPES.ENTITY && entry.data.collection === "RollTable") {

@@ -13,6 +13,9 @@ export class StoryChatCard {
     createChatCard(story, options = {}) {
         if (!story) return;
 
+        //quickfix for textselection of stories
+        story = '<div class="story-text-selectable">' + story + "</div>";
+        
         let chatData = {
             flavor: this._tableEntity.data.name,
             sound: "sounds/dice.wav",

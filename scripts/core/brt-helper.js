@@ -1,4 +1,5 @@
 import { BRTCONFIG } from './config.js';
+import { findInCompendiumById } from "./utils.js";
 
 /**
  * when dropping a link entity on a rolltable if the drop is a tableResult, we assign the dropped entity to that result table.
@@ -39,15 +40,7 @@ export async function dropEventOnTable(event, table) {
         resultTableData.type = 2;
         resultTableData.collection = data.pack;
 
-        const compendium = game.packs.find(t => t.collection === data.pack);
-        if (compendium) {
-            let indexes = await compendium.getIndex();
-            let entry = indexes.find(e => e._id === data.id);
-
-            if (entry) { //since the data from buildItemData could have been changed (e.g. the name of the scroll item that was coming from a compendium originally, entry can be undefined)
-                entityToLink = await compendium.getEntity(entry._id);
-            }
-        }
+        entityToLink = await Utils.findInCompendiumById(data.pack, data.id);
     } else {
         resultTableData.type = 1;
         resultTableData.collection = data.type;

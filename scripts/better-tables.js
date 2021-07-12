@@ -4,6 +4,7 @@ import { StoryBuilder } from './story/story-builder.js';
 import { StoryChatCard } from './story/story-chat-card.js';
 import { BRTBuilder } from './core/brt-builder.js';
 import { BetterResults } from './core/brt-table-results.js';
+import { BRTCONFIG } from "./core/config.js";
 
 export class BetterTables {
     __constructor() {
@@ -157,13 +158,10 @@ export class BetterTables {
      * @returns {Promise<void>}
      */
     async updateSpellCache() {
-        const rawList = await Promise.all(game.packs.map(async compendium => {
-            const index = await compendium.getIndex({fields: ['data.level']});
-            return Array.from(index)
-                .filter(x => x.type === "spell")
-                .map(i => mergeObject(i, {collection: compendium.collection}));
-        }));
-        this._spellCache = rawList.filter(array => array.length > 0).flat();
+        const spellCompendiumKey = game.settings.get("better-rolltables", "default-spell-compendium");
+        const spellCompendium = game.packs.get(spellCompendiumKey);
+        const spellCompendiumIndex = await spellCompendium.getIndex({fields: ['data.level']});
+        this._spellCache = spellCompendiumIndex.map(i => mergeObject(i, {collection: spellCompendium.collection}));
     }
 
     /**

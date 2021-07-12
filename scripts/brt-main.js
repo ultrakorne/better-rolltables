@@ -31,7 +31,9 @@ Hooks.once("ready", async () => {
 
 // refresh spell cache for random spell scroll generation on compendium updates
 Hooks.on("updateCompendium", async function (pack, documents, option, userId) {
-  await game.betterTables.updateSpellCache();
+  if (pack === game.settings.get("better-rolltables", "default-spell-compendium")) {
+    await game.betterTables.updateSpellCache();
+  }
 });
 
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);

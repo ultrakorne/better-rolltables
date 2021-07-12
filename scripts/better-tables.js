@@ -6,6 +6,18 @@ import { BRTBuilder } from './core/brt-builder.js';
 import { BetterResults } from './core/brt-table-results.js';
 
 export class BetterTables {
+    __constructor() {
+        this._spellCache = undefined;
+    }
+
+    /**
+     * Get spells in cache for
+     * @returns {*}
+     */
+    getSpellCache() {
+        return this._spellCache;
+    }
+
     async generateLoot(tableEntity) {
         const brtBuilder = new BRTBuilder(tableEntity);
         const results = await brtBuilder.betterRoll();
@@ -93,18 +105,18 @@ export class BetterTables {
 
     /**
      * Create a new RollTable by extracting entries from a compendium.
-     *  
+     *
      * @param {string} tableName the name of the table entity that will be created
      * @param {string} compendiumName the name of the compendium to use for the table generation
-     * @param {function(Entity)} weightPredicate a function that returns a weight (number) that will be used 
+     * @param {function(Entity)} weightPredicate a function that returns a weight (number) that will be used
      * for the tableResult weight for that given entity. returning 0 will exclude the entity from appearing in the table
      */
     async createTableFromCompendium(tableName, compendiumName, { weightPredicate = null } = {}) {
         let data = { name: tableName },
             tableArray = [];
-        const compendium = game.packs.find(t => t.collection === compendiumName);        
+        const compendium = game.packs.find(t => t.collection === compendiumName);
 
-        if (compendium && (compendium.size > 0)) {  
+        if (compendium && (compendium.size > 0)) {
             const newTable = await RollTable.create(data);
 
             ui.notifications.info(`Starting generation of rolltable for ${compendiumName} with ${compendium.size} entries.`);
@@ -141,9 +153,23 @@ export class BetterTables {
     }
 
     /**
-     * 
-     * @param {html} html 
-     * @param {Array} options 
+     * Update spell cache used for random spell scroll generation
+     * @returns {Promise<void>}
+     */
+    async updateSpellCache() {
+        const rawList = await Promise.all(game.packs.map(async compendium => {
+            const index = await compendium.getIndex({fields: ['data.level']});
+            return Array.from(index)
+                .filter(x => x.type === "spell")
+                .map(i => mergeObject(i, {collection: compendium.collection}));
+        }));
+        this._spellCache = rawList.filter(array => array.length > 0).flat();
+    }
+
+    /**
+     *
+     * @param {html} html
+     * @param {Array} options
      */
     static async enhanceCompendiumContextMenu(html, options) {
         options.push({
@@ -151,13 +177,13 @@ export class BetterTables {
             "icon": '<i class="fas fa-th-list"></i>',
             "callback": li => {
                 BetterTables.menuCallBackCreateTable(li.data('pack'));
-            }            
-        });        
+            }
+        });
     }
 
     /**
-     * 
-     * @param {String} compendium 
+     *
+     * @param {String} compendium
      */
     static async menuCallBackCreateTable(compendium_id){
         await game.betterTables.createTableFromCompendium('BRT | '+ compendium_id,compendium_id);

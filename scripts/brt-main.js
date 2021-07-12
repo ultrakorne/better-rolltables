@@ -7,7 +7,7 @@ import renderWelcomeScreen from "./versioning/welcome-screen.mjs";
 
 // CONFIG.debug.hooks = true;
 
-Hooks.on("init", () => {
+Hooks.once("init", () => {
   /** checks if the first argument is equal to any of the subsequent arguments */
   Handlebars.registerHelper('ifcontain', function () {
     let options = arguments[arguments.length - 1];
@@ -21,10 +21,17 @@ Hooks.on("init", () => {
   game.betterTables = new BetterTables();
 });
 
-Hooks.on("ready", () => {
+Hooks.once("ready", async () => {
   if (VersionCheck.check(BRTCONFIG.NAMESPACE) && game.user.isGM) {
     renderWelcomeScreen();
   }
+
+  await game.betterTables.updateSpellCache();
+});
+
+// refresh spell cache for random spell scroll generation on compendium updates
+Hooks.on("updateCompendium", async function (pack, documents, option, userId) {
+  await game.betterTables.updateSpellCache();
 });
 
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);

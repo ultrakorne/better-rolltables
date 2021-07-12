@@ -99,45 +99,42 @@ export class BetterTables {
      * @param {function(Entity)} weightPredicate a function that returns a weight (number) that will be used 
      * for the tableResult weight for that given entity. returning 0 will exclude the entity from appearing in the table
      */
-    async createTableFromCompendium(tableName, compendiumName, { weightPredicate = null } = {}) {
-        let data = { name: tableName },
-            tableArray = [];
-        const compendium = game.packs.find(t => t.collection === compendiumName);        
-
-        if (compendium && (compendium.size > 0)) {  
-            const newTable = await RollTable.create(data);
-
-            ui.notifications.info(`Starting generation of rolltable for ${compendiumName} with ${compendium.size} entries.`);
-
-            const compendiumItems = await compendium.getDocuments();
-            // const compendiumIndex = await compendium.getIndex();
-            // const firstEntity = await compendium.getEntity(compendiumIndex[0]._id);
-            // console.log("FIRST ENTITY ", firstEntity);
-
-            for (let item of compendiumItems) {
-                let weight = 1;
-                if (weightPredicate) {
-                    weight = weightPredicate(item);
-                }
-                if (weight == 0) continue;
-
-                let tableEntryData = {};
-                tableEntryData.type = 2;
-                tableEntryData.collection = compendiumName;
-                tableEntryData.text = item.name;
-                tableEntryData.img = item.img;
-                tableEntryData.weight = weight;
-                tableEntryData.range = [1, 1];
-
-                tableArray.push(tableEntryData);
-            }
-            await newTable.createEmbeddedDocuments("TableResult", tableArray);
-            await newTable.normalize();
-
-            ui.notifications.info(`Rolltable ${tableName} with ${tableArray.length} entries was generated.`);
-        } else {
-            ui.notifications.warn(`Compendium named ${compendiumName} not found`);
+    async createTableFromCompendium(tableName, compendiumName, {weightPredicate = null} = {}) {
+        const compendium = game.packs.get(compendiumName);
+        if (compendium === undefined) {
+            ui.notifications.warn(`Compendium named ${compendiumName} not found.`);
+            return;
         }
+
+        const compendiumSize = (await compendium.getIndex()).size;
+        if (compendiumSize === 0) {
+            ui.notifications.warn(`Compendium named ${compendium.title} (${compendiumName}) is empty.`);
+            return;
+        }
+
+        ui.notifications.info(`Starting generation of rolltable for ${compendium.title} (${compendiumName}) with ${compendiumSize} entries.`);
+        compendium.getDocuments()
+            .then(compendiumItems => {
+                const weight = (weightPredicate) ? weightPredicate(item) : 1;
+                if (weight <= 0) return undefined;
+
+                return compendiumItems.map(item => ({
+                    type: CONST.TABLE_RESULT_TYPES.COMPENDIUM,
+                    collection: compendiumName,
+                    text: item.name,
+                    img: item.img,
+                    weight: weight,
+                    range: [1, 1]
+                }));
+            })
+            .then(results => RollTable.create({
+                name: tableName,
+                results: results.filter(x => x !== undefined) // remove empty results due to null weight
+            }))
+            .then(rolltable => {
+                rolltable.normalize()
+                ui.notifications.info(`Rolltable ${tableName} with ${rolltable.results.size} entries was generated.`);
+            });
     }
 
     /**

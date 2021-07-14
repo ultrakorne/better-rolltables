@@ -253,4 +253,62 @@ export class BetterTables {
         const chatData = await BetterTables.rollCompendiumAsRolltable(compendium);
         ChatMessage.create(chatData);
     }
+    /**
+     * Create card content from rolltable
+     * @param {RollTable} tableEntity rolltable to generate content from
+     * @returns {Promise<{flavor: *, sound: string, user: *, content: *}>}
+     */
+    static async prepareCardData(tableEntity) {
+        const brtBuilder = new BRTBuilder(tableEntity);
+        const results = await brtBuilder.betterRoll();
+
+        const br = new BetterResults(results);
+        const betterResults = await br.buildResults(tableEntity);
+        const currencyData = br.getCurrencyData();
+
+        const lootChatCard = new LootChatCard(betterResults, currencyData);
+        return lootChatCard.prepareCharCart(tableEntity);
+    }
+
+    /**
+     * Handle Reroll buttons on cards
+     * @param {ChatMessage} message newly created message
+     * @param {Object} html message content
+     * @returns {Promise<void>}
+     */
+    static async handleChatMessageButtons(message, html) {
+        if (!game.user.isGM) return;
+
+        $(html).find(".brt-card-buttons button").each(async function(index, button) {
+            const id = $(button).data("id");
+            const pack = $(button).data("pack");
+            if (!id && !pack) return;
+
+            if (pack && !id) {
+                $(button)
+                    .click(async () => {
+                        const cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
+                        await message.update({ "content": cardContent.content, "timestamp": Date.now()});
+                    })
+                    .removeAttr("style");
+            } else {
+                let rolltable = undefined;
+                if (pack && id) {
+                    rolltable = await game.packs.get(pack)?.getDocument(id);
+                }
+                else {
+                    rolltable = game.tables.get(id);
+                }
+
+                if (rolltable) {
+                    $(button)
+                        .click(async () => {
+                            const cardContent = await BetterTables.prepareCardData(rolltable);
+                            await message.update({ "content": cardContent.content, "timestamp": Date.now()});
+                        })
+                        .removeAttr("style");
+                }
+            }
+        });
+    }
 }

@@ -99,10 +99,15 @@ export class BetterTables {
         return await brtBuilder.betterRoll();
     }
 
-    async betterTableRoll(tableEntity) {
+    async betterTableRoll(tableEntity, options) {
         const brtBuilder = new BRTBuilder(tableEntity);
         const results = await brtBuilder.betterRoll();
-        await brtBuilder.createChatCard(results);
+
+        const br = new BetterResults(results);
+        const betterResults = await br.buildResults(tableEntity);
+
+        const lootChatCard = new LootChatCard(betterResults, undefined);
+        await lootChatCard.createChatCard(tableEntity);
     }
 
 

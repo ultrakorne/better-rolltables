@@ -46,3 +46,21 @@ export function separateIdComendiumName(stringWithComendium) {
  export async function getItemFromCompendium(item) {
      return findInCompendiumByName(item.collection, item.text);
 }
+
+/**
+ *
+ * @param {object} compendium reference to compendium to roll
+ * @returns {object} item from compendium
+ */
+export async function getRandomItemFromCompendium(compendium) {
+    const pack = game.packs.get(compendium);
+    if (!pack) return;
+    const size = pack.index.size;
+    if (size === 0) {
+        ui.notifications.warn(`Compendium ${pack.title} is empty.`);
+        return;
+    }
+    const randonIndex = Math.floor(Math.random() * size);
+    const randomItem = pack.index.contents[randonIndex];
+    return pack.getDocument(randomItem._id);
+}

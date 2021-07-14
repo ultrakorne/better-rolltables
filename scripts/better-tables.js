@@ -4,7 +4,9 @@ import { StoryBuilder } from './story/story-builder.js';
 import { StoryChatCard } from './story/story-chat-card.js';
 import { BRTBuilder } from './core/brt-builder.js';
 import { BetterResults } from './core/brt-table-results.js';
+import { getRandomItemFromCompendium } from "./core/utils.js";
 import { BRTCONFIG } from "./core/config.js";
+
 
 export class BetterTables {
     __constructor() {
@@ -175,6 +177,14 @@ export class BetterTables {
                 BetterTables.menuCallBackCreateTable(li.data('pack'));
             }
         });
+
+        options.push({
+            "name": "Roll on compendium",
+            "icon": '<i class="fas fa-dice-d20"></i>',
+            "callback": li => {
+                BetterTables.menuCallBackRollCompendium(li.data('pack'));
+            }
+        });
     }
 
     /**
@@ -207,5 +217,30 @@ export class BetterTables {
     static async menuCallBackRollTable(rolltable_id){
         const rolltable = game.tables.get(rolltable_id);
         await game.betterTables.betterTableRoll(rolltable);
+    }
+
+    /**
+     *
+     * @param {String} compendium ID of the compendium to roll
+     */
+    static async menuCallBackRollCompendium(compendium) {
+        // Get random item from compendium
+        const item = await getRandomItemFromCompendium(compendium);
+
+        // prepare card data
+        const fontSize = Math.max(60, 100 - Math.max(0, item.name.length - 27) * 2);
+        const chatCardData = {
+            itemsData: [
+                { item: item, quantity: 1, fontSize: fontSize }
+            ]
+        };
+        const cardHtml = await renderTemplate("modules/better-rolltables/templates/loot-chat-card.hbs", chatCardData);
+        const chatData = {
+            flavor: `Rolled from compendium ${item.pack}`,
+            sound: "sounds/dice.wav",
+            user: game.user.data._id,
+            content: cardHtml
+        };
+        ChatMessage.create(chatData);
     }
 }

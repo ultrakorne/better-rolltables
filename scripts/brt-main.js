@@ -44,6 +44,7 @@ Hooks.on("updateCompendium", async function (pack, documents, option, userId) {
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
 Hooks.on('getCompendiumDirectoryEntryContext', BetterTables.enhanceCompendiumContextMenu);
 Hooks.on('getRollTableDirectoryEntryContext', BetterTables.enhanceRolltableContextMenu);
+Hooks.on('renderChatMessage', BetterTables.handleChatMessageButtons);
 
 function registerSettings() {
   let defaultLootSheet = "dnd5e.LootSheet5eNPC";

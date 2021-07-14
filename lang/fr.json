@@ -19,5 +19,7 @@
     "BRT.DrawResultPlural": "Vous avez tiré {amount} résultats de {name}",
     "BRT.DrawResultSingular": "Vous avez tiré {amount} résultat de {name}",
     "BRT.DrawResultZero": "Tirage sur {name}",
-    "BRT.DrawReroll": "Relancer"
+    "BRT.DrawReroll": "Relancer",
+    "BRT.Settings.RerollButtons.Title":"Afficher les boutons pour relancer",
+    "BRT.Settings.RerollButtons.Description": "Affiche un bouton Relancer sur chaque message de résultat d'un jet sur une table (uniquement pour les nouveaux messages)"
 }

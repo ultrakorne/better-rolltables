@@ -19,5 +19,7 @@
     "BRT.DrawResultPlural": "Sacar {amount} resultados de {name}",
     "BRT.DrawResultSingular": "Sacar {amount} resultado de {name}",
     "BRT.DrawResultZero": "Rolagem em {name}",
-    "BRT.DrawReroll": "Reroll"
+    "BRT.DrawReroll": "Reroll",
+    "BRT.Settings.RerollButtons.Title":"Show reroll buttons",
+    "BRT.Settings.RerollButtons.Description":"Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards)"
 }

@@ -19,5 +19,7 @@
     "BRT.DrawResultPlural": "{name}의 결과로 선택된 건 {amount}입니다",
     "BRT.DrawResultSingular": "{name}의 결과로 선택된 건 {amount}입니다",
     "BRT.DrawResultZero": "{name}에서 굴림",
-    "BRT.DrawReroll": "Reroll"
+    "BRT.DrawReroll": "Reroll",
+    "BRT.Settings.RerollButtons.Title":"Show reroll buttons",
+    "BRT.Settings.RerollButtons.Description":"Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards)"
 }

@@ -19,5 +19,7 @@
     "BRT.DrawResultPlural": "Zieht {amount} Ergebnisse aus {name}",
     "BRT.DrawResultSingular": "Zieht {amount} Ergebnis aus {name}",
     "BRT.DrawResultZero": "Würfle auf {name}",
-    "BRT.DrawReroll": "Reroll"
+    "BRT.DrawReroll": "Reroll",
+    "BRT.Settings.RerollButtons.Title":"Show reroll buttons",
+    "BRT.Settings.RerollButtons.Description":"Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards)"
 }

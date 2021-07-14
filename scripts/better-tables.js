@@ -220,27 +220,37 @@ export class BetterTables {
     }
 
     /**
-     *
-     * @param {String} compendium ID of the compendium to roll
+     * Create card content from compendium content
+      * @param {String} compendium compendium name
+     * @returns {Promise<{flavor: string, sound: string, user: *, content: *}>}
      */
-    static async menuCallBackRollCompendium(compendium) {
+    static async rollCompendiumAsRolltable(compendium) {
         // Get random item from compendium
         const item = await getRandomItemFromCompendium(compendium);
 
         // prepare card data
         const fontSize = Math.max(60, 100 - Math.max(0, item.name.length - 27) * 2);
         const chatCardData = {
+            compendium: compendium,
             itemsData: [
                 { item: item, quantity: 1, fontSize: fontSize }
             ]
         };
         const cardHtml = await renderTemplate("modules/better-rolltables/templates/loot-chat-card.hbs", chatCardData);
-        const chatData = {
+        return {
             flavor: `Rolled from compendium ${item.pack}`,
             sound: "sounds/dice.wav",
             user: game.user.data._id,
             content: cardHtml
         };
+    }
+
+    /**
+     *
+     * @param {String} compendium ID of the compendium to roll
+     */
+    static async menuCallBackRollCompendium(compendium) {
+        const chatData = await BetterTables.rollCompendiumAsRolltable(compendium);
         ChatMessage.create(chatData);
     }
 }

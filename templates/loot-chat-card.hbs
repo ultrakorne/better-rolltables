@@ -23,4 +23,10 @@
         </li>
         {{/each}}
     </ol>
+
+    <div class="brt-card-buttons">
+        <button style="display:none" {{#if this.compendium}}data-pack="{{this.compendium}}"{{/if}} {{#if this.id}}data-id="{{this.id}}"{{/if}}>
+            {{localize 'BRT.DrawReroll'}}
+        </button>
+    </div>
 </div>

@@ -15,10 +15,9 @@ export function addRollModeToChatData(chatData) {
 }
 
 export async function findInCompendiumByName(compendiumName, entityName) {
-    const compendium = game.packs.find(t => t.collection === compendiumName);
+    const compendium = game.packs.get(compendiumName);
     if (compendium) {
-        const compendiumIndex = await compendium.getIndex();
-        let entry = compendiumIndex.find(e => e.name === entityName);
+        const entry = compendium.index.getName(entityName);
         if (entry) {
             return await compendium.getDocument(entry._id);
         }
@@ -26,14 +25,7 @@ export async function findInCompendiumByName(compendiumName, entityName) {
 }
 
 export async function findInCompendiumById(compendiumName, entityId) {
-    const compendium = game.packs.find(t => t.collection === compendiumName);
-    if (compendium) {
-        const compendiumIndex = await compendium.getIndex();
-        let entry = compendiumIndex.find(e => e._id === entityId);
-        if (entry) {
-            return await compendium.getDocument(entry._id);
-        }
-    }
+    return await game.packs.get(compendiumName)?.getDocument(entityId);
 }
 
 export function separateIdComendiumName(stringWithComendium) {
@@ -52,19 +44,5 @@ export function separateIdComendiumName(stringWithComendium) {
  * @returns {object|boolean} item from compendium
  */
  export async function getItemFromCompendium(item) {
-    const itemCompendium = game.packs.find(t => t.collection === item.collection);
-    if (itemCompendium) {
-        let indexes = await itemCompendium.getIndex(),
-            entry = indexes.find(e => e.name.toLowerCase() === item.text.toLowerCase());
-            
-        if (entry) { //since the data from buildItemData could have been changed (e.g. the name of the scroll item that was coming from a compendium originally, entry can be undefined)
-            const itemEntity = await itemCompendium.getDocument(entry._id);
-
-            // duplicate() method erase itemEntity type interface
-            // Item will be duplicate only for randomised spell scrolls.
-            return itemEntity;
-        }
-    }
-
-    return false;
+     return findInCompendiumByName(item.collection, item.text);
 }

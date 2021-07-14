@@ -1,26 +1,19 @@
 import { BRTCONFIG } from '../core/config.js';
+import { findInCompendiumById } from "../core/utils.js";
 
 export class LootManipulator {
 
-    __constructor(){
-        this.rndSpellIdx = false;
-    }
-
-    async _getSpellCompendiumIndex() {
-        const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
-        const spellCompendiumIndex = await game.packs.find(t => t.collection === spellCompendiumName).getIndex();
-
-        for (var i = 0; i < spellCompendiumIndex.size; i++) {
-            if(!this.rndSpellIdx) {
-                this.rndSpellIdx = [];
-            }
-            this.rndSpellIdx[i] = i;
-        }
-        this.rndSpellIdx.sort(() => Math.random() - 0.5);
-        return spellCompendiumIndex;
+    async _getRandomSpell(level) {
+        const spells = game.betterTables.getSpellCache().filter(spell => spell.data.level === level);
+        const randomIndex = Math.floor(Math.random() * spells.length);
+        const spell = spells[randomIndex];
+        return findInCompendiumById(spell.collection, spell._id);
     }
 
     async preItemCreationDataManipulation(itemData) {
+        // we duplicate item now in order to modify it
+        itemData = duplicate(itemData);
+
         // const match = BRTCONFIG.SCROLL_REGEX.exec(itemData.name);
         let match = /\s*Spell\s*Scroll\s*(\d+|cantrip)/gi.exec(itemData.name);
 
@@ -30,46 +23,19 @@ export class LootManipulator {
         }
 
         if (!match) {
-            // console.log("not a SCROLL ", itemData.name);
-            // console.log("match ",match);
-            return itemData; //not a scroll
+            return itemData;
         }
 
         //if its a scorll then open compendium
-        let level = match[1].toLowerCase() === "cantrip" ? 0 : match[1];
-
-        const spellCompendiumName = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
-        const compendium = await game.packs.find(t => t.collection === spellCompendiumName);
-        if (!compendium) {
-            console.log(`Spell Compendium ${spellCompendiumName} not found`);
-            return itemData;
-        }
-        let index = await this._getSpellCompendiumIndex();
-
-        let spellFound = false,
-            itemEntity;
-
-        while (this.rndSpellIdx.length > 0 && !spellFound) {
-
-            let rnd = this.rndSpellIdx.pop();
-            let rndIndexKey = Array.from(index.keys())[rnd];
-            let entry = await compendium.getDocument(Array.from(index.keys())[rnd]);
-            const spellLevel = getProperty(entry.data, BRTCONFIG.SPELL_LEVEL_PATH);
-            if (spellLevel == level) {
-                itemEntity = entry;
-                spellFound = true;
-            }
-        }
+        let level = match[1].toLowerCase() === "cantrip" ? 0 : parseInt(match[1]);
+        const itemEntity = await this._getRandomSpell(level);
 
         if (!itemEntity) {
-            ui.notifications.warn(`no spell of level ${level} found in compendium  ${spellCompendiumName} `);
+            ui.notifications.warn(`no spell of level ${level} found in compendium  ${itemEntity.collection} `);
             return itemData;
         }
 
-        // we duplicate item now in order to modify it
-        itemData = duplicate(itemData);
-
-        let itemLink = `@Compendium[${spellCompendiumName}.${itemEntity.data._id}]`;
+        let itemLink = `@Compendium[${itemEntity.collection}.${itemEntity.data._id}]`;
         //make the name shorter by removing some text
         itemData.name = itemData.name.replace(/^(Spell\s)/, "");
         itemData.name = itemData.name.replace(/(Cantrip\sLevel)/, "Cantrip");

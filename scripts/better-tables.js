@@ -4,8 +4,21 @@ import { StoryBuilder } from './story/story-builder.js';
 import { StoryChatCard } from './story/story-chat-card.js';
 import { BRTBuilder } from './core/brt-builder.js';
 import { BetterResults } from './core/brt-table-results.js';
+import { BRTCONFIG } from "./core/config.js";
 
 export class BetterTables {
+    __constructor() {
+        this._spellCache = undefined;
+    }
+
+    /**
+     * Get spells in cache for
+     * @returns {*}
+     */
+    getSpellCache() {
+        return this._spellCache;
+    }
+
     async generateLoot(tableEntity) {
         const brtBuilder = new BRTBuilder(tableEntity);
         const results = await brtBuilder.betterRoll();
@@ -93,12 +106,13 @@ export class BetterTables {
 
     /**
      * Create a new RollTable by extracting entries from a compendium.
-     *  
+     *
      * @param {string} tableName the name of the table entity that will be created
      * @param {string} compendiumName the name of the compendium to use for the table generation
-     * @param {function(Entity)} weightPredicate a function that returns a weight (number) that will be used 
+     * @param {function(Entity)} weightPredicate a function that returns a weight (number) that will be used
      * for the tableResult weight for that given entity. returning 0 will exclude the entity from appearing in the table
      */
+
     async createTableFromCompendium(tableName, compendiumName, {weightPredicate = null} = {}) {
         const compendium = game.packs.get(compendiumName);
         if (compendium === undefined) {
@@ -138,9 +152,20 @@ export class BetterTables {
     }
 
     /**
-     * 
-     * @param {html} html 
-     * @param {Array} options 
+     * Update spell cache used for random spell scroll generation
+     * @returns {Promise<void>}
+     */
+    async updateSpellCache() {
+        const spellCompendiumKey = game.settings.get("better-rolltables", "default-spell-compendium");
+        const spellCompendium = game.packs.get(spellCompendiumKey);
+        const spellCompendiumIndex = await spellCompendium.getIndex({fields: ['data.level']});
+        this._spellCache = spellCompendiumIndex.map(i => mergeObject(i, {collection: spellCompendium.collection}));
+    }
+
+    /**
+     *
+     * @param {html} html
+     * @param {Array} options
      */
     static async enhanceCompendiumContextMenu(html, options) {
         options.push({
@@ -148,13 +173,13 @@ export class BetterTables {
             "icon": '<i class="fas fa-th-list"></i>',
             "callback": li => {
                 BetterTables.menuCallBackCreateTable(li.data('pack'));
-            }            
-        });        
+            }
+        });
     }
 
     /**
-     * 
-     * @param {String} compendium 
+     *
+     * @param {String} compendium
      */
     static async menuCallBackCreateTable(compendium_id){
         await game.betterTables.createTableFromCompendium('BRT | '+ compendium_id,compendium_id);

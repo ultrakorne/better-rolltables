@@ -179,9 +179,33 @@ export class BetterTables {
 
     /**
      *
-     * @param {String} compendium
+     * @param {String} compendium_id
      */
     static async menuCallBackCreateTable(compendium_id){
         await game.betterTables.createTableFromCompendium('BRT | '+ compendium_id,compendium_id);
+    }
+
+    /**
+     * Add a roll option in context menu of rolltables
+     * @param {html} html
+     * @param {Array} options
+     */
+    static async enhanceRolltableContextMenu(html, options) {
+        options.push({
+            "name": "Roll table",
+            "icon": '<i class="fas fa-dice-d20"></i>',
+            "callback": li => {
+                BetterTables.menuCallBackRollTable(li.data("entityId"));
+            }
+        });
+    }
+
+    /**
+     *
+     * @param {String} rolltable_id ID of the rolltable to roll
+     */
+    static async menuCallBackRollTable(rolltable_id){
+        const rolltable = game.tables.get(rolltable_id);
+        await game.betterTables.betterTableRoll(rolltable);
     }
 }

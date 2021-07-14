@@ -281,7 +281,7 @@ export class BetterTables {
      * @returns {Promise<void>}
      */
     static async handleChatMessageButtons(message, html) {
-        if (!game.user.isGM) return;
+        if (!game.user.isGM || !game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS)) return;
 
         $(html).find(".brt-card-buttons button").each(async function(index, button) {
             const id = $(button).data("id");

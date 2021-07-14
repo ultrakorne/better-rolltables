@@ -16,6 +16,7 @@ BRTCONFIG.TABLE_TYPE_STORY = "story";
 
 BRTCONFIG.SPELL_COMPENDIUM_KEY = "default-spell-compendium";
 BRTCONFIG.LOOT_SHEET_TO_USE_KEY = "loot-sheet-to-use";
+BRTCONFIG.SHOW_REROLL_BUTTONS = "show-reroll-buttons";
 
 //in fp2e quantity is in data.data.quantity.value , in 5e data.data.quantity  
 BRTCONFIG.QUANTITY_PROPERTY_PATH = "data.quantity";

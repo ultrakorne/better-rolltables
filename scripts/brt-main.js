@@ -77,6 +77,14 @@ function registerSettings() {
     default: defaultSpellCompendium,
     type: String
   });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS, {
+    name: i18n("BRT.Settings.RerollButtons.Title"),
+    hint: i18n("BRT.Settings.RerollButtons.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
 }
 
 

@@ -110,7 +110,6 @@ export class BetterTables {
         await lootChatCard.createChatCard(tableEntity);
     }
 
-
     /**
      * Create a new RollTable by extracting entries from a compendium.
      *

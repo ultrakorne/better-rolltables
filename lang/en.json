@@ -18,5 +18,6 @@
     "BRT.LootRollAmountPlaceholder" : "Roll the entire table multiple times",
     "BRT.DrawResultPlural": "Draws {amount} results from {name}",
     "BRT.DrawResultSingular": "Draw {amount} result from {name}",
-    "BRT.DrawResultZero": "Rolling on {name}"
+    "BRT.DrawResultZero": "Rolling on {name}",
+    "BRT.DrawReroll": "Reroll"
 }

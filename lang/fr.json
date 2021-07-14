@@ -18,5 +18,6 @@
     "BRT.LootRollAmountPlaceholder" : "Jette un jet sur l'intégralité de la table plusieurs fois",
     "BRT.DrawResultPlural": "Vous avez tiré {amount} résultats de {name}",
     "BRT.DrawResultSingular": "Vous avez tiré {amount} résultat de {name}",
-    "BRT.DrawResultZero": "Tirage sur {name}"
+    "BRT.DrawResultZero": "Tirage sur {name}",
+    "BRT.DrawReroll": "Relancer"
 }

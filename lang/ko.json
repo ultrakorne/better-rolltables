@@ -18,5 +18,6 @@
     "BRT.LootRollAmountPlaceholder" : "표 전체를 여러 번 굴림(수식 추가)",
     "BRT.DrawResultPlural": "{name}의 결과로 선택된 건 {amount}입니다",
     "BRT.DrawResultSingular": "{name}의 결과로 선택된 건 {amount}입니다",
-    "BRT.DrawResultZero": "{name}에서 굴림"
+    "BRT.DrawResultZero": "{name}에서 굴림",
+    "BRT.DrawReroll": "Reroll"
 }

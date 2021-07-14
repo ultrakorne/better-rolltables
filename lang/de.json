@@ -18,5 +18,6 @@
     "BRT.LootRollAmountPlaceholder" : "Mehrfach auf die Tabelle würfeln.",
     "BRT.DrawResultPlural": "Zieht {amount} Ergebnisse aus {name}",
     "BRT.DrawResultSingular": "Zieht {amount} Ergebnis aus {name}",
-    "BRT.DrawResultZero": "Würfle auf {name}"
+    "BRT.DrawResultZero": "Würfle auf {name}",
+    "BRT.DrawReroll": "Reroll"
 }

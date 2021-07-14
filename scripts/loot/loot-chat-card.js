@@ -78,7 +78,7 @@ export class LootChatCard {
         return this.historyFolder;
     }
 
-    async createChatCard(table) {
+    async prepareCharCart(table) {
         await this.findOrCreateItems();
 
         let currencyString = "";
@@ -90,7 +90,9 @@ export class LootChatCard {
         const chatCardData = {
             tableData: table.data,
             itemsData: this.itemsData,
-            currency: currencyString
+            currency: currencyString,
+            compendium: table.pack,
+            id: table.id
         };
 
         const cardHtml = await renderTemplate("modules/better-rolltables/templates/loot-chat-card.hbs", chatCardData);
@@ -104,13 +106,16 @@ export class LootChatCard {
             flavorString = game.i18n.format('BRT.DrawResultZero', { name: table.data.name });
         }
 
-        let chatData = {
+        return {
             flavor: flavorString,
             sound: "sounds/dice.wav",
             user: game.user.data._id,
             content: cardHtml
         };
+    }
 
+    async createChatCard(table) {
+        const chatData = await this.prepareCharCart(table);
         addRollModeToChatData(chatData);
         ChatMessage.create(chatData);
     }

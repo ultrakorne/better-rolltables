@@ -17,6 +17,11 @@ Hooks.once("init", () => {
     return options.inverse(this);
   });
 
+  /** checks if the first argument is greater than the second argument */
+  Handlebars.registerHelper('ifgt', function (v1, v2, options) {
+    return v1 > v2 ? options.fn(this) : options.inverse(this);
+  });
+
   registerSettings();
   game.betterTables = new BetterTables();
 });

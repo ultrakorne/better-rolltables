@@ -290,8 +290,6 @@ export class BetterTables {
      * @returns {Promise<void>}
      */
     static async handleChatMessageButtons(message, html) {
-        if (!game.user.isGM || !game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS)) return;
-
         const tableDrawNode = $(html).find(".table-draw");
         const id = $(tableDrawNode).data("id");
         const pack = $(tableDrawNode).data("pack");
@@ -335,5 +333,36 @@ export class BetterTables {
         } else {
             message.update({"content": content, "timestamp": Date.now()});
         }
+    }
+
+    static async handleRolltableLink(sheet, html, data) {
+        // handling rolltables imported in campaign
+        $(html).find("a.entity-link[data-entity='RollTable']").each((index,link) => {
+            const id = $(link).data("id");
+            const rolltable = game.tables.get(id);
+
+            const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize("BRT.DrawReroll")}"><i class="fas fa-dice-d20"></i></a>`)
+                .click(async () => {
+                    await game.betterTables.generateChatLoot(rolltable);
+            })
+            $(link).after(rollNode);
+        });
+
+        // handling rolltables in compendiums
+        $(html).find("a.entity-link[data-pack]").each(async (index,link) => {
+            const pack_name = $(link).data("pack");
+            const pack = game.packs.get(pack_name);
+            if (!pack) return;
+
+            const id = $(link).data("id");
+            const document = await pack.getDocument(id);
+            if (!document || document.documentName !== "RollTable") return;
+
+            const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize("BRT.DrawReroll")}"><i class="fas fa-dice-d20"></i></a>`)
+                .click(async () => {
+                    await game.betterTables.generateChatLoot(document);
+                })
+            $(link).after(rollNode);
+        });
     }
 }

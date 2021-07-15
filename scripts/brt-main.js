@@ -44,7 +44,18 @@ Hooks.on("updateCompendium", async function (pack, documents, option, userId) {
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
 Hooks.on('getCompendiumDirectoryEntryContext', BetterTables.enhanceCompendiumContextMenu);
 Hooks.on('getRollTableDirectoryEntryContext', BetterTables.enhanceRolltableContextMenu);
-Hooks.on('renderChatMessage', BetterTables.handleChatMessageButtons);
+
+Hooks.on('renderChatMessage', async (message, html, data) => {
+  if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS)) {
+    BetterTables.handleChatMessageButtons(message, html)
+  }
+});
+
+Hooks.on('renderDocumentSheet', async (sheet, html, data) => {
+  if (game.user.isGM && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
+    BetterTables.handleRolltableLink(sheet, html, data)
+  }
+});
 
 function registerSettings() {
   let defaultLootSheet = "dnd5e.LootSheet5eNPC";
@@ -125,6 +136,15 @@ function registerSettings() {
     default: false,
     type: Boolean
   });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL, {
+    name: i18n("BRT.Settings.RollTableFromJournal.Title"),
+    hint: i18n("BRT.Settings.RollTableFromJournal.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
 }
 
 

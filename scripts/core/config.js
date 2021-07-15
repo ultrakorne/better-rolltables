@@ -22,6 +22,7 @@ BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU = "add-roll-on-compendium-contextme
 BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU = "add-roll-on-rolltable-contextmenu";
 BRTCONFIG.SHOW_WARNING_BEFORE_REROLL = "show-warning-before-reroll";
 BRTCONFIG.STICK_ROLLTABLE_HEADER = "stick-rolltable-header";
+BRTCONFIG.ROLL_TABLE_FROM_JOURNAL = "roll-table-from-journal";
 
 //in fp2e quantity is in data.data.quantity.value , in 5e data.data.quantity  
 BRTCONFIG.QUANTITY_PROPERTY_PATH = "data.quantity";

@@ -33,5 +33,7 @@
     "BRT.Settings.RerollWarning.Title": "Reroll?",
     "BRT.Settings.RerollWarning.Description": "Message content will be lost. Are you sure you want to reroll?",
     "BRT.Settings.StickRolltableHeader.Title": "Stick rolltable header to top?",
-    "BRT.Settings.StickRolltableHeader.Description": "If enabled, roll table header will no more scroll with content."
+    "BRT.Settings.StickRolltableHeader.Description": "If enabled, roll table header will no more scroll with content.",
+    "BRT.Settings.RollTableFromJournal.Title": "Add roll button to tables in journal entries?",
+    "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries."
 }

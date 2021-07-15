@@ -18,5 +18,22 @@
     "BRT.LootRollAmountPlaceholder" : "표 전체를 여러 번 굴림(수식 추가)",
     "BRT.DrawResultPlural": "{name}의 결과로 선택된 건 {amount}입니다",
     "BRT.DrawResultSingular": "{name}의 결과로 선택된 건 {amount}입니다",
-    "BRT.DrawResultZero": "{name}에서 굴림"
+    "BRT.DrawResultZero": "{name}에서 굴림",
+    "BRT.DrawReroll": "Reroll",
+    "BRT.Settings.RerollButtons.Title": "Show Reroll buttons",
+    "BRT.Settings.RerollButtons.Description": "Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected.",
+    "BRT.Settings.ShowWarningBeforeReroll.Title": "Confirm reroll ?",
+    "BRT.Settings.ShowWarningBeforeReroll.Description": "Show a confirm dialog before reroll message content.",
+    "BRT.Settings.UseCondensedBetterRoll.Title": "Use condensed roll output",
+    "BRT.Settings.UseCondensedBetterRoll.Description": "If enabled, this will aggregate same output with a multiplier to save space. This option may speed up rolltable draws. Default tables are not affected.",
+    "BRT.Settings.AddRollInRolltableContextMenu.Title": "Roll from rolltable contextmenu",
+    "BRT.Settings.AddRollInRolltableContextMenu.Description": "Add an option in rolltable's contextmenu to roll table without opening it. Work on all table type.",
+    "BRT.Settings.AddRollInCompediumContextMenu.Title": "Roll from compendium contextmenu",
+    "BRT.Settings.AddRollInCompediumContextMenu.Description": "Add an option in compendium's contextmenu to roll on this compendium without creating rolltable from it. Work on all non-empty compendiums.",
+    "BRT.Settings.RerollWarning.Title": "Reroll?",
+    "BRT.Settings.RerollWarning.Description": "Message content will be lost. Are you sure you want to reroll?",
+    "BRT.Settings.StickRolltableHeader.Title": "Stick rolltable header to top?",
+    "BRT.Settings.StickRolltableHeader.Description": "If enabled, roll table header will no more scroll with content.",
+    "BRT.Settings.RollTableFromJournal.Title": "Add roll button to tables in journal entries?",
+    "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries."
 }

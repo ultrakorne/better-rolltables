@@ -17,6 +17,11 @@ Hooks.once("init", () => {
     return options.inverse(this);
   });
 
+  /** checks if the first argument is greater than the second argument */
+  Handlebars.registerHelper('ifgt', function (v1, v2, options) {
+    return v1 > v2 ? options.fn(this) : options.inverse(this);
+  });
+
   registerSettings();
   game.betterTables = new BetterTables();
 });
@@ -27,18 +32,29 @@ Hooks.once("ready", async () => {
   }
 
   await game.betterTables.updateSpellCache();
-});
 
-// refresh spell cache for random spell scroll generation on compendium updates
-Hooks.on("updateCompendium", async function (pack, documents, option, userId) {
-  if (pack === game.settings.get("better-rolltables", "default-spell-compendium")) {
-    await game.betterTables.updateSpellCache();
+  // refresh spell cache for random spell scroll generation on compendium updates
+  Hooks.on("updateCompendium", async function (pack, documents, option, userId) {
+    if (pack === game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY)) {
+      await game.betterTables.updateSpellCache();
+    }
+  });
+
+  Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
+  Hooks.on('getCompendiumDirectoryEntryContext', BetterTables.enhanceCompendiumContextMenu);
+  Hooks.on('getRollTableDirectoryEntryContext', BetterTables.enhanceRolltableContextMenu);
+  Hooks.on('renderChatMessage', BetterTables.handleChatMessageButtons);
+
+  Hooks.on('renderDocumentSheet', async (sheet, html, data) => {
+    if (game.user.isGM && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
+      BetterTables.handleRolltableLink(sheet, html, data)
+    }
+  });
+
+  if (game.system.id === "dnd5e") {
+    Hooks.on('renderActorSheet5eCharacter', BetterTables.handleChatMessageButtons);
   }
 });
-
-Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
-Hooks.on('getCompendiumDirectoryEntryContext', BetterTables.enhanceCompendiumContextMenu);
-Hooks.on('getRollTableDirectoryEntryContext', BetterTables.enhanceRolltableContextMenu);
 
 function registerSettings() {
   let defaultLootSheet = "dnd5e.LootSheet5eNPC";
@@ -71,6 +87,63 @@ function registerSettings() {
     default: defaultSpellCompendium,
     type: String
   });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.USE_CONDENSED_BETTERROLL, {
+    name: i18n("BRT.Settings.UseCondensedBetterRoll.Title"),
+    hint: i18n("BRT.Settings.UseCondensedBetterRoll.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS, {
+    name: i18n("BRT.Settings.RerollButtons.Title"),
+    hint: i18n("BRT.Settings.RerollButtons.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_WARNING_BEFORE_REROLL, {
+    name: i18n("BRT.Settings.ShowWarningBeforeReroll.Title"),
+    hint: i18n("BRT.Settings.ShowWarningBeforeReroll.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU, {
+    name: i18n("BRT.Settings.AddRollInRolltableContextMenu.Title"),
+    hint: i18n("BRT.Settings.AddRollInRolltableContextMenu.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU, {
+    name: i18n("BRT.Settings.AddRollInCompediumContextMenu.Title"),
+    hint: i18n("BRT.Settings.AddRollInCompediumContextMenu.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.STICK_ROLLTABLE_HEADER, {
+    name: i18n("BRT.Settings.StickRolltableHeader.Title"),
+    hint: i18n("BRT.Settings.StickRolltableHeader.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL, {
+    name: i18n("BRT.Settings.RollTableFromJournal.Title"),
+    hint: i18n("BRT.Settings.RollTableFromJournal.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
 }
 
 

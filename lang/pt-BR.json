@@ -20,6 +20,16 @@
     "BRT.DrawResultSingular": "Sacar {amount} resultado de {name}",
     "BRT.DrawResultZero": "Rolagem em {name}",
     "BRT.DrawReroll": "Reroll",
-    "BRT.Settings.RerollButtons.Title":"Show reroll buttons",
-    "BRT.Settings.RerollButtons.Description":"Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards)"
+    "BRT.Settings.RerollButtons.Title": "Show Reroll buttons",
+    "BRT.Settings.RerollButtons.Description": "Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected.",
+    "BRT.Settings.ShowWarningBeforeReroll.Title": "Confirm reroll ?",
+    "BRT.Settings.ShowWarningBeforeReroll.Description": "Show a confirm dialog before reroll message content.",
+    "BRT.Settings.UseCondensedBetterRoll.Title": "Use condensed roll output",
+    "BRT.Settings.UseCondensedBetterRoll.Description": "If enabled, this will aggregate same output with a multiplier to save space. This option may speed up rolltable draws. Default tables are not affected.",
+    "BRT.Settings.AddRollInRolltableContextMenu.Title": "Roll from rolltable contextmenu",
+    "BRT.Settings.AddRollInRolltableContextMenu.Description": "Add an option in rolltable's contextmenu to roll table without opening it. Work on all table type.",
+    "BRT.Settings.AddRollInCompediumContextMenu.Title": "Roll from compendium contextmenu",
+    "BRT.Settings.AddRollInCompediumContextMenu.Description": "Add an option in compendium's contextmenu to roll on this compendium without creating rolltable from it. Work on all non-empty compendiums.",
+    "BRT.Settings.RerollWarning.Title": "Reroll?",
+    "BRT.Settings.RerollWarning.Description": "Message content will be lost. Are you sure you want to reroll?"
 }

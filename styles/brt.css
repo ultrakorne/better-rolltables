@@ -36,3 +36,8 @@
   user-select: text;
   -moz-user-select: text;
 }
+
+/* Used to display a button to reroll card output */
+.roll-table-reroll-button {
+  margin-right: 5px;
+}

@@ -78,9 +78,41 @@ function registerSettings() {
     type: String
   });
 
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.USE_CONDENSED_BETTERROLL, {
+    name: i18n("BRT.Settings.UseCondensedBetterRoll.Title"),
+    hint: i18n("BRT.Settings.UseCondensedBetterRoll.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
   game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS, {
     name: i18n("BRT.Settings.RerollButtons.Title"),
     hint: i18n("BRT.Settings.RerollButtons.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_WARNING_BEFORE_REROLL, {
+    name: i18n("BRT.Settings.ShowWarningBeforeReroll.Title"),
+    hint: i18n("BRT.Settings.ShowWarningBeforeReroll.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU, {
+    name: i18n("BRT.Settings.AddRollInRolltableContextMenu.Title"),
+    hint: i18n("BRT.Settings.AddRollInRolltableContextMenu.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU, {
+    name: i18n("BRT.Settings.AddRollInCompediumContextMenu.Title"),
+    hint: i18n("BRT.Settings.AddRollInCompediumContextMenu.Description"),
     config: true,
     default: false,
     type: Boolean

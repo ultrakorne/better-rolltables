@@ -21,5 +21,15 @@
     "BRT.DrawResultZero": "Tirage sur {name}",
     "BRT.DrawReroll": "Relancer",
     "BRT.Settings.RerollButtons.Title":"Afficher les boutons pour relancer",
-    "BRT.Settings.RerollButtons.Description": "Affiche un bouton Relancer sur chaque message de résultat d'un jet sur une table (uniquement pour les nouveaux messages)"
+    "BRT.Settings.RerollButtons.Description": "Affiche un bouton Relancer sur chaque message de résultat d'un jet sur une table (uniquement pour les nouveaux messages). Ne fonctionne que sur les tables de type Loot ou si les résultats sont condensés. Les tables par défaut ne sont pas affectées.",
+    "BRT.Settings.ShowWarningBeforeReroll.Title": "Confirmer la relance ?",
+    "BRT.Settings.ShowWarningBeforeReroll.Description": "Demande une confirmation avant de relancer le contenu d'un message.",
+    "BRT.Settings.UseCondensedBetterRoll.Title": "Condenser les résultats",
+    "BRT.Settings.UseCondensedBetterRoll.Description": "Si activé, les éléments identiques d'un résultat seront aggrégés avec un multiplicateur pour gagner de l'espace. Cette option peut accélérer le tirage aléatoire sur une table. Les tables par défaut ne sont pas affectées.",
+    "BRT.Settings.AddRollInRolltableContextMenu.Title": "Lancer depuis le menu contextuel d'une table",
+    "BRT.Settings.AddRollInRolltableContextMenu.Description": "Ajoute une option pour lancer un jet sur une table sans avoir à l'ouvrir. Fonctionne sur tous les types de tables.",
+    "BRT.Settings.AddRollInCompediumContextMenu.Title": "Lancer depuis le menu contextuel d'un compendium",
+    "BRT.Settings.AddRollInCompediumContextMenu.Description": "Ajoute une option pour lancer un jet sur un compendium sans avoir à créer une table à partir de son contenu. Fonctionne sur tous les compendiums non vides.",
+    "BRT.Settings.RerollWarning.Title": "Relancer ?",
+    "BRT.Settings.RerollWarning.Description": "Le contenu du message sera perdu. Êtes-vous sûr(e) de vouloir relancer ?"
 }

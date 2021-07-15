@@ -99,15 +99,19 @@ export class BetterTables {
         return await brtBuilder.betterRoll();
     }
 
-    async betterTableRoll(tableEntity, options) {
+    async betterTableRoll(tableEntity) {
         const brtBuilder = new BRTBuilder(tableEntity);
         const results = await brtBuilder.betterRoll();
 
-        const br = new BetterResults(results);
-        const betterResults = await br.buildResults(tableEntity);
+        if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.USE_CONDENSED_BETTERROLL)) {
+            const br = new BetterResults(results);
+            const betterResults = await br.buildResults(tableEntity);
 
-        const lootChatCard = new LootChatCard(betterResults, undefined);
-        await lootChatCard.createChatCard(tableEntity);
+            const lootChatCard = new LootChatCard(betterResults, undefined);
+            await lootChatCard.createChatCard(tableEntity);
+        } else {
+            await brtBuilder.createChatCard(results);
+        }
     }
 
     /**
@@ -182,13 +186,16 @@ export class BetterTables {
             }
         });
 
-        options.push({
-            "name": "Roll on compendium",
-            "icon": '<i class="fas fa-dice-d20"></i>',
-            "callback": li => {
-                BetterTables.menuCallBackRollCompendium(li.data('pack'));
-            }
-        });
+        if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU))
+        {
+            options.push({
+                "name": "Roll on compendium",
+                "icon": '<i class="fas fa-dice-d20"></i>',
+                "callback": li => {
+                    BetterTables.menuCallBackRollCompendium(li.data('pack'));
+                }
+            });
+        }
     }
 
     /**
@@ -205,13 +212,15 @@ export class BetterTables {
      * @param {Array} options
      */
     static async enhanceRolltableContextMenu(html, options) {
-        options.push({
-            "name": "Roll table",
-            "icon": '<i class="fas fa-dice-d20"></i>',
-            "callback": li => {
-                BetterTables.menuCallBackRollTable(li.data("entityId"));
-            }
-        });
+        if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU)) {
+            options.push({
+                "name": "Roll table",
+                "icon": '<i class="fas fa-dice-d20"></i>',
+                "callback": li => {
+                    BetterTables.menuCallBackRollTable(li.data("entityId"));
+                }
+            });
+        }
     }
 
     /**
@@ -283,36 +292,48 @@ export class BetterTables {
     static async handleChatMessageButtons(message, html) {
         if (!game.user.isGM || !game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS)) return;
 
-        $(html).find(".brt-card-buttons button").each(async function(index, button) {
-            const id = $(button).data("id");
-            const pack = $(button).data("pack");
-            if (!id && !pack) return;
+        const tableDrawNode = $(html).find(".table-draw");
+        const id = $(tableDrawNode).data("id");
+        const pack = $(tableDrawNode).data("pack");
+        if (!id && !pack) return;
 
-            if (pack && !id) {
-                $(button)
-                    .click(async () => {
-                        const cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
-                        await message.update({ "content": cardContent.content, "timestamp": Date.now()});
-                    })
-                    .removeAttr("style");
-            } else {
-                let rolltable = undefined;
-                if (pack && id) {
-                    rolltable = await game.packs.get(pack)?.getDocument(id);
-                }
-                else {
-                    rolltable = game.tables.get(id);
-                }
+        let rerollButton = $(`<a class="roll-table-reroll-button" title="${game.i18n.localize("BRT.DrawReroll")}">`).append("<i class='fas fa-dice-d20'></i>");
+        let cardContent = undefined;
 
-                if (rolltable) {
-                    $(button)
-                        .click(async () => {
-                            const cardContent = await BetterTables.prepareCardData(rolltable);
-                            await message.update({ "content": cardContent.content, "timestamp": Date.now()});
-                        })
-                        .removeAttr("style");
-                }
+        if (pack && !id) {
+            cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
+        } else {
+            let rolltable = undefined;
+            if (pack && id) {
+                rolltable = await game.packs.get(pack)?.getDocument(id);
             }
-        });
+            else {
+                rolltable = game.tables.get(id);
+            }
+            if (rolltable) {
+                cardContent = await BetterTables.prepareCardData(rolltable);
+            }
+        }
+        rerollButton.click(async () => BetterTables.updateChatMessage(message, cardContent.content));
+        $(html).find(".message-sender").prepend(rerollButton);
+    }
+
+    /**
+     * Update a message with a new content
+     * @param {ChatMessage} message message to update
+     * @param {String} content new HTML content of message
+     * @returns {Promise<void>}
+     */
+    static async updateChatMessage(message, content) {
+        if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_WARNING_BEFORE_REROLL)) {
+            Dialog.confirm({
+                title: game.i18n.localize("BRT.Settings.RerollWarning.Title"),
+                content: game.i18n.localize("BRT.Settings.RerollWarning.Description"),
+                yes: () => message.update({"content": content, "timestamp": Date.now()}),
+                defaultYes: false
+            });
+        } else {
+            message.update({"content": content, "timestamp": Date.now()});
+        }
     }
 }

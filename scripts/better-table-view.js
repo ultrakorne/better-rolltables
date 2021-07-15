@@ -11,12 +11,18 @@ export class BetterRT {
 
         let tableViewClass = tableElement.getElementsByClassName(tableClassName)[0];
 
+        /*
         if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.STICK_ROLLTABLE_HEADER)) {
             const header = $(html).find("section.results ol li:first-child");
             // we need to use <ol> parent to preserve styling
-            $(html).find("section.results").prepend($('<ol class="table-results">').append(header.clone()));
+            const newHeader = header.clone();
+            newHeader.find(".create-result").click(async (event) => rollTabe.update() );
+            newHeader.find(".normalize-results").click((event) => );
             header.remove();
+            $(html).find("section.results").prepend($('<ol class="table-results">').append(newHeader));
+
         }
+        */
 
         /** height size increase by type: */
         let addHeight = 0;

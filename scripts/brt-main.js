@@ -56,29 +56,6 @@ Hooks.once("ready", async () => {
   }
 });
 
-// refresh spell cache for random spell scroll generation on compendium updates
-Hooks.on("updateCompendium", async function (pack, documents, option, userId) {
-  if (pack === game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY)) {
-    await game.betterTables.updateSpellCache();
-  }
-});
-
-Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
-Hooks.on('getCompendiumDirectoryEntryContext', BetterTables.enhanceCompendiumContextMenu);
-Hooks.on('getRollTableDirectoryEntryContext', BetterTables.enhanceRolltableContextMenu);
-
-Hooks.on('renderChatMessage', async (message, html, data) => {
-  if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS)) {
-    BetterTables.handleChatMessageButtons(message, html)
-  }
-});
-
-Hooks.on('renderDocumentSheet', async (sheet, html, data) => {
-  if (game.user.isGM && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
-    BetterTables.handleRolltableLink(sheet, html, data)
-  }
-});
-
 function registerSettings() {
   let defaultLootSheet = "dnd5e.LootSheet5eNPC";
   let defaultSpellCompendium = "dnd5e.spells";

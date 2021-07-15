@@ -20,11 +20,12 @@ export class BetterRT {
 
             newHeader.find("a.create-result")[0].onclick = async (event) => {
                 event.preventDefault();
-                if (!game.keyboard.isCtrl()) {
+                if (!game.keyboard.isCtrl(event)) {
                     await rollTableConfig._onCreateResult(event);
                 } else {
-                    for (let i; i < 10; i++)
+                    for (let i=0; i < 10; i++) {
                         await rollTableConfig._onCreateResult(event);
+                    }
                 }
             };
 

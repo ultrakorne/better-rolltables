@@ -5,11 +5,6 @@
     {{#if currency}}
     <div class="table-description" style="font-size: 15px; text-align: center; font-weight:bold;"> {{localize 'BRT.Currency'}}{{currency}}</div>
     {{/if}}
-    <div class="brt-card-buttons">
-        <button style="display:none" {{#if this.compendium}}data-pack="{{this.compendium}}"{{/if}} {{#if this.id}}data-id="{{this.id}}"{{/if}}>
-            {{localize 'BRT.DrawReroll'}}
-        </button>
-    </div>
 
     <ol class="table-results">
         {{#each itemsData as |itemData|}}

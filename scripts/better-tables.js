@@ -283,6 +283,67 @@ export class BetterTables {
         return lootChatCard.prepareCharCart(tableEntity);
     }
 
+    static async _addRerollButtonToMessage(message, html) {
+        if (game.user.isGM && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
+            if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS)) {
+                const tableDrawNode = $(html).find(".table-draw");
+                const id = $(tableDrawNode).data("id");
+                const pack = $(tableDrawNode).data("pack");
+                if (!id && !pack) return;
+
+                let rerollButton = $(`<a class="roll-table-reroll-button" title="${game.i18n.localize("BRT.DrawReroll")}">`).append("<i class='fas fa-dice-d20'></i>");
+                let cardContent = undefined;
+
+                if (pack && !id) {
+                    cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
+                } else {
+                    let rolltable = undefined;
+                    if (pack && id) {
+                        rolltable = await game.packs.get(pack)?.getDocument(id);
+                    } else {
+                        rolltable = game.tables.get(id);
+                    }
+                    if (rolltable) {
+                        cardContent = await BetterTables.prepareCardData(rolltable);
+                    }
+                }
+                rerollButton.click(async () => BetterTables.updateChatMessage(message, cardContent.content));
+                $(html).find(".message-sender").prepend(rerollButton);
+            }
+        }
+    }
+
+    static async _addRollButtonsToEntityLink( html) {
+        // handling rolltables imported in campaign
+        $(html).find("a.entity-link[data-entity='RollTable']").each((index,link) => {
+            const id = $(link).data("id");
+            const rolltable = game.tables.get(id);
+
+            const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize("BRT.DrawReroll")}"><i class="fas fa-dice-d20"></i></a>`)
+                .click(async () => {
+                    await game.betterTables.generateChatLoot(rolltable);
+                })
+            $(link).after(rollNode);
+        });
+
+        // handling rolltables in compendiums
+        $(html).find("a.entity-link[data-pack]").each(async (index,link) => {
+            const pack_name = $(link).data("pack");
+            const pack = game.packs.get(pack_name);
+            if (!pack) return;
+
+            const id = $(link).data("id");
+            const document = await pack.getDocument(id);
+            if (!document || document.documentName !== "RollTable") return;
+
+            const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize("BRT.DrawReroll")}"><i class="fas fa-dice-d20"></i></a>`)
+                .click(async () => {
+                    await game.betterTables.generateChatLoot(document);
+                })
+            $(link).after(rollNode);
+        });
+    }
+
     /**
      * Handle Reroll buttons on cards
      * @param {ChatMessage} message newly created message
@@ -290,30 +351,8 @@ export class BetterTables {
      * @returns {Promise<void>}
      */
     static async handleChatMessageButtons(message, html) {
-        const tableDrawNode = $(html).find(".table-draw");
-        const id = $(tableDrawNode).data("id");
-        const pack = $(tableDrawNode).data("pack");
-        if (!id && !pack) return;
-
-        let rerollButton = $(`<a class="roll-table-reroll-button" title="${game.i18n.localize("BRT.DrawReroll")}">`).append("<i class='fas fa-dice-d20'></i>");
-        let cardContent = undefined;
-
-        if (pack && !id) {
-            cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
-        } else {
-            let rolltable = undefined;
-            if (pack && id) {
-                rolltable = await game.packs.get(pack)?.getDocument(id);
-            }
-            else {
-                rolltable = game.tables.get(id);
-            }
-            if (rolltable) {
-                cardContent = await BetterTables.prepareCardData(rolltable);
-            }
-        }
-        rerollButton.click(async () => BetterTables.updateChatMessage(message, cardContent.content));
-        $(html).find(".message-sender").prepend(rerollButton);
+        BetterTables._addRerollButtonToMessage(message, html);
+        BetterTables._addRollButtonsToEntityLink(html);
     }
 
     /**

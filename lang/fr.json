@@ -31,5 +31,7 @@
     "BRT.Settings.AddRollInCompediumContextMenu.Title": "Lancer depuis le menu contextuel d'un compendium",
     "BRT.Settings.AddRollInCompediumContextMenu.Description": "Ajoute une option pour lancer un jet sur un compendium sans avoir à créer une table à partir de son contenu. Fonctionne sur tous les compendiums non vides.",
     "BRT.Settings.RerollWarning.Title": "Relancer ?",
-    "BRT.Settings.RerollWarning.Description": "Le contenu du message sera perdu. Êtes-vous sûr(e) de vouloir relancer ?"
+    "BRT.Settings.RerollWarning.Description": "Le contenu du message sera perdu. Êtes-vous sûr(e) de vouloir relancer ?",
+    "BRT.Settings.StickRolltableHeader.Title": "Figer l'entête des tables ?",
+    "BRT.Settings.StickRolltableHeader.Description": "Fige l'entête de tables afin que celui-ci soit toujours visible."
 }

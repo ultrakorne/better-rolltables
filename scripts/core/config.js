@@ -21,6 +21,7 @@ BRTCONFIG.USE_CONDENSED_BETTERROLL = "use-condensed-betterroll";
 BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU = "add-roll-on-compendium-contextmenu";
 BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU = "add-roll-on-rolltable-contextmenu";
 BRTCONFIG.SHOW_WARNING_BEFORE_REROLL = "show-warning-before-reroll";
+BRTCONFIG.STICK_ROLLTABLE_HEADER = "stick-rolltable-header";
 
 //in fp2e quantity is in data.data.quantity.value , in 5e data.data.quantity  
 BRTCONFIG.QUANTITY_PROPERTY_PATH = "data.quantity";

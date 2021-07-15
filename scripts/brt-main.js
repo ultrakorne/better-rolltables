@@ -117,6 +117,14 @@ function registerSettings() {
     default: false,
     type: Boolean
   });
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.STICK_ROLLTABLE_HEADER, {
+    name: i18n("BRT.Settings.StickRolltableHeader.Title"),
+    hint: i18n("BRT.Settings.StickRolltableHeader.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
 }
 
 

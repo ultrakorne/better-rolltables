@@ -11,6 +11,13 @@ export class BetterRT {
 
         let tableViewClass = tableElement.getElementsByClassName(tableClassName)[0];
 
+        if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.STICK_ROLLTABLE_HEADER)) {
+            const header = $(html).find("section.results ol li:first-child");
+            // we need to use <ol> parent to preserve styling
+            $(html).find("section.results").prepend($('<ol class="table-results">').append(header.clone()));
+            header.remove();
+        }
+
         /** height size increase by type: */
         let addHeight = 0;
         switch (selectedTableType) {

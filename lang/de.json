@@ -31,5 +31,7 @@
     "BRT.Settings.AddRollInCompediumContextMenu.Title": "Roll from compendium contextmenu",
     "BRT.Settings.AddRollInCompediumContextMenu.Description": "Add an option in compendium's contextmenu to roll on this compendium without creating rolltable from it. Work on all non-empty compendiums.",
     "BRT.Settings.RerollWarning.Title": "Reroll?",
-    "BRT.Settings.RerollWarning.Description": "Message content will be lost. Are you sure you want to reroll?"
+    "BRT.Settings.RerollWarning.Description": "Message content will be lost. Are you sure you want to reroll?",
+    "BRT.Settings.StickRolltableHeader.Title": "Stick rolltable header to top?",
+    "BRT.Settings.StickRolltableHeader.Description": "If enabled, roll table header will no more scroll with content."
 }

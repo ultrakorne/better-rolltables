@@ -13,29 +13,13 @@ export class BetterRT {
 
 
         if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.STICK_ROLLTABLE_HEADER)) {
-            const header = $(html).find("section.results ol li:first-child");
-            // we need to use <ol> parent to preserve styling
-            const newHeader = header.clone();
-            header.remove();
+            const section = html[0].querySelector("section.results");
+            const ol = section.querySelector("ol");
+            const li = section.querySelector("li:first-child");
 
-            newHeader.find("a.create-result")[0].onclick = async (event) => {
-                event.preventDefault();
-                if (!game.keyboard.isCtrl(event)) {
-                    await rollTableConfig._onCreateResult(event);
-                } else {
-                    for (let i=0; i < 10; i++) {
-                        await rollTableConfig._onCreateResult(event);
-                    }
-                }
-            };
-
-            newHeader.find("a.normalize-results")[0].onclick = async (event) => {
-                event.preventDefault();
-                await rollTableConfig._onNormalizeResults(event);
-            };
-
-            $(html).find("section.results").prepend($('<ol class="table-results">').append(newHeader));
-
+            section.style = "position: relative; padding-top: 42px;";
+            ol.style = "position: static;";
+            li.style = "position: absolute; top: 0; left: 0; width: 100%;";
         }
 
         /** height size increase by type: */

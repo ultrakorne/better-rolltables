@@ -39,6 +39,10 @@ Hooks.once("ready", async () => {
       await game.betterTables.updateSpellCache();
     }
   });
+
+  if (game.system.id === "dnd5e") {
+    Hooks.on('renderActorSheet5eCharacter', BetterTables.handleChatMessageButtons);
+  }
 });
 
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
@@ -51,10 +55,6 @@ Hooks.on('renderDocumentSheet', async (sheet, html, data) => {
     BetterTables.handleRolltableLink(sheet, html, data)
   }
 });
-
-if (game.system.id === "dnd5e") {
-  Hooks.on('renderActorSheet5eCharacter', BetterTables.handleChatMessageButtons);
-}
 
 function registerSettings() {
   let defaultLootSheet = "dnd5e.LootSheet5eNPC";

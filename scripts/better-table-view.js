@@ -35,6 +35,7 @@ export class BetterRT {
             };
 
             $(html).find("section.results").prepend($('<ol class="table-results">').append(newHeader));
+
         }
 
         /** height size increase by type: */

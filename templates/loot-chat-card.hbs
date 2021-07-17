@@ -16,7 +16,7 @@
                     {{else}}
                     data-entity="{{itemData.item.documentName}}"
                     {{/if}} data-id="{{itemData.item.id}}">
-                    <i class="fas fa-suitcase"></i> {{itemData.item.name}}
+                    <i class="fas {{entity-icon itemData.item.documentName}}"></i> {{itemData.item.name}}
                 </a>
                 {{#ifgt itemData.quantity 1 }}<strong>&nbsp; &#xD7; {{itemData.quantity}}</strong>{{/ifgt}}
             </div>

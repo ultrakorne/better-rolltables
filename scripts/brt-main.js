@@ -22,6 +22,19 @@ Hooks.once("init", () => {
     return v1 > v2 ? options.fn(this) : options.inverse(this);
   });
 
+  /** return fas icon based on document name */
+  Handlebars.registerHelper('entity-icon', function (documentName) {
+    switch(documentName) {
+      case "RollTable": return "fa-th-list";
+      case "Actor": return "fa-user";
+      case "Item": return "fa-suitcase";
+      case "JournalEntry": return "fa-book-open";
+      case "Playlist": return "fa-suitcase"; // can't find correct icon 🙁
+      case "Scene": return "fa-map";
+      case "Macro": return "fa-terminal";
+    }
+  });
+
   registerSettings();
   game.betterTables = new BetterTables();
 });
@@ -39,6 +52,10 @@ Hooks.once("ready", async () => {
       await game.betterTables.updateSpellCache();
     }
   });
+
+  if (game.system.id === "dnd5e") {
+    Hooks.on('renderActorSheet5eCharacter', BetterTables.handleChatMessageButtons);
+  }
 });
 
 Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
@@ -51,10 +68,6 @@ Hooks.on('renderDocumentSheet', async (sheet, html, data) => {
     BetterTables.handleRolltableLink(sheet, html, data)
   }
 });
-
-if (game.system.id === "dnd5e") {
-  Hooks.on('renderActorSheet5eCharacter', BetterTables.handleChatMessageButtons);
-}
 
 function registerSettings() {
   let defaultLootSheet = "dnd5e.LootSheet5eNPC";

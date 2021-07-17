@@ -323,7 +323,7 @@ export class BetterTables {
                 document = game.tables.get(id);
             }
             if (document) {
-                const openLink = $(`<a class="roll-table-open-table" title="open">`).append("<i class='fas fa-th-list'></i>");
+                const openLink = $(`<a class="roll-table-open-table" title="${game.i18n.localize("BRT.OpenRolltable")}">`).append("<i class='fas fa-th-list'></i>");
                 if (id) openLink.data("id", id);
                 if (pack) openLink.data("pack", pack);
                 openLink.click(async (event) => document.sheet.render(true));

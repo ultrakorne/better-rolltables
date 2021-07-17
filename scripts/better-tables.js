@@ -351,7 +351,7 @@ export class BetterTables {
      * @returns {Promise<void>}
      */
     static async handleChatMessageButtons(message, html) {
-        BetterTables._addRerollButtonToMessage(message, html);
+        BetterTables._addButtonsToMessage(message, html);
         BetterTables._addRollButtonsToEntityLink(html);
     }
 

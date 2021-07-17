@@ -21,6 +21,16 @@ export async function findInCompendiumByName(compendiumName, entityName) {
         if (entry) {
             return await compendium.getDocument(entry._id);
         }
+    } else {
+        switch (compendiumName) {
+            case "RollTable": return game.tables.getName(entityName);
+            case "Actor": return game.actors.getName(entityName);
+            case "Item": return game.items.getName(entityName);
+            case "JournalEntry": return game.journal.getName(entityName);
+            case "Playlist": return game.playlists.getName(entityName);
+            case "Scene": return game.scenes.getName(entityName);
+            case "Macro": return game.macros.getName(entityName);
+        }
     }
 }
 

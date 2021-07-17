@@ -14,7 +14,7 @@
                 <a class="entity-link" draggable="true" {{#if itemData.item.compendium}}
                     data-pack="{{itemData.item.compendium.collection}}"
                     {{else}}
-                    data-entity="Item"
+                    data-entity="{{itemData.item.documentName}}"
                     {{/if}} data-id="{{itemData.item.id}}">
                     <i class="fas fa-suitcase"></i> {{itemData.item.name}}
                 </a>

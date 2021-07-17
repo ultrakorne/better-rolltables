@@ -3,14 +3,23 @@ import { BRTCONFIG } from './core/config.js';
 import { dropEventOnTable } from './core/brt-helper.js';
 
 export class BetterRT {
+    static _calcHeight(element) {
+        const style = getComputedStyle(element.parentElement);
+        const height = parseInt(style.height.slice(0, -2));
+        const marginTop = parseInt(style.marginTop.slice(0, -2));
+        const marginBottom = parseInt(style.marginBottom.slice(0, -2));
+        const paddingTop = parseInt(style.paddingTop.slice(0, -2));
+        const paddingBottom = parseInt(style.paddingBottom.slice(0, -2));
+        const borderTop = parseInt(style.borderTop.slice(0, -2));
+        const borderBottom = parseInt(style.borderBottom.slice(0, -2));
+        return height + marginTop + marginBottom + paddingTop + paddingBottom + borderTop + borderBottom;
+    }
+
     static async enhanceRollTableView(rollTableConfig, html, rollTable) {
         const tableClassName = rollTable.cssClass,// "editable";
             tableEntity = rollTableConfig.object,
             selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE,
             tableElement = document.querySelector(`[data-appid="${rollTableConfig.appId}"]`);
-
-        let tableViewClass = tableElement.getElementsByClassName(tableClassName)[0];
-
 
         if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.STICK_ROLLTABLE_HEADER)) {
             const header = $(html).find("section.results ol li:first-child");
@@ -38,21 +47,7 @@ export class BetterRT {
 
         }
 
-        /** height size increase by type: */
-        let addHeight = 0;
-        switch (selectedTableType) {
-            case BRTCONFIG.TABLE_TYPE_LOOT:
-                addHeight = 80;
-                break;
-            case BRTCONFIG.TABLE_TYPE_BETTER:
-                addHeight = 55;
-                break;
-            default:
-                addHeight = 28;
-        }
-        const match = tableElement.style.height.match(/\d+/);
-        const height = match[0];
-        tableElement.style.height = (+height + addHeight) + "px";
+        let tableViewClass = tableElement.getElementsByClassName(tableClassName)[0];
 
         let divElement = document.createElement("div"),
             brtData = duplicate(tableEntity.data.flags);
@@ -61,17 +56,48 @@ export class BetterRT {
         let selectTypeHtml = await renderTemplate("modules/better-rolltables/templates/select-table-type.hbs", brtData);
         divElement.innerHTML = selectTypeHtml;
 
-        // tableViewClass.addEventListener('drop', async function (event) {
-        //     await dropEventOnTable(event, tableEntity);
-        // });
-
         tableViewClass.insertBefore(divElement, tableViewClass.children[2]);
 
         const selectTypeElement = divElement.getElementsByTagName("select")[0];
         selectTypeElement.onchange = async function () { await BetterRT.onOptionTypeChanged(selectTypeElement.value, tableEntity); };
 
+        /** height size increase by type: */
+        let addHeight = 0;
+        switch (selectedTableType) {
+            case BRTCONFIG.TABLE_TYPE_LOOT:
+                addHeight = BetterRT._calcHeight(html[0].querySelector("select[name='flags.better-rolltables.table-type']"))
+                          + BetterRT._calcHeight(html[0].querySelector("input[name='flags.better-rolltables.loot-amount-key']"))
+                          + BetterRT._calcHeight(html[0].querySelector("input[name='flags.better-rolltables.loot-actor-name']"))
+                          + BetterRT._calcHeight(html[0].querySelector("input[name='flags.better-rolltables.table-currency-string']"))
+                          - BetterRT._calcHeight(html[0].querySelector("input[name='displayRoll']"));
+                break;
+            case BRTCONFIG.TABLE_TYPE_STORY:
+            case BRTCONFIG.TABLE_TYPE_BETTER:
+                addHeight = BetterRT._calcHeight(html[0].querySelector("select[name='flags.better-rolltables.table-type']"))
+                          + BetterRT._calcHeight(html[0].querySelector("input[name='flags.better-rolltables.loot-amount-key']"));
+                break;
+            default:
+                addHeight = BetterRT._calcHeight(html[0].querySelector("select[name='flags.better-rolltables.table-type']"));
+                break;
+        }
+
+        if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.STICK_ROLLTABLE_HEADER)) {
+            const section = html[0].querySelector("section.results");
+            const tableMaxHeight =  parseInt(getComputedStyle(html[0].querySelector("ol.table-results")).maxHeight.slice(0,-2));
+            if (section.scrollHeight > tableMaxHeight)
+                addHeight += section.scrollHeight - tableMaxHeight;
+        }
+
+        const height = parseInt(tableElement.style.height.slice(0,-2));
+        tableElement.style.height = (+height + addHeight) + "px";
+
         /** If we use default table, we stop here */
         if (selectedTableType === BRTCONFIG.TABLE_TYPE_NONE) return;
+
+
+        // tableViewClass.addEventListener('drop', async function (event) {
+        //     await dropEventOnTable(event, tableEntity);
+        // });
 
         /**for every result, add an input field before the text to add a formula */
         if (selectedTableType === BRTCONFIG.TABLE_TYPE_BETTER || selectedTableType === BRTCONFIG.TABLE_TYPE_LOOT) {
@@ -93,7 +119,6 @@ export class BetterRT {
                 /** Hide the element with displayRoll checkbox */
                 const inputElements = html[0].getElementsByTagName("input");
                 const displayRollElement = inputElements.namedItem("displayRoll").parentElement;
-
                 displayRollElement.remove();
                 break;
             case BRTCONFIG.TABLE_TYPE_STORY:

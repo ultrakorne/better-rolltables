@@ -117,6 +117,14 @@ function registerSettings() {
     type: Boolean
   });
 
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_OPEN_BUTTONS, {
+    name: i18n("BRT.Settings.OpenButtons.Title"),
+    hint: i18n("BRT.Settings.OpenButtons.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
   game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_WARNING_BEFORE_REROLL, {
     name: i18n("BRT.Settings.ShowWarningBeforeReroll.Title"),
     hint: i18n("BRT.Settings.ShowWarningBeforeReroll.Description"),
@@ -156,7 +164,6 @@ function registerSettings() {
     default: false,
     type: Boolean
   });
-
 }
 
 

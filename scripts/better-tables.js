@@ -283,32 +283,48 @@ export class BetterTables {
         return lootChatCard.prepareCharCart(tableEntity);
     }
 
-    static async _addRerollButtonToMessage(message, html) {
-        if (game.user.isGM && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
-            if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS)) {
-                const tableDrawNode = $(html).find(".table-draw");
-                const id = $(tableDrawNode).data("id");
-                const pack = $(tableDrawNode).data("pack");
-                if (!id && !pack) return;
+    static async _addButtonsToMessage(message, html) {
+        const tableDrawNode = $(html).find(".table-draw");
+        const id = $(tableDrawNode).data("id");
+        const pack = $(tableDrawNode).data("pack");
+        if (!id && !pack) return;
 
-                let rerollButton = $(`<a class="roll-table-reroll-button" title="${game.i18n.localize("BRT.DrawReroll")}">`).append("<i class='fas fa-dice-d20'></i>");
-                let cardContent = undefined;
+        if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS)) {
+            // reroll button
+            let rerollButton = $(`<a class="roll-table-reroll-button" title="${game.i18n.localize("BRT.DrawReroll")}">`).append("<i class='fas fa-dice-d20'></i>");
+            let cardContent = undefined;
 
-                if (pack && !id) {
-                    cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
+            if (pack && !id) {
+                cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
+            } else {
+                let rolltable = undefined;
+                if (pack && id) {
+                    rolltable = await game.packs.get(pack)?.getDocument(id);
                 } else {
-                    let rolltable = undefined;
-                    if (pack && id) {
-                        rolltable = await game.packs.get(pack)?.getDocument(id);
-                    } else {
-                        rolltable = game.tables.get(id);
-                    }
-                    if (rolltable) {
-                        cardContent = await BetterTables.prepareCardData(rolltable);
-                    }
+                    rolltable = game.tables.get(id);
                 }
-                rerollButton.click(async () => BetterTables.updateChatMessage(message, cardContent.content));
-                $(html).find(".message-sender").prepend(rerollButton);
+                if (rolltable) {
+                    cardContent = await BetterTables.prepareCardData(rolltable);
+                }
+            }
+            rerollButton.click(async () => BetterTables.updateChatMessage(message, cardContent.content));
+            $(html).find(".message-delete").before(rerollButton);
+        }
+
+        if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_OPEN_BUTTONS)) {
+            // Open link
+            let document = undefined;
+            if (pack && id) {
+                document = await game.packs.get(pack)?.getDocument(id);
+            } else {
+                document = game.tables.get(id);
+            }
+            if (document) {
+                const openLink = $(`<a class="roll-table-open-table" title="open">`).append("<i class='fas fa-th-list'></i>");
+                if (id) openLink.data("id", id);
+                if (pack) openLink.data("pack", pack);
+                openLink.click(async (event) => document.sheet.render(true));
+                $(html).find(".message-delete").before(openLink);
             }
         }
     }

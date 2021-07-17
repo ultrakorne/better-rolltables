@@ -8,33 +8,7 @@ import renderWelcomeScreen from "./versioning/welcome-screen.mjs";
 // CONFIG.debug.hooks = true;
 
 Hooks.once("init", () => {
-  /** checks if the first argument is equal to any of the subsequent arguments */
-  Handlebars.registerHelper('ifcontain', function () {
-    let options = arguments[arguments.length - 1];
-    for (let i = 1; i < arguments.length - 1; i++) {
-      if (arguments[0] == arguments[i]) { return options.fn(this); }
-    }
-    return options.inverse(this);
-  });
-
-  /** checks if the first argument is greater than the second argument */
-  Handlebars.registerHelper('ifgt', function (v1, v2, options) {
-    return v1 > v2 ? options.fn(this) : options.inverse(this);
-  });
-
-  /** return fas icon based on document name */
-  Handlebars.registerHelper('entity-icon', function (documentName) {
-    switch(documentName) {
-      case "RollTable": return "fa-th-list";
-      case "Actor": return "fa-user";
-      case "Item": return "fa-suitcase";
-      case "JournalEntry": return "fa-book-open";
-      case "Playlist": return "fa-suitcase"; // can't find correct icon 🙁
-      case "Scene": return "fa-map";
-      case "Macro": return "fa-terminal";
-    }
-  });
-
+  registerHandlebarsHelpers();
   registerSettings();
   game.betterTables = new BetterTables();
 });
@@ -166,5 +140,31 @@ function registerSettings() {
   });
 }
 
+function registerHandlebarsHelpers() {
+  /** checks if the first argument is equal to any of the subsequent arguments */
+  Handlebars.registerHelper('ifcontain', function () {
+    let options = arguments[arguments.length - 1];
+    for (let i = 1; i < arguments.length - 1; i++) {
+      if (arguments[0] == arguments[i]) { return options.fn(this); }
+    }
+    return options.inverse(this);
+  });
 
+  /** checks if the first argument is greater than the second argument */
+  Handlebars.registerHelper('ifgt', function (v1, v2, options) {
+    return v1 > v2 ? options.fn(this) : options.inverse(this);
+  });
 
+  /** return fas icon based on document name */
+  Handlebars.registerHelper('entity-icon', function (documentName) {
+    switch(documentName) {
+      case "RollTable": return "fa-th-list";
+      case "Actor": return "fa-user";
+      case "Item": return "fa-suitcase";
+      case "JournalEntry": return "fa-book-open";
+      case "Playlist": return "fa-suitcase"; // can't find correct icon 🙁
+      case "Scene": return "fa-map";
+      case "Macro": return "fa-terminal";
+    }
+  });
+}

@@ -213,7 +213,7 @@ export class BetterTables {
      */
     static async enhanceRolltableContextMenu(html, options) {
         if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU)) {
-            options.push({
+            options.unshift({
                 "name": "Roll table",
                 "icon": '<i class="fas fa-dice-d20"></i>',
                 "callback": li => {

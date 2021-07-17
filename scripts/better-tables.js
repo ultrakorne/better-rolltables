@@ -292,22 +292,23 @@ export class BetterTables {
         if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS)) {
             // reroll button
             let rerollButton = $(`<a class="roll-table-reroll-button" title="${game.i18n.localize("BRT.DrawReroll")}">`).append("<i class='fas fa-dice-d20'></i>");
-            let cardContent = undefined;
-
-            if (pack && !id) {
-                cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
-            } else {
-                let rolltable = undefined;
-                if (pack && id) {
-                    rolltable = await game.packs.get(pack)?.getDocument(id);
+            rerollButton.click(async () => {
+                let cardContent = undefined;
+                if (pack && !id) {
+                    cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
                 } else {
-                    rolltable = game.tables.get(id);
+                    let rolltable = undefined;
+                    if (pack && id) {
+                        rolltable = await game.packs.get(pack)?.getDocument(id);
+                    } else {
+                        rolltable = game.tables.get(id);
+                    }
+                    if (rolltable) {
+                        cardContent = await BetterTables.prepareCardData(rolltable);
+                    }
                 }
-                if (rolltable) {
-                    cardContent = await BetterTables.prepareCardData(rolltable);
-                }
-            }
-            rerollButton.click(async () => BetterTables.updateChatMessage(message, cardContent.content));
+                BetterTables.updateChatMessage(message, cardContent.content)
+            });
             $(html).find(".message-delete").before(rerollButton);
         }
 

@@ -38,7 +38,7 @@
 }
 
 /* Used to display a button to reroll card output */
-.roll-table-reroll-button {
+.roll-table-reroll-button, .roll-table-open-table {
   margin-right: 5px;
 }
 

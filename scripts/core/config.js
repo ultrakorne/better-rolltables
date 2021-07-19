@@ -17,6 +17,7 @@ BRTCONFIG.TABLE_TYPE_STORY = "story";
 BRTCONFIG.SPELL_COMPENDIUM_KEY = "default-spell-compendium";
 BRTCONFIG.LOOT_SHEET_TO_USE_KEY = "loot-sheet-to-use";
 BRTCONFIG.SHOW_REROLL_BUTTONS = "show-reroll-buttons";
+BRTCONFIG.SHOW_OPEN_BUTTONS = "show-open-buttons";
 BRTCONFIG.USE_CONDENSED_BETTERROLL = "use-condensed-betterroll";
 BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU = "add-roll-on-compendium-contextmenu";
 BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU = "add-roll-on-rolltable-contextmenu";

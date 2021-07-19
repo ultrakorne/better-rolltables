@@ -8,20 +8,7 @@ import renderWelcomeScreen from "./versioning/welcome-screen.mjs";
 // CONFIG.debug.hooks = true;
 
 Hooks.once("init", () => {
-  /** checks if the first argument is equal to any of the subsequent arguments */
-  Handlebars.registerHelper('ifcontain', function () {
-    let options = arguments[arguments.length - 1];
-    for (let i = 1; i < arguments.length - 1; i++) {
-      if (arguments[0] == arguments[i]) { return options.fn(this); }
-    }
-    return options.inverse(this);
-  });
-
-  /** checks if the first argument is greater than the second argument */
-  Handlebars.registerHelper('ifgt', function (v1, v2, options) {
-    return v1 > v2 ? options.fn(this) : options.inverse(this);
-  });
-
+  registerHandlebarsHelpers();
   registerSettings();
   game.betterTables = new BetterTables();
 });
@@ -35,26 +22,19 @@ Hooks.once("ready", async () => {
 
   // refresh spell cache for random spell scroll generation on compendium updates
   Hooks.on("updateCompendium", async function (pack, documents, option, userId) {
-    if (pack === game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY)) {
-      await game.betterTables.updateSpellCache();
-    }
-  });
-
-  Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
-  Hooks.on('getCompendiumDirectoryEntryContext', BetterTables.enhanceCompendiumContextMenu);
-  Hooks.on('getRollTableDirectoryEntryContext', BetterTables.enhanceRolltableContextMenu);
-  Hooks.on('renderChatMessage', BetterTables.handleChatMessageButtons);
-
-  Hooks.on('renderDocumentSheet', async (sheet, html, data) => {
-    if (game.user.isGM && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
-      BetterTables.handleRolltableLink(sheet, html, data)
-    }
+      await game.betterTables.updateSpellCache(pack);
   });
 
   if (game.system.id === "dnd5e") {
     Hooks.on('renderActorSheet5eCharacter', BetterTables.handleChatMessageButtons);
   }
 });
+
+Hooks.on("renderRollTableConfig", BetterRT.enhanceRollTableView);
+Hooks.on('getCompendiumDirectoryEntryContext', BetterTables.enhanceCompendiumContextMenu);
+Hooks.on('getRollTableDirectoryEntryContext', BetterTables.enhanceRolltableContextMenu);
+Hooks.on('renderChatMessage', BetterTables.handleChatMessageButtons);
+Hooks.on('renderDocumentSheet', BetterTables.handleRolltableLink);
 
 function registerSettings() {
   let defaultLootSheet = "dnd5e.LootSheet5eNPC";
@@ -104,6 +84,14 @@ function registerSettings() {
     type: Boolean
   });
 
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_OPEN_BUTTONS, {
+    name: i18n("BRT.Settings.OpenButtons.Title"),
+    hint: i18n("BRT.Settings.OpenButtons.Description"),
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
   game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_WARNING_BEFORE_REROLL, {
     name: i18n("BRT.Settings.ShowWarningBeforeReroll.Title"),
     hint: i18n("BRT.Settings.ShowWarningBeforeReroll.Description"),
@@ -143,8 +131,33 @@ function registerSettings() {
     default: false,
     type: Boolean
   });
-
 }
 
+function registerHandlebarsHelpers() {
+  /** checks if the first argument is equal to any of the subsequent arguments */
+  Handlebars.registerHelper('ifcontain', function () {
+    let options = arguments[arguments.length - 1];
+    for (let i = 1; i < arguments.length - 1; i++) {
+      if (arguments[0] == arguments[i]) { return options.fn(this); }
+    }
+    return options.inverse(this);
+  });
 
+  /** checks if the first argument is greater than the second argument */
+  Handlebars.registerHelper('ifgt', function (v1, v2, options) {
+    return v1 > v2 ? options.fn(this) : options.inverse(this);
+  });
 
+  /** return fas icon based on document name */
+  Handlebars.registerHelper('entity-icon', function (documentName) {
+    switch(documentName) {
+      case "RollTable": return "fa-th-list";
+      case "Actor": return "fa-user";
+      case "Item": return "fa-suitcase";
+      case "JournalEntry": return "fa-book-open";
+      case "Playlist": return "fa-suitcase"; // can't find correct icon 🙁
+      case "Scene": return "fa-map";
+      case "Macro": return "fa-terminal";
+    }
+  });
+}

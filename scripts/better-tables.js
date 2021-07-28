@@ -165,7 +165,7 @@ export class BetterTables {
       const defaultPack = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY)
       if (!pack || pack === defaultPack) {
         const spellCompendium = game.packs.get(defaultPack)
-        const spellCompendiumIndex = await spellCompendium.getIndex({ fields: ['data.level'] })
+        const spellCompendiumIndex = await spellCompendium.getIndex({ fields: ['data.level', 'img'] })
         this._spellCache = spellCompendiumIndex.map(i => mergeObject(i, { collection: spellCompendium.collection }))
       }
     }

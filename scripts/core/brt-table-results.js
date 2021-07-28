@@ -94,6 +94,10 @@ export class BetterResults {
           console.log(`results text ${textString.trim()} and commands ${commands}`)
           betterResult.img = result.data.img
           betterResult.text = textString.trim()
+          // if there is command, then it's not a pure text but a generated item
+          if (!commands || commands.length === 0) {
+            betterResult.type = CONST.TABLE_RESULT_TYPES.TEXT
+          }
           betterResult.commands = commands
           betterResults.push(betterResult)
         }

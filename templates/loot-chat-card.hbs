@@ -11,13 +11,18 @@
         <li class="table-result flexrow">
             <img class="result-image" src="{{itemData.item.img}}">
             <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
+            {{#if itemData.item.isText}}
+                <div class="result-text">{{itemData.item.text}}</div>
+            {{else}}
                 <a class="entity-link" draggable="true" {{#if itemData.item.compendium}}
                     data-pack="{{itemData.item.compendium.collection}}"
                     {{else}}
                     data-entity="{{itemData.item.documentName}}"
-                    {{/if}} data-id="{{itemData.item.id}}">
+                    {{/if}}
+                   data-id="{{itemData.item.id}}">
                     <i class="fas {{entity-icon itemData.item.documentName}}"></i> {{itemData.item.name}}
                 </a>
+            {{/if}}
                 {{#ifgt itemData.quantity 1 }}<strong>&nbsp; &#xD7; {{itemData.quantity}}</strong>{{/ifgt}}
             </div>
         </li>

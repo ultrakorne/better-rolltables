@@ -21,6 +21,17 @@ export class LootChatCard {
   async findOrCreateItems () {
     const lootCreator = new LootCreator(this.betterResults, this.currencyData)
     for (const item of this.betterResults) {
+
+      if (item.type === CONST.TABLE_RESULT_TYPES.TEXT) {
+        this.addToItemData({
+          id: item.text,
+          text: item.text,
+          img:item.img,
+          isText: true
+        })
+        continue
+      }
+
       this.numberOfDraws++
       /** we pass though the data, since we might have some data manipulation that changes an existing item, in that case even if it was initially
              * existing or in a compendium we have to create a new one */

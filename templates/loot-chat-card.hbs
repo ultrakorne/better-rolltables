@@ -9,7 +9,7 @@
     <ol class="table-results">
         {{#each itemsData as |itemData|}}
         <li class="table-result flexrow">
-            <img class="result-image" src="{{itemData.item.img}}">
+            <img class="result-image" src="{{#if itemData.item.data.img}}{{itemData.item.data.img}}{{else}}{{itemData.item.img}}{{/if}}">
             <div class="result-text" {{#unless itemData.item.isText}}style="font-size: {{itemData.fontSize}}%;"{{/unless}}>
             {{#if itemData.item.isText}}
                 <div class="result-text">{{itemData.item.text}}</div>

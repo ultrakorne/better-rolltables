@@ -5,7 +5,7 @@
     "BRT.TypeLoot": "Beute Tabelle (loot)",
     "BRT.StoryLoot": "Story Tabelle",
     "BRT.CurrencyLoot": "Währungsbeute",
-    "BRT.Currency": "Währung:",
+    "BRT.Currency.Label": "Währung:",
     "BRT.CurrencyLootPlaceholder": "Komma separierte Formel(n) z.B.: 1d4[gp], (1d4+1)*10[sp]",
     "BRT.LootActorName": "Beute zu Akteur hinzufügen",
     "BRT.LootActorNamePlaceholder": "Wenn leer, wird immer ein neuer Akteur erzeugt",
@@ -20,6 +20,8 @@
     "BRT.DrawResultSingular": "Zieht {amount} Ergebnis aus {name}",
     "BRT.DrawResultZero": "Würfle auf {name}",
     "BRT.DrawReroll": "Reroll",
+    "BRT.Currency.Buttons.Share.Label": "Share",
+    "BRT.Currency.Shared.Label": "Shared!",
     "BRT.OpenRolltable": "Open rolltable",
     "BRT.Settings.RerollButtons.Title": "Show Reroll buttons",
     "BRT.Settings.RerollButtons.Description": "Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected.",
@@ -38,5 +40,7 @@
     "BRT.Settings.StickRolltableHeader.Title": "Stick rolltable header to top?",
     "BRT.Settings.StickRolltableHeader.Description": "If enabled, roll table header will no more scroll with content.",
     "BRT.Settings.RollTableFromJournal.Title": "Add roll button to tables in journal entries?",
-    "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries."
+    "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries.",
+    "BRT.Settings.ShareCurrencyButton.Title": "Show share currency button?",
+    "BRT.Settings.ShareCurrencyButton.Description": "Show a button on mesage to share currency (if any) (dnde only)"
 }

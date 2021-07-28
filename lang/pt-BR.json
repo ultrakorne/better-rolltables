@@ -5,7 +5,7 @@
     "BRT.TypeLoot": "Tabela de Pilhagem",
     "BRT.StoryLoot": "Tabela de História",
     "BRT.CurrencyLoot": "Moedas de Pilhagem",
-    "BRT.Currency": "Moeda:",
+    "BRT.Currency.Label": "Moeda:",
     "BRT.CurrencyLootPlaceholder": "Adicione fórmulas separadas por vírgula, por exemplo: 1d4[po], (1d4+1)*10[pp]",
     "BRT.LootActorName": "Adicionar Pilhagem,",
     "BRT.LootActorNamePlaceholder": "Se vazio, ele criará um novo ator de pilhagem sempre",
@@ -20,6 +20,8 @@
     "BRT.DrawResultSingular": "Sacar {amount} resultado de {name}",
     "BRT.DrawResultZero": "Rolagem em {name}",
     "BRT.DrawReroll": "Reroll",
+    "BRT.Currency.Buttons.Share.Label": "Share",
+    "BRT.Currency.Shared.Label": "Shared!",
     "BRT.OpenRolltable": "Open rolltable",
     "BRT.Settings.RerollButtons.Title": "Show Reroll buttons",
     "BRT.Settings.RerollButtons.Description": "Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected.",
@@ -38,5 +40,7 @@
     "BRT.Settings.StickRolltableHeader.Title": "Stick rolltable header to top?",
     "BRT.Settings.StickRolltableHeader.Description": "If enabled, roll table header will no more scroll with content.",
     "BRT.Settings.RollTableFromJournal.Title": "Add roll button to tables in journal entries?",
-    "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries."
+    "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries.",
+    "BRT.Settings.ShareCurrencyButton.Title": "Show share currency button?",
+    "BRT.Settings.ShareCurrencyButton.Description": "Show a button on mesage to share currency (if any) (dnde only)"
 }

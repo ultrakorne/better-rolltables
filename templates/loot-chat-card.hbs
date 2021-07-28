@@ -2,29 +2,51 @@
     {{#if tableData.description}}
     <div class="table-description">{{tableData.description}}</div>
     {{/if}}
-    {{#if currency}}
-    <div class="table-description" style="font-size: 15px; text-align: center; font-weight:bold;"> {{localize 'BRT.Currency'}}{{currency}}</div>
-    {{/if}}
+    {{#unlessEmpty currency}}
+        <div class="table-description" style="font-size: 15px; text-align: center; font-weight:bold;">{{localize 'BRT.Currency.Label'}} {{format-currencies currency}}
+            {{#if shared}}<span class="brt-currency-shared">{{ localize 'BRT.Currency.Shared.Label' }}</span>{{/if}}
+        </div>
+    <section class="brt-share-currencies hidden">
+        {{#each users as |user|}}
+            <div class="flexrow">
+                <input type="checkbox" checked="checked" data-user-id="{{user.id}}" />
+                <img src="{{user.img}}"/>
+                <span>{{user.name}}</span>
+            </div>
+        {{/each}}
+        <button class="brt-share-currencies-button">{{localize 'BRT.Currency.Buttons.Share.Label' }}</button>
+    </section>
+    {{/unlessEmpty}}
 
     <ol class="table-results">
         {{#each itemsData as |itemData|}}
         <li class="table-result flexrow">
-            <img class="result-image" src="{{#if itemData.item.data.img}}{{itemData.item.data.img}}{{else}}{{itemData.item.img}}{{/if}}">
-            <div class="result-text" {{#unless itemData.item.isText}}style="font-size: {{itemData.fontSize}}%;"{{/unless}}>
-            {{#if itemData.item.isText}}
+            <img class="result-image" src="{{itemData.item.img}}">
+            {{#switch itemData.type}}
+                {{#case 0}}
                 <div class="result-text">{{itemData.item.text}}</div>
-            {{else}}
-                <a class="entity-link" draggable="true" {{#if itemData.item.compendium}}
-                    data-pack="{{itemData.item.compendium.collection}}"
-                    {{else}}
-                    data-entity="{{itemData.item.documentName}}"
-                    {{/if}}
-                   data-id="{{itemData.item.id}}">
-                    <i class="fas {{entity-icon itemData.item.documentName}}"></i> {{itemData.item.name}}
-                </a>
-            {{/if}}
-                {{#ifgt itemData.quantity 1 }}<strong>&nbsp; &#xD7; {{itemData.quantity}}</strong>{{/ifgt}}
-            </div>
+                {{/case}}
+                {{#case 1}}
+                    <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
+                        <a class="entity-link" draggable="true"
+                           data-entity="{{itemData.documentName}}"
+                           data-id="{{itemData.item.id}}">
+                            <i class="fas {{entity-icon itemData.documentName}}"></i> {{itemData.item.name}}
+                        </a>
+                        {{#ifgt itemData.quantity 1 }}<strong>&nbsp; &#xD7; {{itemData.quantity}}</strong>{{/ifgt}}
+                    </div>
+                {{/case}}
+                {{#case 2}}
+                    <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
+                        <a class="entity-link" draggable="true"
+                           data-pack="{{itemData.compendiumName}}"
+                           data-id="{{itemData.item.id}}">
+                            <i class="fas {{entity-icon itemData.documentName}}"></i> {{itemData.item.name}}
+                        </a>
+                        {{#ifgt itemData.quantity 1 }}<strong>&nbsp; &#xD7; {{itemData.quantity}}</strong>{{/ifgt}}
+                    </div>
+                {{/case}}
+            {{/switch}}
         </li>
         {{/each}}
     </ol>

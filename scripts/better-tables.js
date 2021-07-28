@@ -104,8 +104,9 @@ export class BetterTables {
     if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.USE_CONDENSED_BETTERROLL)) {
       const br = new BetterResults(results)
       const betterResults = await br.buildResults(tableEntity)
+      const currencyData = br.getCurrencyData()
 
-      const lootChatCard = new LootChatCard(betterResults, undefined)
+      const lootChatCard = new LootChatCard(betterResults, currencyData)
       await lootChatCard.createChatCard(tableEntity)
     } else {
       await brtBuilder.createChatCard(results)
@@ -260,6 +261,25 @@ export class BetterTables {
     }
   }
 
+  static async _renderMessage(message) {
+    const cardHtml = await renderTemplate('modules/better-rolltables/templates/loot-chat-card.hbs', message.data.flags.betterTables.loot)
+    message.data.content = cardHtml
+    return message
+    /*
+    return {
+      flavor: message.data.flavor,
+      sound: message.data.sound,
+      user: message.data.user,
+      content: cardHtml,
+      flags: {
+        betterTables: {
+          loot: data
+        }
+      }
+    }
+    */
+  }
+
   /**
      *
      * @param {String} compendium ID of the compendium to roll
@@ -286,6 +306,12 @@ export class BetterTables {
     return lootChatCard.prepareCharCart(tableEntity)
   }
 
+  static async _toggleCurrenciesShareSection(message, html) {
+    const section = html[0].querySelector("section.brt-share-currencies");
+    section.classList.toggle("hidden");
+    // await BetterTables.updateChatMessage(message, html, {"force":true});
+  }
+
   static async _addButtonsToMessage (message, html) {
     const tableDrawNode = $(html).find('.table-draw')
     const id = $(tableDrawNode).data('id')
@@ -310,9 +336,22 @@ export class BetterTables {
             cardContent = await BetterTables.prepareCardData(rolltable)
           }
         }
-        BetterTables.updateChatMessage(message, cardContent.content)
+        await BetterTables.updateChatMessage(message, cardContent, {flags:cardContent.flags})
       })
       $(html).find('.message-delete').before(rerollButton)
+    }
+
+    if (game.system.id === 'dnd5e'
+        && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_CURRENCY_SHARE_BUTTON)
+        && (message.data.flags.betterTables.loot.currency && Object.keys(message.data.flags.betterTables.loot.currency).length > 0)) {
+      // Currency share button
+      const currencyShareButton = $(`<a class="roll-table-share-currencies" title="${game.i18n.localize('BRT.Currency.Buttons.Share.Label')}">`).append("<i class='fas fa-coins'></i>")
+      currencyShareButton.click(async () => BetterTables._toggleCurrenciesShareSection(message, html))
+      $(html).find('.message-delete').before(currencyShareButton)
+      const shareButton = html[0].querySelector("button.brt-share-currencies-button")
+      shareButton.addEventListener('click', async (event) => {
+        await BetterTables._shareCurrenciesToPlayers(message, html)
+      })
     }
 
     if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_OPEN_BUTTONS)) {
@@ -332,6 +371,40 @@ export class BetterTables {
       }
     }
   }
+
+  /**
+   *
+   * @param {ChatMessage} message
+   * @param {HTMLElement} html
+   * @returns {Promise<undefined>}
+   * @private
+   */
+  static async _shareCurrenciesToPlayers(message, html) {
+    await BetterTables._toggleCurrenciesShareSection(message, html)
+    const usersId = Array.from(html[0].querySelector("section.brt-share-currencies")?.querySelectorAll('input:checked')).map(x => x.dataset.userId)
+    if (!usersId) return undefined
+
+    const currenciesToShare = message.data.flags.betterTables.loot.currency
+    const usersCount = usersId.length
+    const share = Object.keys(currenciesToShare)
+        .map(x => ({[x]: Math.floor(currenciesToShare[x] / usersCount)}))
+        .reduce((a, b) => Object.assign(a, b), {})
+
+    for (const userId of usersId) {
+      const user = game.users.get(userId)
+      const currency = user.character.data.data.currency
+      for (let key of Object.keys(currency)) {
+        const increment = share[key] || 0
+        if (increment > 0) {
+          currency[key] += increment
+        }
+      }
+      await user.character.update({"data.currency": currency})
+    }
+    const newMessage = await BetterTables._renderMessage(mergeObject(message, {"data.flags.betterTables.loot.shared":true}))
+    await BetterTables.updateChatMessage(message, newMessage)
+  }
+
 
   static async _addRollButtonsToEntityLink (html) {
     if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
@@ -382,19 +455,26 @@ export class BetterTables {
   /**
      * Update a message with a new content
      * @param {ChatMessage} message message to update
-     * @param {String} content new HTML content of message
+     * @param {ChatMessage} content new HTML content of message
+     * @param {Object} options
      * @returns {Promise<void>}
      */
-  static async updateChatMessage (message, content) {
-    if (game.user.isGM && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_WARNING_BEFORE_REROLL)) {
-      Dialog.confirm({
-        title: game.i18n.localize('BRT.Settings.RerollWarning.Title'),
-        content: game.i18n.localize('BRT.Settings.RerollWarning.Description'),
-        yes: () => message.update({ content: content, timestamp: Date.now() }),
-        defaultYes: false
-      })
-    } else {
-      message.update({ content: content, timestamp: Date.now() })
+  static async updateChatMessage (message, content, options={}) {
+    if (game.user.isGM) {
+      if (!options.force && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_WARNING_BEFORE_REROLL)) {
+        Dialog.confirm({
+          title: game.i18n.localize('BRT.Settings.RerollWarning.Title'),
+          content: game.i18n.localize('BRT.Settings.RerollWarning.Description'),
+          yes: () => BetterTables.updateChatMessage(message, content, {'force':true}),
+          defaultYes: false
+        })
+      } else {
+        message.update({
+          content: content.data?.content || content.content,
+          flags: options.flags,
+          timestamp: Date.now()
+        })
+      }
     }
   }
 

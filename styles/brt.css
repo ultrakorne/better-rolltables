@@ -38,8 +38,12 @@
 }
 
 /* Used to display a button to reroll card output */
-.roll-table-reroll-button, .roll-table-open-table {
+.roll-table-reroll-button, .roll-table-open-table, .roll-table-share-currencies {
   margin-right: 5px;
+}
+
+.hidden {
+  display: none;
 }
 
 .roll-table-roll-link {
@@ -48,4 +52,27 @@
   margin-left: -1px;
   border: 1px solid;
   border-left: 0;
+}
+
+.brt-share-currencies {
+  border: 1px solid rgb(181, 179, 164);
+  padding: 5px;
+}
+
+.brt-share-currencies div {
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.brt-share-currencies div img {
+  border: none;
+  max-width: 48px;
+  margin-right: 5px;
+}
+
+.brt-currency-shared {
+  color: green;
+  font-weight: bold;
+  display: block;
 }

@@ -5,7 +5,7 @@
     "BRT.TypeLoot": "Table de butin",
     "BRT.StoryLoot": "Table d'histoire",
     "BRT.CurrencyLoot": "Butin d'argent",
-    "BRT.Currency": "Monnaies :",
+    "BRT.Currency.Label": "Monnaies :",
     "BRT.CurrencyLootPlaceholder": "Ajouter des formules séparées par des virgules : 1d4[gp], (1d4+1)*10[sp]",
     "BRT.LootActorName": "Ajouter le butin à un acteur",
     "BRT.LootActorNamePlaceholder": "Si vide, un nouvel acteur sera créé à chaque fois",
@@ -20,6 +20,8 @@
     "BRT.DrawResultSingular": "Vous avez tiré {amount} résultat de {name}",
     "BRT.DrawResultZero": "Tirage sur {name}",
     "BRT.DrawReroll": "Relancer",
+    "BRT.Currency.Buttons.Share.Label": "Distribuer",
+    "BRT.Currency.Shared.Label": "Distribué !",
     "BRT.OpenRolltable": "Ouvrir la table",
     "BRT.Settings.RerollButtons.Title": "Afficher les boutons pour relancer",
     "BRT.Settings.RerollButtons.Description": "Affiche un bouton Relancer sur chaque message de résultat d'un jet sur une table (uniquement pour les nouveaux messages). Ne fonctionne que sur les tables de type Loot ou si les résultats sont condensés. Les tables par défaut ne sont pas affectées.",
@@ -38,5 +40,7 @@
     "BRT.Settings.StickRolltableHeader.Title": "Figer l'entête des tables ?",
     "BRT.Settings.StickRolltableHeader.Description": "Fige l'entête de tables afin que celui-ci soit toujours visible.",
     "BRT.Settings.RollTableFromJournal.Title": "Ajouter un bouton de lancer aux tables dans les journaux ?",
-    "BRT.Settings.RollTableFromJournal.Description": "Si activé, un bouton pour lancer un tirage sur une table est ajouté aux tables liées dans un journal."
+    "BRT.Settings.RollTableFromJournal.Description": "Si activé, un bouton pour lancer un tirage sur une table est ajouté aux tables liées dans un journal.",
+    "BRT.Settings.ShareCurrencyButton.Title": "Afficher le bouton de distribution des monnaires ?",
+    "BRT.Settings.ShareCurrencyButton.Description": "Affihe un bouton sur les messages pour distribuer les monnaies (s'il y en a)(dnd5e uniquement)"
 }

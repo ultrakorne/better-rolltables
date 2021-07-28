@@ -5,7 +5,7 @@
     "BRT.TypeLoot": "전리품 표",
     "BRT.StoryLoot": "스토리 표",
     "BRT.CurrencyLoot": "노획한 돈",
-    "BRT.Currency": "화폐:",
+    "BRT.Currency.Label": "화폐:",
     "BRT.CurrencyLootPlaceholder": "쉼표로 구분된 수식 추가 e.g.: 1d4[gp], (1d4+1)*10[sp]",
     "BRT.LootActorName": "액터에 전리품 추가",
     "BRT.LootActorNamePlaceholder": "비어 있을 경우 항상 새로운 전리품 액터가 생성된다",
@@ -20,6 +20,8 @@
     "BRT.DrawResultSingular": "{name}의 결과로 선택된 건 {amount}입니다",
     "BRT.DrawResultZero": "{name}에서 굴림",
     "BRT.DrawReroll": "Reroll",
+    "BRT.Currency.Buttons.Share.Label": "Share",
+    "BRT.Currency.Shared.Label": "Shared!",
     "BRT.OpenRolltable": "Open rolltable",
     "BRT.Settings.RerollButtons.Title": "Show Reroll buttons",
     "BRT.Settings.RerollButtons.Description": "Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected.",
@@ -38,5 +40,7 @@
     "BRT.Settings.StickRolltableHeader.Title": "Stick rolltable header to top?",
     "BRT.Settings.StickRolltableHeader.Description": "If enabled, roll table header will no more scroll with content.",
     "BRT.Settings.RollTableFromJournal.Title": "Add roll button to tables in journal entries?",
-    "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries."
+    "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries.",
+    "BRT.Settings.ShareCurrencyButton.Title": "Show share currency button?",
+    "BRT.Settings.ShareCurrencyButton.Description": "Show a button on mesage to share currency (if any) (dnde only)"
 }

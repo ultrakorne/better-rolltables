@@ -12,8 +12,7 @@ Value:: = '"' [a-zA-Z] '"'
 */
 
 export class StoryBoolCondition {
-
-    evaluate() {
-        return true;
-    }
+  evaluate () {
+    return true
+  }
 }

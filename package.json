@@ -1,0 +1,17 @@
+{
+  "name": "better-rolltables",
+  "description": "Adding functionality to roll tables, especially to roll treasure and magic items",
+  "version": "1.7.0",
+  "main": "scripts/brt-main.js",
+  "scripts": {
+    "format": "eslint ./scripts --fix --ext *.js",
+    "lint": "eslint ./scripts/**/*.js"
+  },
+  "devDependencies": {
+    "eslint": "^7.31.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0"
+  }
+}

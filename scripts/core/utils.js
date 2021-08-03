@@ -75,3 +75,16 @@ export async function getRandomItemFromCompendium (compendium) {
   const randomItem = pack.index.contents[randonIndex]
   return pack.getDocument(randomItem._id)
 }
+
+export function getIconByEntityType(entityType) {
+  switch (entityType) {
+    case 'RollTable': return 'fa-th-list'
+    case 'Actor': return 'fa-user'
+    case 'Item': return 'fa-suitcase'
+    case 'JournalEntry': return 'fa-book-open'
+    case 'Playlist': return 'fa-suitcase' // can't find correct icon 🙁
+    case 'Scene': return 'fa-map'
+    case 'Macro': return 'fa-terminal'
+    default: return ''
+  }
+}

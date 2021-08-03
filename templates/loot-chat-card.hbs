@@ -24,14 +24,14 @@
             <img class="result-image" src="{{itemData.item.img}}">
             {{#switch itemData.type}}
                 {{#case 0}}
-                <div class="result-text">{{itemData.item.text}}</div>
+                <div class="result-text">{{{itemData.item.text}}}</div>
                 {{/case}}
                 {{#case 1}}
                     <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
                         <a class="entity-link" draggable="true"
                            data-entity="{{itemData.documentName}}"
                            data-id="{{itemData.item.id}}">
-                            <i class="fas {{entity-icon itemData.documentName}}"></i> {{itemData.item.name}}
+                            <i class="fas {{entity-icon itemData.documentName}}"></i> {{{itemData.item.name}}}
                         </a>
                         {{#ifgt itemData.quantity 1 }}<strong>&nbsp; &#xD7; {{itemData.quantity}}</strong>{{/ifgt}}
                     </div>
@@ -41,7 +41,7 @@
                         <a class="entity-link" draggable="true"
                            data-pack="{{itemData.compendiumName}}"
                            data-id="{{itemData.item.id}}">
-                            <i class="fas {{entity-icon itemData.documentName}}"></i> {{itemData.item.name}}
+                            <i class="fas {{entity-icon itemData.documentName}}"></i> {{{itemData.item.name}}}
                         </a>
                         {{#ifgt itemData.quantity 1 }}<strong>&nbsp; &#xD7; {{itemData.quantity}}</strong>{{/ifgt}}
                     </div>

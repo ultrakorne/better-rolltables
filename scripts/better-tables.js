@@ -113,6 +113,11 @@ export class BetterTables {
     }
   }
 
+  async roll(tableEntity){
+    const data = await BetterTables.prepareCardData(tableEntity)
+    return data.flags?.betterTables?.loot;
+  }
+
   /**
      * Create a new RollTable by extracting entries from a compendium.
      *

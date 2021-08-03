@@ -4,7 +4,7 @@ import { StoryBuilder } from './story/story-builder.js'
 import { StoryChatCard } from './story/story-chat-card.js'
 import { BRTBuilder } from './core/brt-builder.js'
 import { BetterResults } from './core/brt-table-results.js'
-import { getRandomItemFromCompendium } from './core/utils.js'
+import {getIconByEntityType, getRandomItemFromCompendium} from './core/utils.js'
 import { BRTCONFIG } from './core/config.js'
 
 export class BetterTables {
@@ -514,5 +514,21 @@ export class BetterTables {
         $(link).after(rollNode)
       })
     }
+  }
+
+  createLink(item) {
+    if (!item) return undefined
+
+    if (!item.type || item.type > 0) {
+      const id = item.id;
+      const text = item.name || item.text;
+      const entity = item.documentName;
+      const pack = item.pack || game.collections.get(item.collectionName)?.documentName || "";
+      const packPart = pack !== "" ? `data-pack="${pack}"` : "";
+      const icon = getIconByEntityType(entity);
+      return `<a class="entity-link" draggable="true" ${packPart} data-entity="${entity}" data-id="${id}"><i class="fas ${icon}"></i>${text}</a>`
+    }
+
+    return item.text
   }
 }

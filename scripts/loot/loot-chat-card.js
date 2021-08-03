@@ -21,6 +21,17 @@ export class LootChatCard {
   async findOrCreateItems () {
     const lootCreator = new LootCreator(this.betterResults, this.currencyData)
     for (const item of this.betterResults) {
+
+      if (item.type === CONST.TABLE_RESULT_TYPES.TEXT) {
+        this.addToItemData({
+          id: item.text,
+          text: item.text,
+          img:item.img,
+          isText: true
+        })
+        continue
+      }
+
       this.numberOfDraws++
       /** we pass though the data, since we might have some data manipulation that changes an existing item, in that case even if it was initially
              * existing or in a compendium we have to create a new one */
@@ -57,13 +68,31 @@ export class LootChatCard {
       existingItem.quantity = +existingItem.quantity + +quantity
     } else {
       // we will scale down the font size if an item name is too long
-      const fontSize = Math.max(60, 100 - Math.max(0, itemEntity.name.length - 27) * 2)
+      const fontSize = Math.max(60, 100 - Math.max(0, (itemEntity.name || itemEntity.text).length - 27) * 2)
+
+      let type = undefined
+      if (itemEntity.isText) type = CONST.TABLE_RESULT_TYPES.TEXT
+      else if (itemEntity.pack) type = CONST.TABLE_RESULT_TYPES.COMPENDIUM
+      else type = CONST.TABLE_RESULT_TYPES.ENTITY
+
       this.itemsData.push({
-        item: itemEntity,
+        documentName: itemEntity.documentName,
+        compendiumName: itemEntity.pack,
+        type: type,
+        item: {
+          id: itemEntity.id,
+          name: itemEntity.name,
+          img: itemEntity.data?.img || itemEntity.img,
+          text: itemEntity.text,
+        },
         quantity: quantity,
         fontSize: fontSize
       })
     }
+  }
+
+  async renderMessage(data) {
+    return renderTemplate('modules/better-rolltables/templates/loot-chat-card.hbs', data)
   }
 
   async getBRTFolder () {
@@ -80,21 +109,20 @@ export class LootChatCard {
   async prepareCharCart (table) {
     await this.findOrCreateItems()
 
-    let currencyString = ''
-    for (const key in this.currencyData) {
-      if (currencyString !== '') currencyString += ', '
-      currencyString += `${this.currencyData[key]}${key}`
-    }
-
     const chatCardData = {
       tableData: table.data,
       itemsData: this.itemsData,
-      currency: currencyString,
+      currency: this.currencyData,
       compendium: table.pack,
-      id: table.id
+      id: table.id,
+      users: game.users.filter(user => !user.isGM && user.character).map(user => ({
+        id: user.id,
+        name: user.character.name,
+        img: user.character.data.token?.img || user.avatar
+      }))
     }
 
-    const cardHtml = await renderTemplate('modules/better-rolltables/templates/loot-chat-card.hbs', chatCardData)
+    const cardHtml = await this.renderMessage(chatCardData)
 
     let flavorString
     if (this.numberOfDraws > 1) {
@@ -109,7 +137,12 @@ export class LootChatCard {
       flavor: flavorString,
       sound: 'sounds/dice.wav',
       user: game.user.data._id,
-      content: cardHtml
+      content: cardHtml,
+      flags: {
+        betterTables: {
+          loot: chatCardData
+        }
+      }
     }
   }
 

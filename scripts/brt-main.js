@@ -1,6 +1,6 @@
 import { BetterRT } from './better-table-view.js'
 import { BRTCONFIG } from './core/config.js'
-import { i18n } from './core/utils.js'
+import {getIconByEntityType, i18n} from './core/utils.js'
 import { BetterTables } from './better-tables.js'
 import VersionCheck from './versioning/version-check.js'
 import renderWelcomeScreen from './versioning/welcome-screen.js'
@@ -132,6 +132,14 @@ function registerSettings () {
     default: false,
     type: Boolean
   })
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_CURRENCY_SHARE_BUTTON, {
+    name: i18n('BRT.Settings.ShareCurrencyButton.Title'),
+    hint: i18n('BRT.Settings.ShareCurrencyButton.Description'),
+    config: true,
+    default: false,
+    type: Boolean
+  })
 }
 
 function registerHandlebarsHelpers () {
@@ -149,16 +157,45 @@ function registerHandlebarsHelpers () {
     return v1 > v2 ? options.fn(this) : options.inverse(this)
   })
 
+  /** checks if the first argument is equal than the second argument */
+  Handlebars.registerHelper('ifeq', function (v1, v2, options) {
+    return v1 === v2 ? options.fn(this) : options.inverse(this)
+  })
+
   /** return fas icon based on document name */
   Handlebars.registerHelper('entity-icon', function (documentName) {
-    switch (documentName) {
-      case 'RollTable': return 'fa-th-list'
-      case 'Actor': return 'fa-user'
-      case 'Item': return 'fa-suitcase'
-      case 'JournalEntry': return 'fa-book-open'
-      case 'Playlist': return 'fa-suitcase' // can't find correct icon 🙁
-      case 'Scene': return 'fa-map'
-      case 'Macro': return 'fa-terminal'
+    return getIconByEntityType(documentName)
+  })
+
+  Handlebars.registerHelper('format-currencies', function (currenciesData) {
+    let currencyString = ''
+    for (const key in currenciesData) {
+      if (currencyString !== '') currencyString += ', '
+      currencyString += `${currenciesData[key]}${key}`
+    }
+    return currencyString
+  })
+
+  Handlebars.registerHelper('switch', function(value, options) {
+    this.switch_value = value;
+    return options.fn(this);
+  })
+
+  Handlebars.registerHelper('isEmpty', function(value, options) {
+    return (value === undefined || (value instanceof Object && Object.keys(value).length === 0) || (value instanceof Array && value.length === 0))
+    ? options.fn(this)
+    : options.inverse(this)
+  })
+
+  Handlebars.registerHelper('unlessEmpty', function(value, options) {
+    return (value !== undefined && ((value instanceof Object && Object.keys(value).length > 0) || (value instanceof Array && value.length > 0)))
+        ? options.fn(this)
+        : options.inverse(this)
+  })
+
+  Handlebars.registerHelper('case', function(value, options) {
+    if (value == this.switch_value) {
+      return options.fn(this)
     }
   })
 }

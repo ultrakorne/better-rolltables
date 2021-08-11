@@ -313,7 +313,7 @@ export class BetterTables {
 
   static async _toggleCurrenciesShareSection(message, html) {
     const section = html[0].querySelector("section.brt-share-currencies");
-    section.classList.toggle("hidden");
+    section.classList.toggle("brt-hidden");
     // await BetterTables.updateChatMessage(message, html, {"force":true});
   }
 

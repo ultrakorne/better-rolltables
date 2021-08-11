@@ -34,6 +34,9 @@ export class BetterTables {
     await lootCreator.createActor(tableEntity)
     await lootCreator.addCurrenciesToActor()
     await lootCreator.addItemsToActor()
+
+    const lootChatCard = new LootChatCard(betterResults, currencyData)
+    await lootChatCard.createChatCard(tableEntity)
   }
 
   async addLootToSelectedToken (tableEntity) {

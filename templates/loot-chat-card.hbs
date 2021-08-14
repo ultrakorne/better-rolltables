@@ -6,7 +6,7 @@
         <div class="table-description" style="font-size: 15px; text-align: center; font-weight:bold;">{{localize 'BRT.Currency.Label'}} {{format-currencies currency}}
             {{#if shared}}<span class="brt-currency-shared">{{ localize 'BRT.Currency.Shared.Label' }}</span>{{/if}}
         </div>
-    <section class="brt-share-currencies hidden">
+    <section class="brt-share-currencies brt-hidden">
         {{#each users as |user|}}
             <div class="flexrow">
                 <input type="checkbox" checked="checked" data-user-id="{{user.id}}" />

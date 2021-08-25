@@ -35,9 +35,11 @@ export class BetterTables {
     await lootCreator.addCurrenciesToActor()
     await lootCreator.addItemsToActor()
 
-    const lootChatCard = new LootChatCard(betterResults, currencyData)
-    await lootChatCard.createChatCard(tableEntity)
-  }
+    if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ALWAYS_SHOW_GENERATED_LOOT_AS_MESSAGE)) {
+      const lootChatCard = new LootChatCard(betterResults, currencyData)
+      await lootChatCard.createChatCard(tableEntity)
+    }
+}
 
   async addLootToSelectedToken (tableEntity) {
     // VaderDojo: Only allow if tokens are selected

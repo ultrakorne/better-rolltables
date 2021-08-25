@@ -25,7 +25,7 @@ export class StoryBuilder {
     for (const entry of draw.results) {
       /** entity type 2 is when an entity in the world is linked */
       if (entry.data.type === 1 && entry.data.collection === 'JournalEntry') {
-        const storyJournal = game.journal.get(entry.resultId)
+        const storyJournal = game.journal.get(entry.data.resultId)
         if (storyJournal) {
           journalContent = storyJournal.data.content
         } else {

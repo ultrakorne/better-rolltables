@@ -175,7 +175,7 @@ export class BetterTables {
       if (!pack || pack === defaultPack) {
         const spellCompendium = game.packs.get(defaultPack)
         const spellCompendiumIndex = await spellCompendium.getIndex({ fields: ['data.level', 'img'] })
-        this._spellCache = spellCompendiumIndex.map(i => mergeObject(i, { collection: spellCompendium.collection }))
+        this._spellCache = spellCompendiumIndex.filter(entry => entry.type === "spell").map(i => mergeObject(i, { collection: spellCompendium.collection }))
       }
     }
   }

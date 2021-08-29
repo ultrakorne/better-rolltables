@@ -42,5 +42,7 @@
     "BRT.Settings.RollTableFromJournal.Title": "Ajouter un bouton de lancer aux tables dans les journaux ?",
     "BRT.Settings.RollTableFromJournal.Description": "Si activé, un bouton pour lancer un tirage sur une table est ajouté aux tables liées dans un journal.",
     "BRT.Settings.ShareCurrencyButton.Title": "Afficher le bouton de distribution des monnaires ?",
-    "BRT.Settings.ShareCurrencyButton.Description": "Affihe un bouton sur les messages pour distribuer les monnaies (s'il y en a)(dnd5e uniquement)"
+    "BRT.Settings.ShareCurrencyButton.Description": "Affihe un bouton sur les messages pour distribuer les monnaies (s'il y en a)(dnd5e uniquement)",
+    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Title": "Toujours afficher le butin généré sur un acteur comme un message",
+    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Description": "Si actif, le butin généré et ajouté à un acteur sera aussi affiché den tant que message."
 }

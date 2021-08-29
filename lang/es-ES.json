@@ -42,5 +42,7 @@
     "BRT.Settings.RollTableFromJournal.Title": "Add roll button to tables in journal entries?",
     "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries.",
     "BRT.Settings.ShareCurrencyButton.Title": "Show share currency button?",
-    "BRT.Settings.ShareCurrencyButton.Description": "Show a button on mesage to share currency (if any) (dnde only)"
+    "BRT.Settings.ShareCurrencyButton.Description": "Show a button on mesage to share currency (if any) (dnde only)",
+    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Title": "Always show generated loot to actor as message",
+    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Description": "If enabled, generated loot added to an actor is also displayed as a message."
 }

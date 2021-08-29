@@ -25,6 +25,7 @@ export const BRTCONFIG = {
     STICK_ROLLTABLE_HEADER: 'stick-rolltable-header',
     ROLL_TABLE_FROM_JOURNAL: 'roll-table-from-journal',
     SHOW_CURRENCY_SHARE_BUTTON: 'show-currency-share-button',
+    ALWAYS_SHOW_GENERATED_LOOT_AS_MESSAGE:'always-show-generated-loot-as-message',
 
 
     // in fp2e quantity is in data.data.quantity.value , in 5e data.data.quantity

@@ -35,9 +35,11 @@ export class BetterTables {
     await lootCreator.addCurrenciesToActor()
     await lootCreator.addItemsToActor()
 
-    const lootChatCard = new LootChatCard(betterResults, currencyData)
-    await lootChatCard.createChatCard(tableEntity)
-  }
+    if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ALWAYS_SHOW_GENERATED_LOOT_AS_MESSAGE)) {
+      const lootChatCard = new LootChatCard(betterResults, currencyData)
+      await lootChatCard.createChatCard(tableEntity)
+    }
+}
 
   async addLootToSelectedToken (tableEntity) {
     // VaderDojo: Only allow if tokens are selected
@@ -175,7 +177,7 @@ export class BetterTables {
       if (!pack || pack === defaultPack) {
         const spellCompendium = game.packs.get(defaultPack)
         const spellCompendiumIndex = await spellCompendium.getIndex({ fields: ['data.level', 'img'] })
-        this._spellCache = spellCompendiumIndex.map(i => mergeObject(i, { collection: spellCompendium.collection }))
+        this._spellCache = spellCompendiumIndex.filter(entry => entry.type === "spell").map(i => mergeObject(i, { collection: spellCompendium.collection }))
       }
     }
   }

@@ -140,6 +140,15 @@ function registerSettings () {
     default: false,
     type: Boolean
   })
+
+
+  game.settings.register(BRTCONFIG.NAMESPACE, BRTCONFIG.ALWAYS_SHOW_GENERATED_LOOT_AS_MESSAGE, {
+    name: i18n('BRT.Settings.AlwaysShowGeneratedLootAsMessage.Title'),
+    hint: i18n('BRT.Settings.AlwaysShowGeneratedLootAsMessage.Description'),
+    config: true,
+    default: false,
+    type: Boolean
+  })
 }
 
 function registerHandlebarsHelpers () {

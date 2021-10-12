@@ -10,9 +10,10 @@ export class LootChatCard {
      * @param {object} betterResults
      * @param {object} currencyData
      */
-  constructor (betterResults, currencyData) {
+  constructor (betterResults, currencyData, rollMode) {
     this.betterResults = betterResults
     this.currencyData = currencyData
+    this.rollMode = rollMode
 
     this.itemsData = []
     this.numberOfDraws = 0
@@ -147,8 +148,8 @@ export class LootChatCard {
   }
 
   async createChatCard (table) {
-    const chatData = await this.prepareCharCart(table)
-    addRollModeToChatData(chatData)
-    ChatMessage.create(chatData)
+    const chatData = await this.prepareCharCart(table);
+    addRollModeToChatData(chatData, this.rollMode);    
+    ChatMessage.create(chatData);
   }
 }

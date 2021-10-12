@@ -24,20 +24,21 @@ export class BetterTables {
    * 
    * @param {*} tableEntity 
    */
-  async generateLoot (tableEntity) {
-    const brtBuilder = new BRTBuilder(tableEntity)
-    const results = await brtBuilder.betterRoll()
+  async generateLoot (tableEntity, options = null) {
+    const brtBuilder = new BRTBuilder(tableEntity),
+          results = await brtBuilder.betterRoll(),
+          br = new BetterResults(results),
+          betterResults = await br.buildResults(tableEntity),
+          currencyData = br.getCurrencyData(),
+          lootCreator = new LootCreator(betterResults, currencyData);
 
-    const br = new BetterResults(results);
-    const betterResults = await br.buildResults(tableEntity);
-    const currencyData = br.getCurrencyData();
-    const lootCreator = new LootCreator(betterResults, currencyData);
     await lootCreator.createActor(tableEntity);
     await lootCreator.addCurrenciesToActor();
     await lootCreator.addItemsToActor();
 
     if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ALWAYS_SHOW_GENERATED_LOOT_AS_MESSAGE)) {
-      const lootChatCard = new LootChatCard(betterResults, currencyData);
+      const rollMode = (options && ('rollMode' in options)) ? options.rollMode : null;
+      const lootChatCard = new LootChatCard(betterResults, currencyData, rollMode);
       await lootChatCard.createChatCard(tableEntity);
     }
 }
@@ -76,15 +77,15 @@ export class BetterTables {
     return ui.notifications.info('Loot generation complete.');
   }
 
-  async generateChatLoot (tableEntity) {
-    const brtBuilder = new BRTBuilder(tableEntity)
-    const results = await brtBuilder.betterRoll()
+  async generateChatLoot (tableEntity, options = null) {
+    const rollMode = (options && ('rollMode' in options)) ? options.rollMode : null;
+    const brtBuilder = new BRTBuilder(tableEntity),
+          results = await brtBuilder.betterRoll(),
+          br = new BetterResults(results),
+          betterResults = await br.buildResults(tableEntity),
+          currencyData = br.getCurrencyData(),
+          lootChatCard = new LootChatCard(betterResults, currencyData, rollMode);
 
-    const br = new BetterResults(results)
-    const betterResults = await br.buildResults(tableEntity)
-    const currencyData = br.getCurrencyData()
-
-    const lootChatCard = new LootChatCard(betterResults, currencyData)
     await lootChatCard.createChatCard(tableEntity)
   }
 
@@ -111,7 +112,9 @@ export class BetterTables {
     return await brtBuilder.betterRoll()
   }
 
-  async betterTableRoll (tableEntity) {
+  async betterTableRoll (tableEntity, options = null) {
+    const rollMode = (options && ('rollMode' in options)) ? options.rollMode : null;
+
     const brtBuilder = new BRTBuilder(tableEntity)
     const results = await brtBuilder.betterRoll()
 
@@ -120,10 +123,10 @@ export class BetterTables {
       const betterResults = await br.buildResults(tableEntity)
       const currencyData = br.getCurrencyData()
 
-      const lootChatCard = new LootChatCard(betterResults, currencyData)
+      const lootChatCard = new LootChatCard(betterResults, currencyData, rollMode);
       await lootChatCard.createChatCard(tableEntity)
     } else {
-      await brtBuilder.createChatCard(results)
+      await brtBuilder.createChatCard(results, rollMode);
     }
   }
 

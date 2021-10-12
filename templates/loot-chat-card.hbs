@@ -39,7 +39,7 @@
                 {{#case 2}}
                     <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
                         <a class="entity-link" draggable="true"
-                           data-pack="{{itemData.compendiumName}}"
+                           data-pack="{{#if itemData.compendiumName}}{{itemData.compendiumName}}{{else}}{{itemData.item.pack}}{{/if}}"
                            data-id="{{itemData.item.id}}">
                             <i class="fas {{entity-icon itemData.documentName}}"></i> {{{itemData.item.name}}}
                         </a>

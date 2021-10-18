@@ -1,6 +1,7 @@
 import * as BRTHelper from './brt-helper.js'
 import * as Utils from '../core/utils.js'
 import { BRTCONFIG } from './config.js'
+import { addRollModeToChatData } from '../core/utils.js'
 
 export class BRTBuilder {
   constructor (tableEntity) {
@@ -13,18 +14,21 @@ export class BRTBuilder {
      * @returns {array} results
      */
   async betterRoll (rollsAmount = undefined) {
-    this.mainRoll = undefined
-    rollsAmount = rollsAmount || await BRTHelper.rollsAmount(this.table)
-    this.results = await this.rollManyOnTable(rollsAmount, this.table)
-    return this.results
+    this.mainRoll = undefined;
+    rollsAmount = rollsAmount || await BRTHelper.rollsAmount(this.table);
+    this.results = await this.rollManyOnTable(rollsAmount, this.table);
+    return this.results;
   }
 
   /**
      *
      * @param {array} results
      */
-  async createChatCard (results) {
-    await this.table.toMessage(results, { roll: this.mainRoll })
+  async createChatCard (results, rollMode = null) {
+
+    let msgData = { roll: this.mainRoll, messageData: {}};
+    if (rollMode) addRollModeToChatData(msgData.messageData, rollMode);
+    await this.table.toMessage(results, msgData);
   }
 
   /**

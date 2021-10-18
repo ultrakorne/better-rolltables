@@ -1,7 +1,9 @@
 export const i18n = (key) => game.i18n && game.i18n.localize(key)
 
-export function addRollModeToChatData (chatData) {
-  switch (game.settings.get('core', 'rollMode')) {
+export function addRollModeToChatData (chatData, rollMode) {
+  rollMode = rollMode ?? game.settings.get('core', 'rollMode') ;
+
+  switch (rollMode) {
     case 'blindroll':
       chatData.blind = true
       // no break needed, if so please change this comment ?

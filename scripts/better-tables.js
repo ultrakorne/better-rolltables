@@ -20,51 +20,60 @@ export class BetterTables {
     return this._spellCache
   }
 
+  /**
+   * 
+   * @param {*} tableEntity 
+   */
   async generateLoot (tableEntity) {
     const brtBuilder = new BRTBuilder(tableEntity)
     const results = await brtBuilder.betterRoll()
 
-    const br = new BetterResults(results)
-    const betterResults = await br.buildResults(tableEntity)
-    const currencyData = br.getCurrencyData()
-    // console.log("++BETTER RESULTS ", betterResults);
-    // console.log("++ currencyData", currencyData);
-
-    const lootCreator = new LootCreator(betterResults, currencyData)
-    await lootCreator.createActor(tableEntity)
-    await lootCreator.addCurrenciesToActor()
-    await lootCreator.addItemsToActor()
+    const br = new BetterResults(results);
+    const betterResults = await br.buildResults(tableEntity);
+    const currencyData = br.getCurrencyData();
+    const lootCreator = new LootCreator(betterResults, currencyData);
+    await lootCreator.createActor(tableEntity);
+    await lootCreator.addCurrenciesToActor();
+    await lootCreator.addItemsToActor();
 
     if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ALWAYS_SHOW_GENERATED_LOOT_AS_MESSAGE)) {
-      const lootChatCard = new LootChatCard(betterResults, currencyData)
-      await lootChatCard.createChatCard(tableEntity)
+      const lootChatCard = new LootChatCard(betterResults, currencyData);
+      await lootChatCard.createChatCard(tableEntity);
     }
 }
 
-  async addLootToSelectedToken (tableEntity) {
-    // VaderDojo: Only allow if tokens are selected
-    // TODO:  This check could be enhanced to only function if a UI toggle to use
-    // token logic is enabled
-    if (canvas.tokens.controlled.length === 0) { return ui.notifications.error('Please select a token first') }
+/**
+ * Roll a table an add the resulting loot to a given token.
+ * 
+ * @param {RollTable} tableEntity 
+ * @param {TokenDocument} token 
+ * @returns 
+ */
+  async addLootToSelectedToken (tableEntity, token = null) {
+    let tokenstack = [];
 
-    ui.notifications.info('Loot generation started.')
-    const brtBuilder = new BRTBuilder(tableEntity)
-
-    for (const token of canvas.tokens.controlled) {
-      const results = await brtBuilder.betterRoll()
-
-      const br = new BetterResults(results)
-      const betterResults = await br.buildResults(tableEntity)
-      const currencyData = br.getCurrencyData()
-      // console.log("++BETTER RESULTS ", betterResults);
-      // console.log("++ currencyData", currencyData);
-
-      const lootCreator = new LootCreator(betterResults, currencyData)
-
-      await lootCreator.addCurrenciesToToken(token)
-      await lootCreator.addItemsToToken(token)
+    if (null == token && (canvas.tokens.controlled.length === 0)) {
+        return ui.notifications.error('Please select a token first');
+    } else {
+        tokenstack = [token] || canvas.tokens.controlled;
     }
-    ui.notifications.info('Loot generation complete.')
+
+    ui.notifications.info('Loot generation started.');
+
+    const brtBuilder = new BRTBuilder(tableEntity);
+
+    for (const token of tokenstack) {
+      const results = await brtBuilder.betterRoll();
+      const br = new BetterResults(results);
+      const betterResults = await br.buildResults(tableEntity);
+      const currencyData = br.getCurrencyData();
+      const lootCreator = new LootCreator(betterResults, currencyData);
+
+      await lootCreator.addCurrenciesToToken(token);
+      await lootCreator.addItemsToToken(token);
+    }
+    
+    return ui.notifications.info('Loot generation complete.');
   }
 
   async generateChatLoot (tableEntity) {

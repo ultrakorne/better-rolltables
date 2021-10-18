@@ -270,7 +270,7 @@ export class BetterTables {
       const chatCardData = {
         compendium: compendium,
         itemsData: [
-          { item: item, quantity: 1, fontSize: fontSize }
+          { item: item, quantity: 1, fontSize: fontSize, type: 2 }
         ]
       }
       const cardHtml = await renderTemplate('modules/better-rolltables/templates/loot-chat-card.hbs', chatCardData)

@@ -33,7 +33,7 @@ export class LootManipulator {
       return itemData
     }
 
-    const itemLink = `@Compendium[${itemEntity.collection}.${itemEntity.data._id}]`
+    const itemLink = `@Compendium[${itemEntity.pack}.${itemEntity.data._id}]`
     // make the name shorter by removing some text
     itemData.name = itemData.name.replace(/^(Spell\s)/, '')
     itemData.name = itemData.name.replace(/(Cantrip\sLevel)/, 'Cantrip')

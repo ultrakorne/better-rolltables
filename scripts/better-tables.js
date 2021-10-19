@@ -8,8 +8,8 @@ import {getIconByEntityType, getRandomItemFromCompendium} from './core/utils.js'
 import { BRTCONFIG } from './core/config.js'
 
 export class BetterTables {
-  __constructor () {
-    this._spellCache = undefined
+  constructor () {
+    this._spellCache = undefined;
   }
 
   /**
@@ -48,15 +48,16 @@ export class BetterTables {
  * 
  * @param {RollTable} tableEntity 
  * @param {TokenDocument} token 
+ * @param {options} object
  * @returns 
  */
-  async addLootToSelectedToken (tableEntity, token = null) {
+  async addLootToSelectedToken (tableEntity, token = null, options = null) {
     let tokenstack = [];
 
     if (null == token && (canvas.tokens.controlled.length === 0)) {
         return ui.notifications.error('Please select a token first');
     } else {
-        tokenstack = [token] || canvas.tokens.controlled;
+        tokenstack = (token) ? (token.length >= 0) ? token : [token] : canvas.tokens.controlled;
     }
 
     ui.notifications.info('Loot generation started.');

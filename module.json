@@ -2,8 +2,21 @@
   "name": "better-rolltables",
   "title": "Better Roll Tables",
   "description": "Adding functionality to roll tables, especially to roll treasure and magic items",
-  "version": "1.8.4",
-  "author": "Ultrakorne#6240",
+  "version": "1.8.5",
+  "authors": [
+    {
+      "name": "Ultrakorne#6240",
+      "url": "https://github.com/ultrakorne/"
+    },
+    {
+      "name": "Daniel Böttner | JackPrince#0494",
+      "url": "https://github.com/DanielBoettner/"
+    },
+    {
+      "name": "Daimakaicho",
+      "url": "https://github.com/Daimakaicho"
+    }
+  ],
   "esmodules": [
     "./scripts/brt-main.js"
   ],

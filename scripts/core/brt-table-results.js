@@ -5,28 +5,28 @@ import { BRTCONFIG } from './config.js'
 
 export class BetterResults {
   constructor (tableResults) {
-    this.results = []
-    this.currencyData = {}
-    this.tableResults = tableResults
+    this.results = [];
+    this.currencyData = {cp: 0, ep: 0, gp: 0, pp: 0,sp: 0};
+    this.tableResults = tableResults;
   }
 
   async buildResults (table) {
-    const currencyString = table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_CURRENCY_KEY)
-    this.currencyData = await this._generateCurrency(currencyString)
+    const currencyString = table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_CURRENCY_KEY);
+    this.currencyData = await this._generateCurrency(currencyString);
 
     for (let i = 0; i < this.tableResults.length; i++) {
-      const betterResults = await this._parseResult(this.tableResults[i])
+      const betterResults = await this._parseResult(this.tableResults[i]);
       // if a inner table is rolled, the result returned is undefined but the array this.tableResult is extended with the new results
 
       for (const r of betterResults) {
-        this.results.push(r)
+        this.results.push(r);
       }
     }
-    return this.results
+    return this.results;
   }
 
   getCurrencyData () {
-    return this.currencyData
+    return this.currencyData;
   }
 
   async _parseResult (result) {

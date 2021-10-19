@@ -1,6 +1,6 @@
 <div class="form-group">
     <label>{{localize 'BRT.TypeLabel'}}</label>
-    <select {{#if disabled}}disabled{{/if}}>
+    <select {{#if disabled}}disabled{{/if}} name="flags.better-rolltables.table-type">
         {{#select better-rolltables.table-type}}
         <option value="none">{{localize 'BRT.TypeDefault'}}</option>
         <option value="better">{{localize 'BRT.BetterTable'}}</option>
@@ -10,26 +10,27 @@
     </select>
 </div>
 
-{{#ifcontain better-rolltables.table-type "loot"}}
-<div class="form-group">
+
+<div class="form-group {{#ifcontain better-rolltables.table-type "loot"}}{{else}}hidden{{/ifcontain}}">
     <label>{{localize 'BRT.CurrencyLoot'}}</label>
-    <input type="text" placeholder="{{localize 'BRT.CurrencyLootPlaceholder'}}" name="currency-input"
-        value="{{better-rolltables.table-currency-string}}" {{#if disabled}}disabled{{/if}}>
+    <input type="{{#ifcontain better-rolltables.table-type "loot"}}text{{else}}hidden{{/ifcontain}}"
+           placeholder="{{localize 'BRT.CurrencyLootPlaceholder'}}"
+           name="flags.better-rolltables.table-currency-string"
+           value="{{better-rolltables.table-currency-string}}" {{#if disabled}}disabled{{/if}}>
 </div>
-{{/ifcontain}}
 
-{{#ifcontain better-rolltables.table-type "loot" "better"}}
-<div class="form-group">
-    <label>{{localize 'BRT.LootRollAmount'}}</label>
-    <input type="text" placeholder="{{localize 'BRT.LootRollAmountPlaceholder'}}" name="loot-rolls-amount-input"
-        value="{{better-rolltables.loot-amount-key}}" {{#if disabled}}disabled{{/if}}>
+<div class="form-group {{#ifcontain better-rolltables.table-type "none"}}hidden{{/ifcontain}}">
+    <label for="flags.better-rolltables.loot-amount-key">{{localize 'BRT.LootRollAmount'}}</label>
+    <input  type="{{#ifcontain better-rolltables.table-type "none"}}hidden{{else}}text{{/ifcontain}}"
+            placeholder="{{localize 'BRT.LootRollAmountPlaceholder'}}"
+            name="flags.better-rolltables.loot-amount-key"
+            value="{{better-rolltables.loot-amount-key}}" {{#if disabled}}disabled{{/if}}>
 </div>
-{{/ifcontain}}
 
-{{#ifcontain better-rolltables.table-type "loot"}}
-<div class="form-group">
+<div class="form-group {{#ifcontain better-rolltables.table-type "loot"}}{{else}}hidden{{/ifcontain}}">
     <label>{{localize 'BRT.LootActorName'}}</label>
-    <input type="text" placeholder="{{localize 'BRT.LootActorNamePlaceholder'}}" name="loot-name-input"
-        value="{{better-rolltables.loot-actor-name}}" {{#if disabled}}disabled{{/if}}>
+    <input  type="{{#ifcontain better-rolltables.table-type "loot"}}text{{else}}hidden{{/ifcontain}}"
+            placeholder="{{localize 'BRT.LootActorNamePlaceholder'}}"
+            name="flags.better-rolltables.loot-actor-name"
+            value="{{better-rolltables.loot-actor-name}}" {{#if disabled}}disabled{{/if}}>
 </div>
-{{/ifcontain}}

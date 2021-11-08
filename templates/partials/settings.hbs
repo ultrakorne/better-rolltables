@@ -1,0 +1,83 @@
+{{#if this.actions}}
+    {{#each this.actions as |action actionName|}}
+        {{#if (eq actionName 'new')}}
+            {{> "modules/better-rolltables/templates/config/new_rule_form.hbs" module=../this.module key=../this.key data=action.data}}
+        {{/if}}
+    {{/each}}
+{{/if}}
+
+<div class="form-group">
+    {{#if (eq this.type 'Object')}}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Filters</th>
+                    <th>Rolltable</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each this.value as |customRule uniquekey|}}
+                <tr data-name="{{../this.module}}.{{../this.key}}.{{uniquekey}}">
+                    <th data-name="{{../this.module}}.{{../this.key}}.{{uniquekey}}.name">{{customRule.name}}</th>
+                    <td data-name="{{../this.module}}.{{../this.key}}.{{uniquekey}}.filters">
+                        <table>
+                            {{#each customRule.filters as |filter index|}}
+                                <tr>
+                                    <td data-name="{{../../this.module}}.{{../this.key}}.{{../uniquekey}}.filters.{{index}}.filterpath">{{filter.filterpath}}</td>
+                                    <td data-name="{{../../this.module}}.{{../this.key}}.{{../key}}.filters.{{index}}.comparison">{{filter.comparison}}</td>
+                                    <td data-name="{{../../this.module}}.{{../this.key}}.{{../key}}.filters.{{index}}.value">{{filter.value}}</td>
+                                </tr>
+                            {{/each}}
+                        </table>
+                    </td>
+                    
+                    <td data-name="{{../this.module}}.{{../this.key}}.{{uniquekey}}.rolltable" data-entity-id="{{customRule.rolltable}}"><em data-action="openSheet">{{customRule.rolltable}}</em></td>
+                    <td class="actions">
+                        <button data-action="deleteRow" data-update-setting="true" title="delete"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <label>{{this.name}}</label>
+        <div class="form-fields">
+
+            {{#if this.isCheckbox}}
+            <input type="checkbox" name="{{this.module}}.{{this.key}}" data-default="{{this.default}}" data-dtype="Boolean"
+                {{checked this.value}} />
+
+            {{else if this.isSelect}}
+            <select name="{{this.module}}.{{this.key}}" data-default="{{this.default}}" data-dtype="String">
+                {{#select this.value}}
+                <option value="0">-- Select an option --</option>
+                {{#each this.choices as |item id|}}
+                    {{#if item._id}}
+                        <optgroup label="{{group}}">
+                            {{#each array}}
+                            <option value="{{this.id}}">{{this.label}}</option>
+                            {{/each}}
+                        </optgroup>
+                    {{else}}
+                        <option value="{{item.id}}">{{item.label}}</option>
+                    {{/if}}
+                {{/each}}
+                {{/select}}
+            </select>
+
+            {{else if this.isRange}}
+            <input type="range" name="{{this.module}}.{{this.key}}" data-default="{{this.default}}" data-dtype="Number"
+                value="{{ this.value }}" min="{{ this.range.min }}" max="{{ this.range.max }}"
+                step="{{ this.range.step }}" />
+            <span class="range-value">{{this.value}}</span>
+
+            {{else}}
+            <input type="text" name="{{this.module}}.{{this.key}}" data-default="{{this.default}}" value="{{this.value}}"
+                data-dtype="{{this.type}}" />
+            {{/if}}
+        </div>
+        <p class="notes">{{this.hint}}</p>
+    {{/if}}
+</div>

@@ -44,5 +44,9 @@
     "BRT.Settings.ShareCurrencyButton.Title": "Show share currency button?",
     "BRT.Settings.ShareCurrencyButton.Description": "Show a button on mesage to share currency (if any) (dnde only)",
     "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Title": "Always show generated loot to actor as message",
-    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Description": "If enabled, generated loot added to an actor is also displayed as a message."
+    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Description": "If enabled, generated loot added to an actor is also displayed as a message.",
+    "BRT.Settings.Tags.Use.Title": "Tags verwenden",
+    "BRT.Settings.Tags.Use.Description": "Benutzerdefinierte Tags an Würfeltabellen verwenden.",
+    "BRT.Settings.Tags.Defaults.Title": "Standard Tags",
+    "BRT.Settings.Tags.Defaults.Description": "Standard Tags die an jede bearbeitete Rolltable angehägt werden."
 }

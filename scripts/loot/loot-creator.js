@@ -46,8 +46,13 @@ export class LootCreator {
     await this.actor.update({ 'data.currency': currencyData });
   }
 
+  /**
+   * 
+   * @param {boolean} stackSame Should same items be stacked together? Default = true
+   * @returns 
+   */
   async addItemsToActor (stackSame = true) {
-    const items = []
+    const items = [];
     for (const item of this.betterResults) {
       const newItem = await this._createLootItem(item, this.actor, stackSame);
       items.push(newItem);
@@ -63,19 +68,18 @@ export class LootCreator {
      * @returns {Item} the create Item (foundry item)
      */
   async _createLootItem (item, actor, stackSame = true) {
-    const itemData = await this.buildItemData(item)
-    const itemPrice = getProperty(itemData, BRTCONFIG.PRICE_PROPERTY_PATH) || 0
+    const itemData = await this.buildItemData(item),
+          itemPrice = getProperty(itemData, BRTCONFIG.PRICE_PROPERTY_PATH) || 0,
+          embeddedItems = [...actor.getEmbeddedCollection('Item').values()],
+          sameItemOwnedAlready = embeddedItems.find(i => i.name === itemData.name && itemPrice === getProperty(i.data, BRTCONFIG.PRICE_PROPERTY_PATH));
+    
     /** if the item is already owned by the actor (same name and same PRICE) */
-
-    const embeddedItems = [...actor.getEmbeddedCollection('Item').values()]
-    const sameItemOwnedAlready = embeddedItems.find(i => i.name === itemData.name && itemPrice === getProperty(i.data, BRTCONFIG.PRICE_PROPERTY_PATH));
-
     if (sameItemOwnedAlready && stackSame) {
       /** add quantity to existing item */
-      const itemQuantity = getProperty(itemData, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1
-      const sameItemOwnedAlreadyQuantity = getProperty(sameItemOwnedAlready.data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1
-      const updateItem = { _id: sameItemOwnedAlready.id }
-      setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, +sameItemOwnedAlreadyQuantity + +itemQuantity)
+      const itemQuantity = getProperty(itemData, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1,
+            sameItemOwnedAlreadyQuantity = getProperty(sameItemOwnedAlready.data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1,
+            updateItem = { _id: sameItemOwnedAlready.id };
+      setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, +sameItemOwnedAlreadyQuantity + +itemQuantity);
       await actor.updateEmbeddedDocuments('Item', [updateItem]);
 
       return actor.items.get(sameItemOwnedAlready.id);
@@ -134,7 +138,7 @@ export class LootCreator {
       try {
         rolledValue = new Roll(cmd.arg).roll().total;
       } catch (error) {
-        continue
+        continue;
       }
       setProperty(itemData, `data.${cmd.command.toLowerCase()}`, rolledValue);
     }
@@ -144,13 +148,16 @@ export class LootCreator {
   /**
      *
      * @param {Token} token
+     * @param {Boolean} is the token passed as the token actor instead?
      */
-  async addCurrenciesToToken (token) {
+  async addCurrenciesToToken (token, isTokenActor = false) {
     // needed for base key set in the event that a token has no currency properties
     const currencyDataInitial = {cp: 0, ep: 0, gp: 0, pp: 0,sp: 0};
     let currencyData = currencyDataInitial;
 
-    if (token.data.actorData?.data?.currency) {
+    if(isTokenActor) {
+      currencyData = duplicate(token.data.data.currency);
+    } else if (token.data.actorData?.data?.currency) {
       currencyData = duplicate(token.data.actorData.data.currency);
     }
 
@@ -160,21 +167,23 @@ export class LootCreator {
       const amount = Number(currencyData[key] || 0) + Number(lootCurrency[key] || 0);
       currencyData[key] = amount;
     }
-    await token.update({ 'actorData.data.currency': currencyData })
+    await token.update({ 'actorData.data.currency': currencyData });
   }
 
   /**
      *
      * @param {token} token
      * @param {boolean} stackSame
+     * @param {boolean} isTokenActor - is the token already the token actor?
      *
      * @returns {object[]} items
      */
-  async addItemsToToken (token, stackSame = true) {
-    const items = []
+  async addItemsToToken (token, stackSame = true, isTokenActor = false) {
+    const items = [];
     for (const item of this.betterResults) {
       // Create the item making sure to pass the token actor and not the base actor
-      const newItem = await this._createLootItem(item, token.actor, stackSame);
+      const targetActor = (isTokenActor)? token : token.actor;
+      const newItem = await this._createLootItem(item, targetActor, stackSame);
       items.push(newItem);
     }
 

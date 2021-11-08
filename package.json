@@ -5,7 +5,11 @@
   "main": "scripts/brt-main.js",
   "scripts": {
     "format": "eslint ./scripts --fix --ext *.js",
-    "lint": "eslint ./scripts/**/*.js"
+    "lint": "eslint ./scripts/**/*.js",
+    "less": "lessc ./styles/betterRolltables.less ./styles/brt.css",
+    "tsc": "tsc",
+    "cleancss": "cleancss -o ./dist/styles/compendium-browser.min.css ./dist/styles/compendium-browser.css",
+    "generate-docs": "jsdoc -c jsdoc.json"
   },
   "devDependencies": {
     "eslint": "^7.31.0",

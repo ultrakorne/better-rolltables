@@ -1,11 +1,11 @@
-import { LootCreator } from './loot/loot-creator.js'
-import { LootChatCard } from './loot/loot-chat-card.js'
-import { StoryBuilder } from './story/story-builder.js'
-import { StoryChatCard } from './story/story-chat-card.js'
-import { BRTBuilder } from './core/brt-builder.js'
-import { BetterResults } from './core/brt-table-results.js'
-import {getIconByEntityType, getRandomItemFromCompendium} from './core/utils.js'
-import { BRTCONFIG } from './core/config.js'
+import { LootCreator } from './loot/loot-creator.js';
+import { LootChatCard } from './loot/loot-chat-card.js';
+import { StoryBuilder } from './story/story-builder.js';
+import { StoryChatCard } from './story/story-chat-card.js';
+import { BRTBuilder } from './core/brt-builder.js';
+import { BetterResults } from './core/brt-table-results.js';
+import {getIconByEntityType, getRandomItemFromCompendium} from './core/utils.js';
+import { BRTCONFIG } from './core/config.js';
 
 export class BetterTables {
   constructor () {
@@ -17,7 +17,7 @@ export class BetterTables {
      * @returns {*}
      */
   getSpellCache () {
-    return this._spellCache
+    return this._spellCache;
   }
 
   /**
@@ -53,17 +53,19 @@ export class BetterTables {
  */
   async addLootToSelectedToken (tableEntity, token = null, options = null) {
     let tokenstack = [];
+    const isTokenActor = (options && options?.isTokenActor),
+          stackSame =  (options && options?.stackSame)? options.stackSame : true;
 
     if (null == token && (canvas.tokens.controlled.length === 0)) {
         return ui.notifications.error('Please select a token first');
     } else {
         tokenstack = (token) ? (token.length >= 0) ? token : [token] : canvas.tokens.controlled;
     }
-
+    
     ui.notifications.info('Loot generation started.');
 
     const brtBuilder = new BRTBuilder(tableEntity);
-
+    
     for (const token of tokenstack) {
       const results = await brtBuilder.betterRoll();
       const br = new BetterResults(results);
@@ -71,8 +73,8 @@ export class BetterTables {
       const currencyData = br.getCurrencyData();
       const lootCreator = new LootCreator(betterResults, currencyData);
 
-      await lootCreator.addCurrenciesToToken(token);
-      await lootCreator.addItemsToToken(token);
+      await lootCreator.addCurrenciesToToken(token, isTokenActor);
+      await lootCreator.addItemsToToken(token, stackSame, isTokenActor);
     }
     
     return ui.notifications.info('Loot generation complete.');
@@ -87,7 +89,7 @@ export class BetterTables {
           currencyData = br.getCurrencyData(),
           lootChatCard = new LootChatCard(betterResults, currencyData, rollMode);
 
-    await lootChatCard.createChatCard(tableEntity)
+    await lootChatCard.createChatCard(tableEntity);
   }
 
   async getStoryResults (tableEntity) {
@@ -95,7 +97,7 @@ export class BetterTables {
     await storyBuilder.drawStory()
     const storyHtml = storyBuilder.getGeneratedStory()
     const storyGMHtml = storyBuilder.getGeneratedStoryGM()
-    return { storyHtml, storyGMHtml }
+    return { storyHtml, storyGMHtml };
   }
 
   async generateChatStory (tableEntity) {
@@ -105,12 +107,12 @@ export class BetterTables {
     const storyGMHtml = storyBuilder.getGeneratedStoryGM()
     const storyChat = new StoryChatCard(tableEntity)
     storyChat.createChatCard(storyHtml)
-    storyChat.createChatCard(storyGMHtml, { gmOnly: true })
+    storyChat.createChatCard(storyGMHtml, { gmOnly: true });
   }
 
   async getBetterTableResults (tableEntity) {
-    const brtBuilder = new BRTBuilder(tableEntity)
-    return await brtBuilder.betterRoll()
+    const brtBuilder = new BRTBuilder(tableEntity);
+    return await brtBuilder.betterRoll();
   }
 
   async betterTableRoll (tableEntity, options = null) {
@@ -186,7 +188,7 @@ export class BetterTables {
      */
   async updateSpellCache (pack) {
     if (game.user.isGM) {
-      const defaultPack = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY)
+      const defaultPack = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY);
       if (!pack || pack === defaultPack) {
         const spellCompendium = game.packs.get(defaultPack)
         const spellCompendiumIndex = await spellCompendium.getIndex({ fields: ['data.level', 'img'] })
@@ -264,28 +266,28 @@ export class BetterTables {
   static async rollCompendiumAsRolltable (compendium) {
     if (game.user.isGM) {
       // Get random item from compendium
-      const item = await getRandomItemFromCompendium(compendium)
+      const item = await getRandomItemFromCompendium(compendium);
 
       // prepare card data
-      const fontSize = Math.max(60, 100 - Math.max(0, item.name.length - 27) * 2)
+      const fontSize = Math.max(60, 100 - Math.max(0, item.name.length - 27) * 2);
       const chatCardData = {
         compendium: compendium,
         itemsData: [
           { item: item, quantity: 1, fontSize: fontSize, type: 2 }
         ]
-      }
-      const cardHtml = await renderTemplate('modules/better-rolltables/templates/loot-chat-card.hbs', chatCardData)
+      };
+      const cardHtml = await renderTemplate('modules/better-rolltables/templates/loot-chat-card.hbs', chatCardData);
       return {
         flavor: `Rolled from compendium ${item.pack}`,
         sound: 'sounds/dice.wav',
         user: game.user.data._id,
         content: cardHtml
-      }
+      };
     }
   }
 
   static async _renderMessage(message) {
-    const cardHtml = await renderTemplate('modules/better-rolltables/templates/loot-chat-card.hbs', message.data.flags.betterTables.loot)
+    const cardHtml = await renderTemplate('modules/better-rolltables/templates/loot-chat-card.hbs', message.data.flags.betterTables.loot);
     message.data.content = cardHtml
     return message
     /*

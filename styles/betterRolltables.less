@@ -1,0 +1,248 @@
+/*
+* Tidy5e - Dark Mode Support
+*/
+.tidy5eDark {
+	.app.roll-table-config {
+		box-shadow: 0 0 0.5em var(--shadowcolor);
+		
+		input[type="text"] {
+			background: var(--background);
+			color: var(--primary-font);			
+			border: 1px solid #7a7971;
+			text-overflow: ellipsis;
+			font-size: 0.9em;
+		}
+		input[type="number"] {
+			background: var(--background);
+			color: var(--primary-font);
+			height: calc(100% - 2px);
+			border: 1px solid #7a7971;
+			text-overflow: ellipsis;
+			font-size: 0.9em;
+		}
+		select {
+			background: var(--background);
+			color: var(--primary-font);
+			height: calc(100% - 2px);
+			border: 1px solid #7a7971;
+			text-overflow: ellipsis;
+			font-size: 0.9em;
+			height: calc(100% - 0.7em);
+			option {
+				background: var(--background);
+				color: var(--primary-font);
+			}
+		}
+		textarea {
+			background: var(--background);
+			color: var(--primary-font);
+		}
+		header {
+			fieldset {
+				border: 1px solid var(--header-border);
+				background: var(--header-background);
+				border-radius: 0.5em;
+				margin-bottom: 1em;
+			}
+		}
+		.table-result {
+			&:nth-child(2n) {
+				background: var(--faintest-color);
+			}
+			&.drawn {
+				.lock-result {
+					color: #f00;
+				}
+				opacity: 0.5;
+			}
+		}
+		.result-image {
+			flex: 0 0 calc(100% - 0.7em);
+			width: 36px;
+			height: calc(100% - 0.7em);
+		}
+	}
+}
+
+/** 
+* Sticky Mode
+*/
+.app.roll-table-config.brt-sticky-view {
+	height: fit-content !important;
+	min-height: 50vh;
+	.window-content {
+		overflow: hidden;
+		color: var(--primary-font);
+		padding: 0;
+		form {
+			background: var(--background);
+			padding: 0.5em;
+		}
+	}
+	header {
+		fieldset {
+			legend {
+				margin-bottom: -1em;
+			}
+		}
+	}
+	form {
+        > header {
+            margin-bottom: 0.5em;
+        }
+		button {
+			color: var(--primary-font);
+			border: 1px solid var(--header-border);
+			background: var(--header-background);
+			border-radius: 0.5em;
+			height: calc(100% - 0.7em);
+		}
+	}
+
+    input[type="text"], input[type="number"], select {
+        border: 1px solid #7a7971;
+        text-overflow: ellipsis;
+        font-size: 0.9em;
+        height: calc(100% - 0.7em);
+    }
+    
+	.results {
+		position: relative;
+		padding-bottom: 32px;
+		.table-results {
+			min-height: 40vh;
+			max-height: 52vh;
+			height: fit-content;
+			&:nth-child(2n) {
+				background: var(--faintest-color);
+			}
+			.table-header {
+				background: var(--icon-background);
+				position: sticky;
+				align-self: flex-start;
+				top: 0;
+			}
+            .table-result {                
+                &.drawn {
+                    opacity: 0.5;
+                }
+                border: unset;
+                border-bottom: 1px solid var(--header-border);
+            }
+		}
+		.table-results.expanded {
+			max-height: 70vh;
+		}
+	}
+}
+
+/*************\
+|** Results **|
+\*************/
+
+.roll-table-config {
+	min-height: fit-content;
+    height: unset!important;
+    max-height: 90vh;
+
+	.toggler {
+		width: 100%;
+		cursor: pointer;
+	}
+	.tags {
+		ol {
+			list-style: none;
+			align-items: flex-start;
+			li {
+				border: 1px solid var(--header-border);
+				border-radius: 0.2em;
+				background: var(--ability-accent);
+			}
+		}		
+	}
+	.results {
+		padding-bottom: 40px;
+	}
+	ol.table-results {
+		.table-result {
+			.result-details {
+				.result-target-short {
+					width: 43%;
+					margin-left: 3px;
+				}
+				.result-brt-formula {
+					width: 14%;
+					margin-left: 3px;
+					&::placeholder {
+						font-size: 12px;
+					}
+					&::-webkit-input-placeholder {
+						font-size: 12px;
+					}
+					&::-moz-placeholder {
+						font-size: 12px;
+					}
+					&:-ms-input-placeholder {
+						font-size: 12px;
+					}
+				}
+				.result-target-mid {
+					width: 84%;
+					margin-left: 3px;
+				}
+			}
+		}
+	}
+	footer.sheet-footer {
+		background: var(--background);
+		position: absolute;
+		bottom: 0.3em;
+		margin-top: -2em;
+		padding-top: 0.3em;
+		width: calc(100% - 0.9em);
+	}
+}
+.story-text-selectable {
+	* {
+		user-select: text;
+		-moz-user-select: text;
+	}
+}
+.roll-table-reroll-button {
+	margin-right: 5px;
+}
+.roll-table-open-table {
+	margin-right: 5px;
+}
+.roll-table-share-currencies {
+	margin-right: 5px;
+}
+.brt-hidden {
+	display: none !important;
+}
+.roll-table-roll-link {
+	background: #DDD;
+	padding: 1px 2px;
+	margin-left: -1px;
+	border: 1px solid;
+	border-left: 0;
+}
+.brt-share-currencies {
+	border: 1px solid rgb(181, 179, 164);
+	padding: 5px;
+	div {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		img {
+			border: none;
+			max-width: 48px;
+			margin-right: 5px;
+		}
+	}
+}
+.brt-currency-shared {
+	color: green;
+	font-weight: bold;
+	display: block;
+}

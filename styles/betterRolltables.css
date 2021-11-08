@@ -1,14 +1,8 @@
 /*
 * Tidy5e - Dark Mode Support
 */
-.tidy5eDark .app.roll-table-config .window-content {
-  overflow: hidden;
-  color: var(--primary-font);
-  padding: 0;
-}
-.tidy5eDark .app.roll-table-config .window-content form {
-  background: var(--background);
-  padding: 0.5em;
+.tidy5eDark .app.roll-table-config {
+  box-shadow: 0 0 0.5em var(--shadowcolor);
 }
 .tidy5eDark .app.roll-table-config input[type="text"] {
   background: var(--background);
@@ -68,6 +62,15 @@
 .app.roll-table-config.brt-sticky-view {
   height: fit-content !important;
   min-height: 50vh;
+}
+.app.roll-table-config.brt-sticky-view .window-content {
+  overflow: hidden;
+  color: var(--primary-font);
+  padding: 0;
+}
+.app.roll-table-config.brt-sticky-view .window-content form {
+  background: var(--background);
+  padding: 0.5em;
 }
 .app.roll-table-config.brt-sticky-view header fieldset legend {
   margin-bottom: -1em;

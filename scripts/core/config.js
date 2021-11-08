@@ -1,6 +1,13 @@
+export const MODULE = {
+    ns: 'better-rolltables',
+    path: 'modules/better-rolltables'
+};
+
 export const BRTCONFIG = {
     NAMESPACE: 'better-rolltables',
 
+    // Settings
+    CONFIG_COLLAPSED: 'config-collapsed',
     // saved data keys (used e.g. in the rolltableEntity.data.flags)
     TABLE_TYPE_KEY: 'table-type',
     LOOT_CURRENCY_KEY: 'table-currency-string',
@@ -35,5 +42,12 @@ export const BRTCONFIG = {
 
     // in 5e a valid item type is loot
     ITEM_LOOT_TYPE: 'loot',
+    REGEX: {
+        scroll: /\s*Spell\s*Scroll\s*(\d+|cantrip)/gi,
+    },
     SCROLL_REGEX: /\s*Spell\s*Scroll\s*(\d+|cantrip)/gi,
-}
+    TAGS: {
+        USE: 'use-tags',
+        DEFAULTS: 'tag-defaults'       
+    }
+};

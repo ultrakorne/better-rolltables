@@ -172,7 +172,7 @@ export class BetterTables {
       })
       .then(results => RollTable.create({
         name: tableName,
-        results: results.filter(x => x !== undefined) // remove empty results due to null weight
+        results: results.filter(x => x.weight !== 0) // remove empty results due to null weight
       }))
       .then(rolltable => {
         rolltable.normalize()

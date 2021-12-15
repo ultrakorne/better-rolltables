@@ -1,48 +1,89 @@
 {
-    "BRT.TypeLabel": "Better Table 타입",
-    "BRT.TypeDefault": "기본 표",
-    "BRT.BetterTable": "향상된 표",
-    "BRT.TypeLoot": "전리품 표",
-    "BRT.StoryLoot": "스토리 표",
-    "BRT.CurrencyLoot": "노획한 돈",
-    "BRT.Currency.Label": "화폐:",
-    "BRT.CurrencyLootPlaceholder": "쉼표로 구분된 수식 추가 e.g.: 1d4[gp], (1d4+1)*10[sp]",
-    "BRT.LootActorName": "액터에 전리품 추가",
-    "BRT.LootActorNamePlaceholder": "비어 있을 경우 항상 새로운 전리품 액터가 생성된다",
-    "BRT.GenerateLoot.Button": " 전리품 생성",
-    "BRT.Settings.LootSheet.Title": "전리품 생성에 사용될 시트",
-    "BRT.Settings.LootSheet.Description": "전리품 생성시 사용될 대체 npc 시트를 설정할 수 있다",
-    "BRT.Settings.SpellCompendium.Title": "랜덤 스크롤에 사용될 주문 컴펜디엄",
-    "BRT.Settings.SpellCompendium.Description": "주문 컴펜디엄을 지정할 수 있으며 전리품 표에서 스크롤을 선택할 때(명확한 이름이 있어야 함) 이 주문 컴펜디엄에서 굴린 무작위 주문이 선택된다",
-    "BRT.LootRollAmount": "굴림 총계",
-    "BRT.LootRollAmountPlaceholder" : "표 전체를 여러 번 굴림(수식 추가)",
-    "BRT.DrawResultPlural": "{name}의 결과로 선택된 건 {amount}입니다",
-    "BRT.DrawResultSingular": "{name}의 결과로 선택된 건 {amount}입니다",
-    "BRT.DrawResultZero": "{name}에서 굴림",
-    "BRT.DrawReroll": "Reroll",
-    "BRT.Currency.Buttons.Share.Label": "Share",
-    "BRT.Currency.Shared.Label": "Shared!",
-    "BRT.OpenRolltable": "Open rolltable",
-    "BRT.Settings.RerollButtons.Title": "Show Reroll buttons",
-    "BRT.Settings.RerollButtons.Description": "Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected.",
-    "BRT.Settings.OpenButtons.Title": "Show Open buttons",
-    "BRT.Settings.OpenButtons.Description": "Display a open button on each result message of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected.",
-    "BRT.Settings.ShowWarningBeforeReroll.Title": "Confirm reroll ?",
-    "BRT.Settings.ShowWarningBeforeReroll.Description": "Show a confirm dialog before reroll message content.",
-    "BRT.Settings.UseCondensedBetterRoll.Title": "Use condensed roll output",
-    "BRT.Settings.UseCondensedBetterRoll.Description": "If enabled, this will aggregate same output with a multiplier to save space. This option may speed up rolltable draws. Default tables are not affected.",
-    "BRT.Settings.AddRollInRolltableContextMenu.Title": "Roll from rolltable contextmenu",
-    "BRT.Settings.AddRollInRolltableContextMenu.Description": "Add an option in rolltable's contextmenu to roll table without opening it. Work on all table type.",
-    "BRT.Settings.AddRollInCompediumContextMenu.Title": "Roll from compendium contextmenu",
-    "BRT.Settings.AddRollInCompediumContextMenu.Description": "Add an option in compendium's contextmenu to roll on this compendium without creating rolltable from it. Work on all non-empty compendiums.",
-    "BRT.Settings.RerollWarning.Title": "Reroll?",
-    "BRT.Settings.RerollWarning.Description": "Message content will be lost. Are you sure you want to reroll?",
-    "BRT.Settings.StickRolltableHeader.Title": "Stick rolltable header to top?",
-    "BRT.Settings.StickRolltableHeader.Description": "If enabled, roll table header will no more scroll with content.",
-    "BRT.Settings.RollTableFromJournal.Title": "Add roll button to tables in journal entries?",
-    "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries.",
-    "BRT.Settings.ShareCurrencyButton.Title": "Show share currency button?",
-    "BRT.Settings.ShareCurrencyButton.Description": "Show a button on mesage to share currency (if any) (dnde only)",
-    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Title": "Always show generated loot to actor as message",
-    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Description": "If enabled, generated loot added to an actor is also displayed as a message."
+    "BRT": {
+        "Buttons": {
+            "GenerateLoot": "전리품 생성",
+            "Currency": {
+                "label": "화폐",
+                "Share": "Share",
+                "Shared": "Shared!"
+            },
+            "ShareCurrency": "Share Currency",
+            "Reroll": {
+                "Title": "Show Reroll buttons",
+                "Description": "Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected."
+            },
+            "Open": {
+                "Title": "Show `Open` buttons",
+                "Description": "Display a open button on each result message of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected."
+            }
+        },
+        "TypeLabel": "Better Table 타입",
+        "TypeDefault": "기본 표",
+        "BetterTable": "향상된 표",
+        "TypeLoot": "전리품 표",
+        "StoryLoot": "스토리 표",
+        "CurrencyLoot": "노획한 돈",
+        "Currency.Label": "화폐",
+        "CurrencyLootPlaceholder": "쉼표로 구분된 수식 추가 e.g.: 1d4[gp], (1d4+1)*10[sp]",
+        "LootActorName": "액터에 전리품 추가",
+        "LootActorNamePlaceholder": "비어 있을 경우 항상 새로운 전리품 액터가 생성된다",
+        "LootRollAmount": "굴림 총계",
+        "LootRollAmountPlaceholder" : "표 전체를 여러 번 굴림(수식 추가)",
+        "DrawResultPlural": "{name}의 결과로 선택된 건 {amount}입니다",
+        "DrawResultSingular": "{name}의 결과로 선택된 건 {amount}입니다",
+        "DrawResultZero": "{name}에서 굴림",
+        "OpenRolltable": "Open rolltable",
+        "Settings": {
+            "LootSheet": {
+                "Title": "전리품 생성에 사용될 시트",
+                "Description": "전리품 생성시 사용될 대체 npc 시트를 설정할 수 있다"
+            },
+            "SpellCompendium": {
+                "Title": "랜덤 스크롤에 사용될 주문 컴펜디엄",
+                "Description": "주문 컴펜디엄을 지정할 수 있으며 전리품 표에서 스크롤을 선택할 때(명확한 이름이 있어야 함) 이 주문 컴펜디엄에서 굴린 무작위 주문이 선택된다"
+            },
+            "ShowWarningBeforeReroll": {
+                "Title": "Confirm reroll ?",
+                "Description": "Show a confirm dialog before reroll message content."
+            },
+            "UseCondensedBetterRoll": {
+                "Title": "Use condensed roll output",
+                "Description": "If enabled, this will aggregate same output with a multiplier to save space. This option may speed up rolltable draws. Default tables are not affected."
+            },            
+            "AddRollInRolltableContextMenu": {
+                "Title": "Roll from rolltable contextmenu",
+                "Description": "Add an option in rolltable's contextmenu to roll table without opening it. Work on all table type."
+            },
+            "AddRollInCompediumContextMenu": {
+                "Title": "Roll from compendium contextmenu",
+                "Description": "Add an option in compendium's contextmenu to roll on this compendium without creating rolltable from it. Work on all non-empty compendiums."
+            },            
+            "RerollWarning": {
+                "Title": "Reroll?",
+                "Description": "Message content will be lost. Are you sure you want to reroll?"
+            },
+            "RollTableFromJournal": {
+                "Title": "Add roll button to tables in journal entries?",
+                "Description": "If enabled, a roll button is added to linked tables in journal entries."
+            },
+            "ShareCurrencyButton": {
+                "Title": "Show share currency button?",
+                "Description": "Show a button on mesage to share currency (if any) (dnde only)"
+            },
+            "AlwaysShowGeneratedLootAsMessage": {
+                "Title": "Always show generated loot to actor as message",
+                "Description": "If enabled, generated loot added to an actor is also displayed as a message."
+            },
+            "Tags": {
+                "Use": {
+                    "Title": "Use Tags",
+                    "Description": "Allow assigning tags rolltables with curstom tags."
+                },
+                "Defaults": {
+                    "Title": "Default Tags",
+                    "Description": "Default Tags to be assigned to tables. This could be useful if you work on alot of tables."
+                }
+            }
+        }
+    }
 }

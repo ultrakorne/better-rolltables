@@ -84,7 +84,7 @@ export function getIconByEntityType(entityType) {
     case 'Actor': return 'fa-user'
     case 'Item': return 'fa-suitcase'
     case 'JournalEntry': return 'fa-book-open'
-    case 'Playlist': return 'fa-suitcase' // can't find correct icon 🙁
+    case 'Playlist': return 'fa-music'
     case 'Scene': return 'fa-map'
     case 'Macro': return 'fa-terminal'
     default: return ''

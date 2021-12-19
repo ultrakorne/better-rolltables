@@ -2,15 +2,18 @@
   "name": "better-rolltables",
   "title": "Better Roll Tables",
   "description": "Adding functionality to roll tables, especially to roll treasure and magic items",
-  "version": "1.8.5",
+  "version": "1.8.7",
+  "manifestPlusVersion": "1.2.0",
   "authors": [
     {
-      "name": "Ultrakorne#6240",
-      "url": "https://github.com/ultrakorne/"
+      "name": "Ultrakorne",
+      "url": "https://github.com/ultrakorne/",
+      "discord": "Ultrakorne#6240"
     },
     {
-      "name": "Daniel Böttner | JackPrince#0494",
-      "url": "https://github.com/DanielBoettner/"
+      "name": "Daniel Böttner",
+      "url": "https://github.com/DanielBoettner/",
+      "discord": "JackPrince#0494"
     },
     {
       "name": "Daimakaicho",
@@ -80,5 +83,5 @@
   ],
   "url": "https://github.com/ultrakorne/better-rolltables",
   "manifest": "https://raw.githubusercontent.com/ultrakorne/better-rolltables/master/module.json",
-  "download": "https://github.com/ultrakorne/better-rolltables/releases/download/v1.8.4/better-rolltables.zip"
+  "download": "https://github.com/ultrakorne/better-rolltables/releases/download/v1.8.7/better-rolltables.zip"
 }

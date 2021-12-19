@@ -47,6 +47,7 @@
 }
 .tidy5eDark .app.roll-table-config .table-result.drawn {
   opacity: 0.5;
+  z-index: 0;
 }
 .tidy5eDark .app.roll-table-config .table-result.drawn .lock-result {
   color: #f00;
@@ -71,6 +72,9 @@
 .app.roll-table-config.brt-sticky-view .window-content form {
   background: var(--background);
   padding: 0.5em;
+}
+.app.roll-table-config.brt-sticky-view header fieldset {
+  min-height: 1.5em;
 }
 .app.roll-table-config.brt-sticky-view header fieldset legend {
   margin-bottom: -1em;
@@ -110,6 +114,7 @@
   position: sticky;
   align-self: flex-start;
   top: 0;
+  z-index: 1;
 }
 .app.roll-table-config.brt-sticky-view .results .table-results .table-result {
   border: unset;
@@ -117,6 +122,7 @@
 }
 .app.roll-table-config.brt-sticky-view .results .table-results .table-result.drawn {
   opacity: 0.5;
+  z-index: 0;
 }
 .app.roll-table-config.brt-sticky-view .results .table-results.expanded {
   max-height: 70vh;
@@ -133,14 +139,31 @@
   width: 100%;
   cursor: pointer;
 }
-.roll-table-config .tags ol {
+.roll-table-config .tagger {
+  position: absolute;
+  border: 1px solid var(--header-border);
+  border-radius: 0.5em;
+  padding: 0.8em;
+  top: 9.7em;
+  right: 1.4em;
+  background: var(--icon-background);
+  max-width: 30%;
+  z-index: 100;
+  box-shadow: 0 0 0.5em var(--shadowcolor);
+}
+.roll-table-config .tagger ul {
   list-style: none;
   align-items: flex-start;
+  max-height: 20vh;
+  overflow-y: auto;
 }
-.roll-table-config .tags ol li {
+.roll-table-config .tagger ul li {
   border: 1px solid var(--header-border);
   border-radius: 0.2em;
-  background: var(--ability-accent);
+  background: var(--faintest-color);
+  display: inline-block;
+  margin: 0.1em;
+  padding: 0.1em;
 }
 .roll-table-config .results {
   padding-bottom: 40px;

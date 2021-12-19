@@ -1,13 +1,13 @@
 <fieldset>
     <legend class="toggler" data-expands='.table-results'>
-        <i class="fas fa-cogs"></i> Rolltable Configuration <i class="toggleicon fas fa-compress-alt"></i>
+        <i class="fas fa-cogs"></i> {{localize 'BRT.Buttons.Rolltable.Configuration.Title'}}<i class="toggleicon fas fa-expand-alt"></i>
     </legend>
-    <main{{#if configCollapsed}} class="brt-hidden"{{/if}}>
+    <main class="brt-hidden">
         <section class="tags" style="float: right;">
             <header class="toggler">
-                Tags <i class="toggleicon fas fa-expand-alt"></i>
+                {{localize 'BRT.Settings.Tags.Title'}} <i class="toggleicon fas fa-expand-alt"></i>
             </header>
-            <div class="form-group brt-hidden">
+            <div class="brt-hidden">
                 <input type="hidden" name="flags.better-rolltables.tags" value="{{better-rolltables.tags}}">
                 <div class="tagger"></div>
             </div>

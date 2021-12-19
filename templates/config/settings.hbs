@@ -14,7 +14,7 @@
         <div class="tab" data-tab={{tabData.name}} data-group="sections">
             <div class="settings-list">
                 <header>
-                    <h2 class="module-header">{{tabData.i18nName}}</h2>
+                    <h2 class="module-header">{{tabData.i18nName}} <small>{{tabData.description}}</small></h2>                    
                     {{#each tabData.menus}}
                     {{> "modules/better-rolltables/templates/partials/menu.hbs"}}
                     {{/each}}

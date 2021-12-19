@@ -1,5 +1,15 @@
 {
     "BRT": {
+        "api": {
+            "msg": {
+                "compendiumEmpty": "Compendium named {title} ({name}) is empty.`",
+                "compendiumNotFound": "Compendium << {name} >> not found.",
+                "generateRolltableFromCompendium": "Generate rolltable.",
+                "startRolltableGeneration": "Starting generation of rolltable for {title} ({name}) with {compendiumSize} entries.",
+                "rolltableGenerationFinished": "Rolltable generation for {title} ({name}) finished.",
+                "rollCompendiumAsRolltable": "Rolling compendium as rolltable."
+            }            
+        },
         "Buttons": {
             "GenerateLoot": "Gerar Pilhagem",
             "Currency": {
@@ -35,6 +45,31 @@
         "DrawReroll": "Reroll",
         "OpenRolltable": "Open rolltable",
         "Settings": {
+            "Module":{
+                "AdvancedSettings": {
+                    "Title": "BetterRolltables Advanced Settings",
+                    "Description": "Some more advanced settings for BetterRolltables",
+                    
+                    "Menu": {
+                        "Base": {
+                            "Title": "Base Settings",
+                            "Description": "Basic settings for BetterRolltables"
+                        },
+                        "UI": {
+                            "Title": "UI Settings",
+                            "Description": "Settings for the UI of BetterRolltables"
+                        },
+                        "Loot": {
+                            "Title": "Loot Settings",
+                            "Description": "Settings for the Loot of BetterRolltables"
+                        },
+                        "Tags": {
+                            "Title": "Tags Settings",
+                            "Description": "Settings for the Tags of BetterRolltables"
+                        }
+                    }
+                }
+            }, 
             "LootSheet": {
                 "Title": "Planilha a ser usada para gerar a Pilhagem",
                 "Description": "Você pode definir folhas de npc alternativas a serem usadas para gerar a pilhagem na criação"
@@ -84,6 +119,18 @@
                     "Title": "Default Tags",
                     "Description": "Default Tags to be assigned to tables. This could be useful if you work on alot of tables."
                 }
+            }
+        },
+        "Strings": {            
+            "Better": "Better",
+            "Loot": "Loot",
+            "Story": "Story",
+            "Tags": "Tags",
+            "Warnings": {
+                "NoFormula": "No rolltable formula found in {name}",
+                "MaxRecursion": "Recursion depth of {maxRecursions} exceeded when attempting to draw from RollTable {tableId}",
+                "NotTableByNameInPack": "No table named {tableName} found in compendium {packName}, did you misspell your table name in brackets?",
+                "CurrencyFormat": "Currency loot field contain wrong formatting, currencies need to be define as \"diceFormula[currencyType]\" => \"1d100[gp]\" but was {currencyString}"
             }
         }
     }    

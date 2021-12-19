@@ -1,5 +1,15 @@
 {
     "BRT": {
+        "api": {
+            "msg": {
+                "compendiumEmpty": "Compendium named {title} ({name}) is empty.`",
+                "compendiumNotFound": "Compendium << {name} >> not found.",
+                "generateRolltableFromCompendium": "Generate rolltable.",
+                "startRolltableGeneration": "Starting generation of rolltable for {title} ({name}) with {compendiumSize} entries.",
+                "rolltableGenerationFinished": "Rolltable generation for {title} ({name}) finished.",
+                "rollCompendiumAsRolltable": "Rolling compendium as rolltable."
+            }            
+        },
         "Buttons": {
             "GenerateLoot": "Beute generieren",
             "Currency": {
@@ -40,8 +50,33 @@
         "DrawResultSingular": "Zieht {amount} Ergebnis aus {name}",
         "DrawResultZero": "Würfle auf {name}",
         "DrawReroll": "Reroll",
-        "OpenRolltable": "Öffne Rolltable",
+        "OpenRolltable": "Öffne Würfeltabelle",
         "Settings": {
+            "Module":{
+                "AdvancedSettings": {
+                    "Title": "Erweiterte Einstellungen",
+                    "Description": "Tiefergehende Einstellungen für die Würfeltabellen",
+
+                    "Menu": {
+                        "Base": {
+                            "Title": "Grundeinstellungen",
+                            "Description": " für BetterRolltables"
+                        },
+                        "UI": {
+                            "Title": "Integration",
+                            "Description": " mit der Foundry-UI"
+                        },
+                        "Loot": {
+                            "Title": "Beute",
+                            "Description": " für Beute (Loot) Charakterbogen"
+                        },
+                        "Tags": {
+                            "Title": "Tags",
+                            "Description": " für Tags an Würfeltabellen"
+                        }
+                    }
+                }
+            },
             "LootSheet": {
                 "title": "Bogen für Beute",
                 "description": "Ein anderer Bogen kann individuell am Bogen eines Akteurs oder Tokens gesetzt werden."
@@ -59,27 +94,27 @@
                 "Description": "Wenn diese Option aktiviert ist, wird dieselbe Ausgabe mit einem Multiplikator zusammengefasst, um Platz zu sparen. Diese Option kann Rolltable-Ziehungen beschleunigen. Standardtabellen sind nicht betroffen."
             },            
             "AddRollInRolltableContextMenu": {
-                "Title": "Würfeln aus dem Rolltable-Kontextmenü",
-                "Description": "Fügt allen Rolltables einen Kontextmenüeintrag hinzu der das würfeln auf die Tabelle erlaubt."
+                "Title": "Würfeln über Kontextmenü",
+                "Description": "Fügt allen Würfeltabellen einen Kontextmenüeintrag hinzu der das Würfeln auf die Tabelle erlaubt."
             },
             "AddRollInCompediumContextMenu": {
-                "Title": "Roll from compendium contextmenu",
-                "Description": "Add an option in compendium's contextmenu to roll on this compendium without creating rolltable from it. Work on all non-empty compendiums."
+                "Title": "Würfeln auf Kompendium",
+                "Description": "Erlaubt das Würfeln auf ein (nicht leeres) Kompendium über das Kontextmenü"
             },            
             "RerollWarning": {
-                "Title": "Reroll?",
-                "Description": "Message content will be lost. Are you sure you want to reroll?"
+                "Title": "Neu Würfeln?",
+                "Description": "Es wird neu gewürfelt, das bisherige Ergebnis geht verloren. Sind sie Sicher?"
             },
             "RollTableFromJournal": {
-                "Title": "Add roll button to tables in journal entries?",
-                "Description": "If enabled, a roll button is added to linked tables in journal entries."
+                "Title": "Notizbücher erweitern",
+                "Description": "Würfeltabellen in Notizbucheinträge mit einer Schaltfläche zum würfeln erweitern."
             },
             "ShareCurrencyButton": {
-                "Title": "Schaltfläche 'Währung teilen' anzeigen?",
+                "Title": "Währung teilen",
                 "Description": "Eine Schaltfläche in der Nachricht anzeigen, um die Währung zu teilen (falls vorhanden) (nur D&D5e)."
             },
             "AlwaysShowGeneratedLootAsMessage": {
-                "Title": "UI Benachrichtigung bei Beute generierung.",
+                "Title": "Benachrichtigung bei Beute",
                 "Description": "Wenn aktiviert, wird generierte Beute, die einem Aktuer hinzugefügt wurde, auch als Info Nachricht angezeigt."
             },
             "Tags": {

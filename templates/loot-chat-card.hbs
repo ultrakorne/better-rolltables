@@ -3,8 +3,8 @@
     <div class="table-description">{{tableData.description}}</div>
     {{/if}}
     {{#unlessEmpty currency}}
-        <div class="table-description" style="font-size: 15px; text-align: center; font-weight:bold;">{{localize 'BRT.Currency.Label'}} {{format-currencies currency}}
-            {{#if shared}}<span class="brt-currency-shared">{{ localize 'BRT.Currency.Shared.Label' }}</span>{{/if}}
+        <div class="table-description" style="font-size: 15px; text-align: center; font-weight:bold;">{{localize 'BRT.Buttons.Currency.label'}} {{format-currencies currency}}
+            {{#if shared}}<span class="brt-currency-shared">{{ localize 'BRT.Buttons.Currency.Shared' }}</span>{{/if}}
         </div>
     <section class="brt-share-currencies brt-hidden">
         {{#each users as |user|}}
@@ -14,7 +14,7 @@
                 <span>{{user.name}}</span>
             </div>
         {{/each}}
-        <button class="brt-share-currencies-button">{{localize 'BRT.Currency.Buttons.Share.Label' }}</button>
+        <button class="brt-share-currencies-button">{{localize 'BRT.Buttons.Currency.Share' }}</button>
     </section>
     {{/unlessEmpty}}
 

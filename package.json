@@ -1,21 +1,27 @@
 {
   "name": "better-rolltables",
   "description": "Adding functionality to roll tables, especially to roll treasure and magic items",
-  "version": "1.8.4",
+  "version": "1.9.0",
   "main": "scripts/brt-main.js",
   "scripts": {
+    "build": "npm run less && cp -r module.json artwork templates packs lang scripts dist",
+    "localcopy": "cd dist && cp -r . /mnt/c/Users/jackp/AppData/Local/FoundryVTT/Data/modules/better-rolltables",
+    "local-deploy": "npm run build && npm run localcopy && npm run generate-docs",    
     "format": "eslint ./scripts --fix --ext *.js",
     "lint": "eslint ./scripts/**/*.js",
-    "less": "lessc ./styles/betterRolltables.less ./styles/brt.css",
+    "less": "lessc -clean-css ./styles/betterRolltables.less ./dist/styles/brt.css",
     "tsc": "tsc",
-    "cleancss": "cleancss -o ./dist/styles/compendium-browser.min.css ./dist/styles/compendium-browser.css",
-    "generate-docs": "jsdoc -c jsdoc.json"
+    "generate-docs": "jsdoc -c jsdoc.json",
+    "test": "nyc --reporter=text mocha"
   },
   "devDependencies": {
     "eslint": "^7.31.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0"
+    "eslint-plugin-promise": "^5.1.0",
+    "jsdoc-to-markdown": "^7.1.0",
+    "less-plugin-clean-css": "^1.5.1",
+    "lessc": "^1.0.2"
   }
 }

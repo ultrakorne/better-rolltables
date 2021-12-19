@@ -1,5 +1,5 @@
 import { i18n } from './core/utils.js';
-import { BRTCONFIG } from './core/config.js';
+import { MODULE, BRTCONFIG } from './core/config.js';
 
 export class BetterRT {
   static _calcHeight(element) {
@@ -18,38 +18,22 @@ export class BetterRT {
   static async enhanceRollTableView(rollTableConfig, html, rollTable) {
     const tableClassName = rollTable.cssClass,
       tableEntity = rollTableConfig.object,
-      selectedTableType = tableEntity.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE,
-      tableElement = document.querySelector(`[data-appid="${rollTableConfig.appId}"]`),
-      tableViewClass = tableElement.getElementsByClassName(tableClassName)[0],
+      selectedTableType = tableEntity.getFlag(MODULE.ns, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE,
+      app = document.querySelector(`[data-appid="${rollTableConfig.appId}"]`),
+      tableViewClass = app.getElementsByClassName(tableClassName)[0],
       headerElement = document.createElement('header'),      
-      brtData = duplicate(tableEntity.data.flags),
-      app = html[0];
+      brtData = duplicate(tableEntity.data.flags);
 
-    if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.STICK_ROLLTABLE_HEADER)) {
-      tableElement.classList.add('brt-sticky-view');
-      
-      const section = app.querySelector('section.results'),
-            ol = section.querySelector('ol');
-            //li = section.querySelector('li:first-child');
-
-      //section.style = 'position: relative; padding-top: 42px;';
-      ol.style = 'position: static;';
-      //li.style = 'position: absolute; top: 0; left: 0; width: 100%;';
-    }
-
-    //headerElement.classList.add('flexrow');
+    headerElement.classList.add('configuration');
     brtData.disabled = !rollTable.editable;
-    brtData.configCollapsed = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.CONFIG_COLLAPSED);
-
+    
     let renderedExtraConfig = await renderTemplate('modules/better-rolltables/templates/select-table-type.hbs', brtData);
     headerElement.insertAdjacentHTML('beforeend', renderedExtraConfig);
 
-    let headerElements = app.querySelectorAll('form.editable > .form-group');
+    let headerElements = app.querySelectorAll('form > .form-group');
     Array.prototype.forEach.call( headerElements , function( node ) {
       headerElement.querySelector('main').appendChild( node );
     });
-
-    
 
     tableViewClass.insertBefore(headerElement, tableViewClass.children[1]);
 
@@ -101,12 +85,9 @@ export class BetterRT {
     function _enableTogglers() {
       headerElement.querySelectorAll('.toggler').forEach(async e => {
         e.addEventListener('click', async (e) => {
+          const toggleIconElement = e.currentTarget.querySelector('.toggleicon');
           e.currentTarget.nextElementSibling.classList.toggle('brt-hidden');
-          
-          if(e.currentTarget.dataset?.expands){
-            e.currentTarget.closest('form').querySelector(e.currentTarget.dataset.expands).classList.toggle('expanded');
-          }
-          ['fa-expand-alt','fa-compress-alt'].map(c => e.currentTarget.querySelector('.toggleicon').classList.toggle(c));
+          ['fa-expand-alt','fa-compress-alt'].map(c => toggleIconElement.classList.toggle(c));
         });  
       });
     }
@@ -131,13 +112,13 @@ export class BetterRT {
             const formulaInput = document.createElement('input');
 
             formulaInput.classList.add('result-brt-formula');
-            formulaInput.placeholder = 'formula';
+            formulaInput.placeholder = i18n('BRT.Formula');
             formulaInput.type = 'text';
             formulaInput.disabled = !editable;
             /** based on the name of the elents the value will be added in the preUpdateRollTable and override the table.data */
-            formulaInput.name = `results.${index}.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
+            formulaInput.name = `results.${index}.flags.${MODULE.ns}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`;
             if (tableText.classList.contains('result-target')) {
-              formulaInput.value = getProperty(tableResult, `data.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || '';
+              formulaInput.value = getProperty(tableResult, `data.flags.${MODULE.ns}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || '';
               tableText.classList.add('result-target-short');
             } else {
               /** text type result, we disable the formula field for text */
@@ -254,7 +235,7 @@ export class BetterRT {
     generateLootBtn.setAttribute('class', 'generate');
     generateLootBtn.setAttribute('type', 'button');
 
-    generateLootBtn.innerHTML = `<i id="BRT-gen-loot" class="fas fa-coins"></i> ${i18n('BRT.GenerateLoot.Button')}`;
+    generateLootBtn.innerHTML = `<i id="BRT-gen-loot" class="fas fa-coins"></i> ${i18n('BRT.Buttons.GenerateLoot')}`;
     generateLootBtn.onclick = async () => await game.betterTables.generateLoot(tableEntity);
 
     htmlElement.insertBefore(generateLootBtn, htmlElement.firstChild);
@@ -263,6 +244,6 @@ export class BetterRT {
   static async onOptionTypeChanged(value, tableEntity) {
     // console.log("onOptionTypeChanged");
     // console.log(tableEntity);
-    await tableEntity.setFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.TABLE_TYPE_KEY, value);
+    await tableEntity.setFlag(MODULE.ns, BRTCONFIG.TABLE_TYPE_KEY, value);
   }
 }

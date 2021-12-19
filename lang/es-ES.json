@@ -1,5 +1,15 @@
 {
     "BRT": {
+        "api": {
+            "msg": {
+                "compendiumEmpty": "Compendium named {title} ({name}) is empty.`",
+                "compendiumNotFound": "Compendium << {name} >> not found.",
+                "generateRolltableFromCompendium": "Generate rolltable.",
+                "startRolltableGeneration": "Starting generation of rolltable for {title} ({name}) with {compendiumSize} entries.",
+                "rolltableGenerationFinished": "Rolltable generation for {title} ({name}) finished.",
+                "rollCompendiumAsRolltable": "Rolling compendium as rolltable."
+            }            
+        },
         "Buttons": {
             "GenerateLoot": "Generar botín",
             "Currency": {
@@ -36,6 +46,31 @@
         "DrawResultSingular": "Obtiene {amount} resultado de {name}",
         "DrawResultZero": "Lanzar de {name}",
         "Settings": {
+            "Module":{
+                "AdvancedSettings": {
+                    "Title": "BetterRolltables Advanced Settings",
+                    "Description": "Some more advanced settings for BetterRolltables",
+                    
+                    "Menu": {
+                        "Base": {
+                            "Title": "Base Settings",
+                            "Description": "Basic settings for BetterRolltables"
+                        },
+                        "UI": {
+                            "Title": "UI Settings",
+                            "Description": "Settings for the UI of BetterRolltables"
+                        },
+                        "Loot": {
+                            "Title": "Loot Settings",
+                            "Description": "Settings for the Loot of BetterRolltables"
+                        },
+                        "Tags": {
+                            "Title": "Tags Settings",
+                            "Description": "Settings for the Tags of BetterRolltables"
+                        }
+                    }
+                }
+            }, 
             "LootSheet": {
                 "title": "Hoja a usar para el botín generado",
                 "description": "Puedes seleccionar hojas de PNJ alternativas para ser usadas para los botines generados"

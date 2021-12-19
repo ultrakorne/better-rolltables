@@ -2,10 +2,10 @@ import { MODULE , BRTCONFIG } from './config.js';
 import { i18n } from './utils.js';
 
 const WORLD = 'world',
-      GROUP_DEFAULT = 'defaults',
-      GROUP_TAGS = 'Tags',
+      GROUP_DEFAULT = 'defaults',      
       GROUP_UI = 'UI',
-      GROUP_LOOT = 'Loot';
+      GROUP_LOOT = 'Loot',
+      GROUP_TAGS = 'Tags';
 
 export class Settings {
     constructor() {
@@ -15,7 +15,7 @@ export class Settings {
     /**
      * Register the game settings
      */
-    static registerSettings() {
+    registerSettings() {
         let defaultLootSheet = 'dnd5e.LootSheet5eNPC',
             systemSheets = Object.values(CONFIG.Actor.sheetClasses.npc).map(s => ({id: s.id, label: s.label})),
             defaultSpellCompendium = 'dnd5e.spells';
@@ -33,8 +33,8 @@ export class Settings {
         }
 
         game.settings.registerMenu(MODULE.ns, "helpersOptions", {
-            name: game.i18n.format("User Interface Integration"),
-            label: game.i18n.format("Integration Options & Defaults"),
+            name: i18n("User Interface Integration"),
+            label: i18n("BRT.Settings.Module.AdvancedSettings.Title"),
             icon: "fas fa-user-cog",
             type: BetterRolltableSettingsConfig,
             restricted: true
@@ -79,8 +79,8 @@ export class Settings {
         });
 
         game.settings.register(MODULE.ns, BRTCONFIG.SHOW_REROLL_BUTTONS, {
-            name: i18n('BRT.Settings.RerollButtons.Title'),
-            hint: i18n('BRT.Settings.RerollButtons.Description'),
+            name: i18n('BRT.Buttons.Reroll.Title'),
+            hint: i18n('BRT.Buttons.Reroll.Description'),
             scope: WORLD,
             group: GROUP_UI,
             config: false,
@@ -99,8 +99,8 @@ export class Settings {
         });        
 
         game.settings.register(MODULE.ns, BRTCONFIG.SHOW_OPEN_BUTTONS, {
-            name: i18n('BRT.Settings.OpenButtons.Title'),
-            hint: i18n('BRT.Settings.OpenButtons.Description'),
+            name: i18n('BRT.Buttons.Open.Title'),
+            hint: i18n('BRT.Buttons.Open.Description'),
             scope: WORLD,
             group: GROUP_UI,
             config: false,
@@ -128,16 +128,6 @@ export class Settings {
             type: Boolean
         });
 
-        game.settings.register(MODULE.ns, BRTCONFIG.CONFIG_COLLAPSED, {
-            name: i18n('BRT.Settings.StickRolltableHeader.Title'),
-            hint: i18n('BRT.Settings.StickRolltableHeader.Description'),
-            scope: WORLD,
-            group: GROUP_UI,
-            config: true,
-            default: true,
-            type: Boolean
-        });
-
         game.settings.register(MODULE.ns, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL, {
             name: i18n('BRT.Settings.RollTableFromJournal.Title'),
             hint: i18n('BRT.Settings.RollTableFromJournal.Description'),
@@ -145,16 +135,6 @@ export class Settings {
             group: GROUP_UI,
             config: true,
             default: false,
-            type: Boolean
-        });
-
-        game.settings.register(MODULE.ns, BRTCONFIG.STICK_ROLLTABLE_HEADER, {
-            name: i18n('BRT.Settings.StickRolltableHeader.Title'),
-            hint: i18n('BRT.Settings.StickRolltableHeader.Description'),
-            scope: WORLD,
-            group: GROUP_UI,
-            config: true,
-            default: true,
             type: Boolean
         });
 
@@ -219,16 +199,25 @@ export class Settings {
 class BetterRolltableSettingsConfig extends FormApplication {
     constructor() {
         super();
-        this.moduleNamespace = MODULE.ns;
         this.app = null;
 
+        loadTemplates([
+            `${MODULE.path}/templates/config/settings.hbs`,
+            `${MODULE.path}/templates/config/new_rule_form.hbs`,
+            `${MODULE.path}/templates/partials/actions.hbs`,
+            `${MODULE.path}/templates/partials/dropdown_options.hbs`,
+            `${MODULE.path}/templates/partials/filters.hbs`,
+            `${MODULE.path}/templates/partials/settings.hbs`,
+            `${MODULE.path}/templates/partials/menu.hbs`,
+        ]);
+        
         return this;
     }
 
     /** @override */
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
-            title: i18n("BetterRolltables Advanced Settings"),
+            title: i18n("BRT.Settings.Module.AdvancedSettings.Title"),
             id: "betterrolltables-settings",
             template: `${MODULE.path}/templates/config/settings.hbs`,
             width: 650,
@@ -244,14 +233,7 @@ class BetterRolltableSettingsConfig extends FormApplication {
         /**
         * The settings assigned to this need a "group" that is either of these tabs.name
         */
-        const data = {
-            tabs: [
-                { name: GROUP_DEFAULT, i18nName: "Base Settings", class: "fas fa-table", menus: [], settings: [] },
-                { name: GROUP_UI, i18nName: "User Interface", class: "fas fa-cog", menus: [], settings: [] },
-                { name: GROUP_LOOT, i18nName: "Loot", class: "fas fa-cog", menus: [], settings: [] },
-                { name: GROUP_TAGS, i18nName: "Tags", class: "fas fa-tags", menus: [], settings: [] },
-            ]
-        };
+        const data = this.getTabData();
 
         // Classify all settings
         for (let setting of game.settings.settings.values()) {
@@ -339,6 +321,38 @@ class BetterRolltableSettingsConfig extends FormApplication {
             if (input && input.type === "checkbox") input.checked = input.dataset.default;
             else if (input) input.value = input.dataset.default;
         }
+    }
+
+    getTabData() {
+        return {
+            tabs: [
+                {
+                    name: GROUP_DEFAULT,
+                    description: i18n("BRT.Settings.Module.AdvancedSettings.Menu.Base.Description"),
+                    i18nName: i18n("BRT.Settings.Module.AdvancedSettings.Menu.Base.Title"),
+                    class: "fas fa-table", menus: [], settings: []
+                },
+                {
+                    name: GROUP_UI,
+                    description: i18n("BRT.Settings.Module.AdvancedSettings.Menu.UI.Description"),
+                    i18nName: i18n("BRT.Settings.Module.AdvancedSettings.Menu.UI.Title"),
+                    class: "fas fa-cog", menus: [], settings: []
+                },
+                { 
+                    name: GROUP_LOOT,
+                    description: i18n("BRT.Settings.Module.AdvancedSettings.Menu.Loot.Description"),
+                    i18nName: i18n("BRT.Settings.Module.AdvancedSettings.Menu.Loot.Title"),
+                    class: "fas fa-cog", menus: [], settings: []
+                },
+                { 
+                    name: GROUP_TAGS,
+                    description: i18n("BRT.Settings.Module.AdvancedSettings.Menu.Tags.Description"),
+                    i18nName: i18n("BRT.Settings.Module.AdvancedSettings.Menu.Tags.Title"),
+                    class: "fas fa-tags",
+                    menus: [], settings: []
+                },
+            ]
+        };
     }
 }
 

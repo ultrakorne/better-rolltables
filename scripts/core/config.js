@@ -1,13 +1,12 @@
 export const MODULE = {
     ns: 'better-rolltables',
-    path: 'modules/better-rolltables'
+    path: 'modules/better-rolltables',
+    types: ['none', 'better', 'loot', 'story']
 };
 
 export const BRTCONFIG = {
     NAMESPACE: 'better-rolltables',
 
-    // Settings
-    CONFIG_COLLAPSED: 'config-collapsed',
     // saved data keys (used e.g. in the rolltableEntity.data.flags)
     TABLE_TYPE_KEY: 'table-type',
     LOOT_CURRENCY_KEY: 'table-currency-string',

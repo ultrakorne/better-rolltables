@@ -1,6 +1,6 @@
 import * as BRTHelper from './brt-helper.js'
 import * as Utils from '../core/utils.js'
-import { BRTCONFIG } from './config.js'
+import { MODULE , BRTCONFIG } from './config.js'
 import { addRollModeToChatData } from '../core/utils.js'
 
 export class BRTBuilder {
@@ -40,64 +40,67 @@ export class BRTBuilder {
      * @returns {array}
      */
   async rollManyOnTable (amount, table, { _depth = 0 } = {}) {
-    const maxRecursions = 5
+    const maxRecursions = 5;
+    let msg = '';
     // Prevent infinite recursion
     if (_depth > maxRecursions) {
-      throw new Error(`Recursion depth of ${maxRecursions} exceeded when attempting to draw from RollTable ${table._id}`)
+      let msg = game.i18n.format("BRT.Strings.Warnings.MaxRecursion", { maxRecursions: maxRecursions, tableId: table.id });
+      throw new Error(MODULE.ns + " | " + msg);
     }
 
-    let drawnResults = []
+    let drawnResults = [];
 
     while (amount > 0) {
-      let resultToDraw = amount
+      let resultToDraw = amount;
       /** if we draw without replacement we need to reset the table once all entries are drawn */
       if (!table.data.replacement) {
         const resultsLeft = table.data.results.reduce(function (n, r) { return n + (!r.drawn) }, 0)
 
         if (resultsLeft === 0) {
-          await table.reset()
-          continue
+          await table.reset();
+          continue;
         }
 
-        resultToDraw = Math.min(resultsLeft, amount)
+        resultToDraw = Math.min(resultsLeft, amount);
       }
 
       if (!table.data.formula) {
-        ui.notifications.error(`Roll table formula in table ${table.name} is not defined!`)
-        return
+        let msg = game.i18n.format('BRT.RollTable.NoFormula', { name: table.name });
+        ui.notifications.error(MODULE.ns + ' | ' + msg);
+        return;
       }
 
-      const draw = await table.drawMany(resultToDraw, { displayChat: false, recursive: false })
+      const draw = await table.drawMany(resultToDraw, { displayChat: false, recursive: false });
       if (!this.mainRoll) {
-        this.mainRoll = draw.roll
+        this.mainRoll = draw.roll;
       }
 
       for (const entry of draw.results) {
-        const formulaAmount = getProperty(entry, `data.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || ''
-        const entryAmount = await BRTHelper.tryRoll(formulaAmount)
+        const formulaAmount = getProperty(entry, `data.flags.${BRTCONFIG.NAMESPACE}.${BRTCONFIG.RESULTS_FORMULA_KEY}.formula`) || '';
+        const entryAmount = await BRTHelper.tryRoll(formulaAmount);
 
-        let innerTable
+        let innerTable;
         if (entry.data.type === CONST.TABLE_RESULT_TYPES.ENTITY && entry.data.collection === 'RollTable') {
-          innerTable = game.tables.get(entry.data.resultId)
+          innerTable = game.tables.get(entry.data.resultId);
         } else if (entry.data.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM) {
-          const entityInCompendium = await Utils.findInCompendiumByName(entry.data.collection, entry.data.text)
+          const entityInCompendium = await Utils.findInCompendiumByName(entry.data.collection, entry.data.text);
           if ((entityInCompendium !== undefined) && entityInCompendium.documentName === 'RollTable') {
-            innerTable = entityInCompendium
+            innerTable = entityInCompendium;
           }
         }
 
         if (innerTable) {
-          const innerResults = await this.rollManyOnTable(entryAmount, innerTable, { _depth: _depth + 1 })
-          drawnResults = drawnResults.concat(innerResults)
+          const innerResults = await this.rollManyOnTable(entryAmount, innerTable, { _depth: _depth + 1 });
+          drawnResults = drawnResults.concat(innerResults);
         } else {
           for (let i = 0; i < entryAmount; i++) {
-            drawnResults.push(entry)
+            drawnResults.push(entry);
           }
         }
       }
-      amount -= resultToDraw
+      amount -= resultToDraw;
     }
 
-    return drawnResults
+    return drawnResults;
   }
 }

@@ -1,6 +1,6 @@
 import { BRTBuilder } from "./core/brt-builder.js";
 import { BetterResults } from "./core/brt-table-results.js";
-import { BRTCONFIG, MODULE } from "./core/config.js";
+import { MODULE, BRTCONFIG } from "./core/config.js";
 import { LootChatCard } from "./loot/loot-chat-card.js";
 import { LootCreator } from "./loot/loot-creator.js";
 import { getRandomItemFromCompendium } from './core/utils.js';

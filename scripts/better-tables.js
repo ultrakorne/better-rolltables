@@ -148,7 +148,7 @@ export class BetterTables {
      * @param {function(Document)} weightPredicate a function that returns a weight (number) that will be used
      * for the tableResult weight for that given entity. returning 0 will exclude the entity from appearing in the table
      * 
-     * @deprecated  use api.createRolltableFromCompendium instead
+     * @deprecated use api.createRolltableFromCompendium instead
      */
 
   async createTableFromCompendium(tableName, compendiumName, { weightPredicate = null } = {}) {

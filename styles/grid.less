@@ -1,0 +1,27 @@
+/**
+* Grid Styling for Configuration
+*/
+.app.roll-table-config {
+    .window-content {
+        form {
+            display: grid;
+            grid-template-areas:
+                "SheetHeader"
+                "BRTHeader"
+                "SheetResults"
+                "SheetFooter";
+
+            header.sheet-header {
+                grid-area: SheetHeader;
+            }
+            header {
+				fieldset {
+					grid-area: BRTHeader;
+                }
+            }
+            footer.sheet-footer {
+				grid-area: SheetFooter;
+			}
+        }
+    }
+}

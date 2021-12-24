@@ -16,16 +16,30 @@ Implementing for example the Treasure Hoard" Tables from the Dungeon master manu
 * Auto roll random spells when a scroll is selected as loot
 * A table can specify multiple currencies (with roll formulas) to always be awarded
 
-### How to use it ###
+## How to use it
 
-Check the [**Wiki**](https://github.com/ultrakorne/better-rolltables/wiki) and start with [How to Loot Tables](https://github.com/ultrakorne/better-rolltables/wiki/Loot-Tables)
+### Documentation
 
-To use the functionality in your macros, check out the [Macro guide](https://github.com/ultrakorne/better-rolltables/wiki/API-for-macros-and-modules#how-to-roll-tables-from-macros)
+* [**Wiki**](https://github.com/ultrakorne/better-rolltables/wiki)
+* [How to use Loot Tables](https://github.com/ultrakorne/better-rolltables/wiki/Loot-Tables)
+* [FAQs](https://github.com/ultrakorne/better-rolltables/wiki/FAQ)
+* [Macro guide](https://github.com/ultrakorne/better-rolltables/wiki/API-for-macros-and-modules#how-to-roll-tables-from-macros)
 
-I suggest to use [loot sheet NPC module](https://github.com/jopeek/fvtt-loot-sheet-npc-5e). if you have that module installed, better rolltable will automatically use it.
+# 3rd party integration
+ | Module | Integration description |
+ | ------ | ----------------------- |
+ | [LootSheet NPC module](https://github.com/jopeek/fvtt-loot-sheet-npc-5e) | Suggest to use. If installed, _BetterRolltables_ will automatically use it. |
+ | [Autocomplete inline properties](https://github.com/ghost-fvtt/FVTT-Autocomplete-Inline-Properties) | If installed offers autocompletion on tags. |
 
+## Localization
 
-[FAQs](https://github.com/ultrakorne/better-rolltables/wiki/FAQ)
+* English
+* German
+* Spanish
+* French
+* Portuguese (Brasil)
+* Korean
 
-### Contacts
-Ultrakorne#6240
+## Contacts
+* [Ultrakorne#6240](https://ultrakorne.github.io/discord)
+* [DanielBöttner](https://github.com/DanielBoettner)

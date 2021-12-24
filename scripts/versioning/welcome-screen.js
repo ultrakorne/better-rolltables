@@ -1,4 +1,4 @@
-import { BRTCONFIG } from '../core/config.js'
+import { MODULE, BRTCONFIG } from '../core/config.js'
 import VersionCheck from './version-check.js'
 
 /**
@@ -7,9 +7,9 @@ import VersionCheck from './version-check.js'
  */
 class WelcomeScreen extends Application {
   static get defaultOptions () {
-    const title = game.modules.get(BRTCONFIG.NAMESPACE).data.title
+    const title = game.modules.get(MODULE.ns).data.title
     return mergeObject(super.defaultOptions, {
-      template: `modules/${BRTCONFIG.NAMESPACE}/templates/welcome-screen.html`,
+      template: `modules/${MODULE.ns}/templates/welcome-screen.html`,
       resizable: true,
       width: 450,
       height: 636,
@@ -20,7 +20,7 @@ class WelcomeScreen extends Application {
 
   getData (options = {}) {
     options = super.getData(options)
-    options.isChecked = !VersionCheck.check(BRTCONFIG.NAMESPACE)
+    options.isChecked = !VersionCheck.check(MODULE.ns)
     return options
   }
 
@@ -29,8 +29,8 @@ class WelcomeScreen extends Application {
 
     html.find('.show-again').on('change', event => {
       let version = '0.0.0'
-      if (event.currentTarget.checked) { version = VersionCheck.get(BRTCONFIG.NAMESPACE) }
-      VersionCheck.set(BRTCONFIG.NAMESPACE, version)
+      if (event.currentTarget.checked) { version = VersionCheck.get(MODULE.ns) }
+      VersionCheck.set(MODULE.ns, version)
     })
   }
 }

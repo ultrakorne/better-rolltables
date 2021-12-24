@@ -1,4 +1,4 @@
-import { BRTCONFIG } from './config.js'
+import { MODULE , BRTCONFIG } from './config.js'
 
 /**
  * when dropping a link entity on a rolltable if the drop is a tableResult, we assign the dropped entity to that result table.
@@ -34,28 +34,6 @@ export async function dropEventOnTable (event, table) {
     resultTableData._id = table.results[resultIndex]._id
   }
 
-  /*
-  let entityToLink = undefined
-  if (data.pack) {
-    resultTableData.type = 2
-    resultTableData.collection = data.pack
-
-    entityToLink = await Utils.findInCompendiumById(data.pack, data.id)
-  } else {
-    resultTableData.type = 1
-    resultTableData.collection = data.type
-
-    entityToLink = getEntityByType(data)
-  }
-
-  if (entityToLink) {
-    resultTableData.text = entityToLink.name
-    resultTableData.img = entityToLink.img
-  } else {
-    ui.notifications.error(`Item of type ${data.type} or Embedded items not supported`)
-    return
-  }
-*/
   if (resultTableData._id) {
     table.updateEmbeddedEntity('TableResult', resultTableData)
   } else {
@@ -75,9 +53,9 @@ export async function dropEventOnTable (event, table) {
 
 export async function tryRoll (rollFormula) {
   try {
-    return (await (new Roll(rollFormula)).roll({ async: true })).total || 1
+    return (await (new Roll(rollFormula)).roll({ async: true })).total || 1;
   } catch (error) {
-    return 1
+    return 1;
   }
 }
 
@@ -86,34 +64,6 @@ export async function tryRoll (rollFormula) {
  * @returns {Number} how many times to roll on this table
  */
 export async function rollsAmount (table) {
-  const rollFormula = table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLLS_AMOUNT_KEY)
-  return tryRoll(rollFormula)
-}
-
-export function getEntityByType (data) {
-  let entityToLink
-  switch (data.type) {
-    case 'RollTable':
-      entityToLink = game.tables.get(data.id)
-      break
-    case 'Actor':
-      entityToLink = game.actors.get(data.id)
-      break
-    case 'Item':
-      entityToLink = game.items.get(data.id)
-      break
-    case 'JournalEntry':
-      entityToLink = game.journal.get(data.id)
-      break
-    case 'Playlist':
-      entityToLink = game.playlists.get(data.id)
-      break
-    case 'Scene':
-      entityToLink = game.scenes.get(data.id)
-      break
-    case 'Macro':
-      entityToLink = game.macros.get(data.id)
-      break
-  }
-  return entityToLink
+  const rollFormula = table.getFlag(MODULE.ns, BRTCONFIG.ROLLS_AMOUNT_KEY);
+  return tryRoll(rollFormula);
 }

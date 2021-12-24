@@ -1,0 +1,19 @@
+<fieldset class="row" data-id="new_rule_form">
+    <legend>Add new rule</legend>
+        <div class="form-group">
+            <input type="hidden" name="{{this.module}}.{{this.key}}.uuid" >
+            <input type="text" name="{{this.module}}.{{this.key}}.name" placeholder="name">
+        </div>
+        <fieldset>
+            <legend>Filters</legend>                
+            {{> "modules/lootpopulatornpc5e/templates/partials/filters.hbs" module=this.module key=this.key index=0}}
+            <div class="actions" style="float: right;">
+                    <button type="button" data-action="addNewFilter" data-settings-key="{{this.key}}" style="float:right;"><i class="fas fa-plus" style="pointer-events: none;"></i></button>
+            </div>
+        </fieldset>
+        <select name="{{this.module}}.{{this.key}}.rolltable">
+            <option><em>Select rolltable</em></option>
+            {{> "modules/lootpopulatornpc5e/templates/partials/dropdown_options.hbs" data=this.data}}
+        </select>
+    </div>
+</fieldset>

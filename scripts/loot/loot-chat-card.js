@@ -1,6 +1,6 @@
 import { LootCreator } from './loot-creator.js'
 import { addRollModeToChatData, getItemFromCompendium } from '../core/utils.js'
-import { BRTCONFIG } from '../core/config.js'
+import { MODULE , BRTCONFIG } from '../core/config.js'
 
 /**
  * create a chat card based on the content of the object LootData

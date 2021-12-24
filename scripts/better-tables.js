@@ -1,62 +1,67 @@
-import { LootCreator } from './loot/loot-creator.js'
-import { LootChatCard } from './loot/loot-chat-card.js'
-import { StoryBuilder } from './story/story-builder.js'
-import { StoryChatCard } from './story/story-chat-card.js'
-import { BRTBuilder } from './core/brt-builder.js'
-import { BetterResults } from './core/brt-table-results.js'
-import {getIconByEntityType, getRandomItemFromCompendium} from './core/utils.js'
-import { BRTCONFIG } from './core/config.js'
+import { LootCreator } from './loot/loot-creator.js';
+import { LootChatCard } from './loot/loot-chat-card.js';
+import { StoryBuilder } from './story/story-builder.js';
+import { StoryChatCard } from './story/story-chat-card.js';
+import { BRTBuilder } from './core/brt-builder.js';
+import { BetterResults } from './core/brt-table-results.js';
+import { getIconByEntityType, i18n } from './core/utils.js';
+import { BRTCONFIG, MODULE } from './core/config.js';
 
 export class BetterTables {
-  __constructor () {
-    this._spellCache = undefined
+  constructor() {
+    this._spellCache = undefined;
   }
 
   /**
      * Get spells in cache for
      * @returns {*}
      */
-  getSpellCache () {
-    return this._spellCache
+  getSpellCache() {
+    return this._spellCache;
   }
 
   /**
    * 
    * @param {*} tableEntity 
    */
-  async generateLoot (tableEntity, options = null) {
+  async generateLoot(tableEntity, options = {}) {
     const brtBuilder = new BRTBuilder(tableEntity),
-          results = await brtBuilder.betterRoll(),
-          br = new BetterResults(results),
-          betterResults = await br.buildResults(tableEntity),
-          currencyData = br.getCurrencyData(),
-          lootCreator = new LootCreator(betterResults, currencyData);
+      results = await brtBuilder.betterRoll(),
+      br = new BetterResults(results),
+      betterResults = await br.buildResults(tableEntity),
+      currencyData = br.getCurrencyData(),
+      lootCreator = new LootCreator(betterResults, currencyData);
 
     await lootCreator.createActor(tableEntity);
     await lootCreator.addCurrenciesToActor();
     await lootCreator.addItemsToActor();
 
-    if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ALWAYS_SHOW_GENERATED_LOOT_AS_MESSAGE)) {
+    if (game.settings.get(MODULE.ns, BRTCONFIG.ALWAYS_SHOW_GENERATED_LOOT_AS_MESSAGE)) {
       const rollMode = (options && ('rollMode' in options)) ? options.rollMode : null;
       const lootChatCard = new LootChatCard(betterResults, currencyData, rollMode);
       await lootChatCard.createChatCard(tableEntity);
     }
-}
+  }
 
-/**
- * Roll a table an add the resulting loot to a given token.
- * 
- * @param {RollTable} tableEntity 
- * @param {TokenDocument} token 
- * @returns 
- */
-  async addLootToSelectedToken (tableEntity, token = null) {
+  /**
+   * Roll a table an add the resulting loot to a given token.
+   * 
+   * @param {RollTable} tableEntity 
+   * @param {TokenDocument} token 
+   * @param {options} object
+   * @returns 
+   */
+  async addLootToSelectedToken(tableEntity, token = null, options = null) {
     let tokenstack = [];
+    const isTokenActor = (options && options?.isTokenActor),
+      stackSame = (options && options?.stackSame) ? options.stackSame : true,
+      customRoll = (options && options?.customRole) ? options.customRole : undefined,
+      itemLimit = (options && options?.itemLimit) ? Number(options.itemLimit) : 0;
 
     if (null == token && (canvas.tokens.controlled.length === 0)) {
-        return ui.notifications.error('Please select a token first');
+      return ui.notifications.error('Please select a token first');
     } else {
-        tokenstack = [token] || canvas.tokens.controlled;
+      tokenstack = (token) ? (token.length >= 0) ? token : [token] : canvas.tokens.controlled;
     }
 
     ui.notifications.info('Loot generation started.');
@@ -64,61 +69,61 @@ export class BetterTables {
     const brtBuilder = new BRTBuilder(tableEntity);
 
     for (const token of tokenstack) {
-      const results = await brtBuilder.betterRoll();
+      const results = await brtBuilder.betterRoll(customRoll);
       const br = new BetterResults(results);
       const betterResults = await br.buildResults(tableEntity);
       const currencyData = br.getCurrencyData();
       const lootCreator = new LootCreator(betterResults, currencyData);
 
-      await lootCreator.addCurrenciesToToken(token);
-      await lootCreator.addItemsToToken(token);
+      await lootCreator.addCurrenciesToToken(token, isTokenActor);
+      await lootCreator.addItemsToToken(token, stackSame, isTokenActor, itemLimit);
     }
-    
+
     return ui.notifications.info('Loot generation complete.');
   }
 
-  async generateChatLoot (tableEntity, options = null) {
+  async generateChatLoot(tableEntity, options = null) {
     const rollMode = (options && ('rollMode' in options)) ? options.rollMode : null;
     const brtBuilder = new BRTBuilder(tableEntity),
-          results = await brtBuilder.betterRoll(),
-          br = new BetterResults(results),
-          betterResults = await br.buildResults(tableEntity),
-          currencyData = br.getCurrencyData(),
-          lootChatCard = new LootChatCard(betterResults, currencyData, rollMode);
+      results = await brtBuilder.betterRoll(),
+      br = new BetterResults(results),
+      betterResults = await br.buildResults(tableEntity),
+      currencyData = br.getCurrencyData(),
+      lootChatCard = new LootChatCard(betterResults, currencyData, rollMode);
 
-    await lootChatCard.createChatCard(tableEntity)
+    await lootChatCard.createChatCard(tableEntity);
   }
 
-  async getStoryResults (tableEntity) {
+  async getStoryResults(tableEntity) {
     const storyBuilder = new StoryBuilder(tableEntity)
     await storyBuilder.drawStory()
     const storyHtml = storyBuilder.getGeneratedStory()
     const storyGMHtml = storyBuilder.getGeneratedStoryGM()
-    return { storyHtml, storyGMHtml }
+    return { storyHtml, storyGMHtml };
   }
 
-  async generateChatStory (tableEntity) {
+  async generateChatStory(tableEntity) {
     const storyBuilder = new StoryBuilder(tableEntity)
     await storyBuilder.drawStory()
     const storyHtml = storyBuilder.getGeneratedStory()
     const storyGMHtml = storyBuilder.getGeneratedStoryGM()
     const storyChat = new StoryChatCard(tableEntity)
     storyChat.createChatCard(storyHtml)
-    storyChat.createChatCard(storyGMHtml, { gmOnly: true })
+    storyChat.createChatCard(storyGMHtml, { gmOnly: true });
   }
 
-  async getBetterTableResults (tableEntity) {
-    const brtBuilder = new BRTBuilder(tableEntity)
-    return await brtBuilder.betterRoll()
+  async getBetterTableResults(tableEntity) {
+    const brtBuilder = new BRTBuilder(tableEntity);
+    return await brtBuilder.betterRoll();
   }
 
-  async betterTableRoll (tableEntity, options = null) {
+  async betterTableRoll(tableEntity, options = null) {
     const rollMode = (options && ('rollMode' in options)) ? options.rollMode : null;
 
     const brtBuilder = new BRTBuilder(tableEntity)
     const results = await brtBuilder.betterRoll()
 
-    if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.USE_CONDENSED_BETTERROLL)) {
+    if (game.settings.get(MODULE.ns, BRTCONFIG.USE_CONDENSED_BETTERROLL)) {
       const br = new BetterResults(results)
       const betterResults = await br.buildResults(tableEntity)
       const currencyData = br.getCurrencyData()
@@ -130,7 +135,7 @@ export class BetterTables {
     }
   }
 
-  async roll(tableEntity){
+  async roll(tableEntity) {
     const data = await BetterTables.prepareCardData(tableEntity)
     return data.flags?.betterTables?.loot;
   }
@@ -142,22 +147,24 @@ export class BetterTables {
      * @param {string} compendiumName the name of the compendium to use for the table generation
      * @param {function(Document)} weightPredicate a function that returns a weight (number) that will be used
      * for the tableResult weight for that given entity. returning 0 will exclude the entity from appearing in the table
+     * 
+     * @deprecated use api.createRolltableFromCompendium instead
      */
 
-  async createTableFromCompendium (tableName, compendiumName, { weightPredicate = null } = {}) {
-    const compendium = game.packs.get(compendiumName)
+  async createTableFromCompendium(tableName, compendiumName, { weightPredicate = null } = {}) {
+    const compendium = game.packs.get(compendiumName);
     if (compendium === undefined) {
-      ui.notifications.warn(`Compendium named ${compendiumName} not found.`)
-      return
+      ui.notifications.warn(`Compendium named ${compendiumName} not found.`);
+      return;
     }
 
-    const compendiumSize = (await compendium.getIndex()).size
+    const compendiumSize = (await compendium.getIndex()).size;
     if (compendiumSize === 0) {
-      ui.notifications.warn(`Compendium named ${compendium.title} (${compendiumName}) is empty.`)
-      return
+      ui.notifications.warn(MODULE.ns + ` | Compendium named ${compendium.title} (${compendiumName}) is empty.`);
+      return;
     }
 
-    ui.notifications.info(`Starting generation of rolltable for ${compendium.title} (${compendiumName}) with ${compendiumSize} entries.`)
+    ui.notifications.info(MODULE.ns + ` | Starting generation of rolltable for ${compendium.title} (${compendiumName}) with ${compendiumSize} entries.`);
     compendium.getDocuments()
       .then(compendiumItems => {
         return compendiumItems.map(item => ({
@@ -167,25 +174,25 @@ export class BetterTables {
           img: item.img,
           weight: (weightPredicate) ? weightPredicate(item) : 1,
           range: [1, 1]
-        }))
+        }));
       })
       .then(results => RollTable.create({
         name: tableName,
-        results: results.filter(x => x !== undefined) // remove empty results due to null weight
+        results: results.filter(x => x.weight !== 0) // remove empty results due to null weight
       }))
       .then(rolltable => {
-        rolltable.normalize()
-        ui.notifications.info(`Rolltable ${tableName} with ${rolltable.results.size} entries was generated.`)
-      })
+        rolltable.normalize();
+        ui.notifications.info(`Rolltable ${tableName} with ${rolltable.results.size} entries was generated.`);
+      });
   }
 
   /**
      * Update spell cache used for random spell scroll generation
      * @returns {Promise<void>}
      */
-  async updateSpellCache (pack) {
+  async updateSpellCache(pack) {
     if (game.user.isGM) {
-      const defaultPack = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SPELL_COMPENDIUM_KEY)
+      const defaultPack = game.settings.get(MODULE.ns, BRTCONFIG.SPELL_COMPENDIUM_KEY);
       if (!pack || pack === defaultPack) {
         const spellCompendium = game.packs.get(defaultPack)
         const spellCompendiumIndex = await spellCompendium.getIndex({ fields: ['data.level', 'img'] })
@@ -199,22 +206,24 @@ export class BetterTables {
      * @param {HTMLElement} html
      * @param {Array} options
      */
-  static async enhanceCompendiumContextMenu (html, options) {
+  static async enhanceCompendiumContextMenu(html, options) {
+    const api = game.modules.get(MODULE.ns).public.API;
+
     if (game.user.isGM) {
       options.push({
-        name: 'Generate rolltable',
+        name: i18n('BRT.api.msg.generateRolltableFromCompendium'),
         icon: '<i class="fas fa-th-list"></i>',
         callback: li => {
-          BetterTables.menuCallBackCreateTable(li.data('pack'))
+          api.createTableFromCompendium(li.data('pack'))
         }
       })
 
-      if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU)) {
+      if (game.settings.get(MODULE.ns, BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU)) {
         options.push({
-          name: 'Roll on compendium',
+          name: i18n('BRT.api.msg.rollCompendiumAsRolltable'),
           icon: '<i class="fas fa-dice-d20"></i>',
           callback: li => {
-            BetterTables.menuCallBackRollCompendium(li.data('pack'))
+            api.rollCompendiumAsRolltable(li.data('pack'))
           }
         })
       }
@@ -222,20 +231,12 @@ export class BetterTables {
   }
 
   /**
-     *
-     * @param {String} compendiumId
-     */
-  static async menuCallBackCreateTable (compendiumId) {
-    await game.betterTables.createTableFromCompendium('BRT | ' + compendiumId, compendiumId)
-  }
-
-  /**
      * Add a roll option in context menu of rolltables
      * @param {HTMLElement} html
      * @param {Array} options
      */
-  static async enhanceRolltableContextMenu (html, options) {
-    if (game.user.isGM && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU)) {
+  static async enhanceRolltableContextMenu(html, options) {
+    if (game.user.isGM && game.settings.get(MODULE.ns, BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU)) {
       options.unshift({
         name: 'Roll table',
         icon: '<i class="fas fa-dice-d20"></i>',
@@ -250,41 +251,27 @@ export class BetterTables {
      *
      * @param {String} rolltableId ID of the rolltable to roll
      */
-  static async menuCallBackRollTable (rolltableId) {
-    const rolltable = game.tables.get(rolltableId)
-    await game.betterTables.betterTableRoll(rolltable)
+  static async menuCallBackRollTable(rolltableId) {
+    const rolltable = game.tables.get(rolltableId);
+    await game.betterTables.betterTableRoll(rolltable);
   }
 
   /**
-     * Create card content from compendium content
-      * @param {String} compendium compendium name
-     * @returns {Promise<{flavor: string, sound: string, user: *, content: *}>}
-     */
-  static async rollCompendiumAsRolltable (compendium) {
-    if (game.user.isGM) {
-      // Get random item from compendium
-      const item = await getRandomItemFromCompendium(compendium)
-
-      // prepare card data
-      const fontSize = Math.max(60, 100 - Math.max(0, item.name.length - 27) * 2)
-      const chatCardData = {
-        compendium: compendium,
-        itemsData: [
-          { item: item, quantity: 1, fontSize: fontSize, type: 2 }
-        ]
-      }
-      const cardHtml = await renderTemplate('modules/better-rolltables/templates/loot-chat-card.hbs', chatCardData)
-      return {
-        flavor: `Rolled from compendium ${item.pack}`,
-        sound: 'sounds/dice.wav',
-        user: game.user.data._id,
-        content: cardHtml
-      }
-    }
+  * Create card content from compendium content
+  * 
+  * @param {String} compendium compendium name
+  * 
+  * @returns {Promise<{flavor: string, sound: string, user: *, content: *}>}
+  * 
+  * @deprecated use api.rollCompendiumAsRolltable instead
+  */
+  static async rollCompendiumAsRolltable(compendium) {
+    api = game.modules.get(MODULE.ns).public.API;
+    api.rollCompendiumAsRolltable(compendium);
   }
 
   static async _renderMessage(message) {
-    const cardHtml = await renderTemplate('modules/better-rolltables/templates/loot-chat-card.hbs', message.data.flags.betterTables.loot)
+    const cardHtml = await renderTemplate('modules/better-rolltables/templates/loot-chat-card.hbs', message.data.flags.betterTables.loot);
     message.data.content = cardHtml
     return message
     /*
@@ -306,7 +293,7 @@ export class BetterTables {
      *
      * @param {String} compendium ID of the compendium to roll
      */
-  static async menuCallBackRollCompendium (compendium) {
+  static async menuCallBackRollCompendium(compendium) {
     const chatData = await BetterTables.rollCompendiumAsRolltable(compendium)
     ChatMessage.create(chatData)
   }
@@ -316,7 +303,7 @@ export class BetterTables {
      * @param {RollTable} tableEntity rolltable to generate content from
      * @returns {Promise<{flavor: *, sound: string, user: *, content: *}>}
      */
-  static async prepareCardData (tableEntity) {
+  static async prepareCardData(tableEntity) {
     const brtBuilder = new BRTBuilder(tableEntity)
     const results = await brtBuilder.betterRoll()
 
@@ -334,49 +321,49 @@ export class BetterTables {
     // await BetterTables.updateChatMessage(message, html, {"force":true});
   }
 
-  static async _addButtonsToMessage (message, html) {
-    const tableDrawNode = $(html).find('.table-draw')
-    const id = $(tableDrawNode).data('id')
-    const pack = $(tableDrawNode).data('pack')
-    if (!id && !pack) return
+  static async _addButtonsToMessage(message, html) {
+    const tableDrawNode = $(html).find('.table-draw');
+    const id = $(tableDrawNode).data('id');
+    const pack = $(tableDrawNode).data('pack');
+    if (!id && !pack) return;
 
-    if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_REROLL_BUTTONS)) {
+    if (game.settings.get(MODULE.ns, BRTCONFIG.SHOW_REROLL_BUTTONS)) {
       // reroll button
-      const rerollButton = $(`<a class="roll-table-reroll-button" title="${game.i18n.localize('BRT.DrawReroll')}">`).append("<i class='fas fa-dice-d20'></i>")
+      const rerollButton = $(`<a class="roll-table-reroll-button" title="${game.i18n('BRT.DrawReroll')}">`).append("<i class='fas fa-dice-d20'></i>")
       rerollButton.click(async () => {
         let cardContent
         if (pack && !id) {
-          cardContent = await BetterTables.rollCompendiumAsRolltable(pack)
+          cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
         } else {
-          let rolltable
+          let rolltable;
           if (pack && id) {
-            rolltable = await game.packs.get(pack)?.getDocument(id)
+            rolltable = await game.packs.get(pack)?.getDocument(id);
           } else {
-            rolltable = game.tables.get(id)
+            rolltable = game.tables.get(id);
           }
           if (rolltable) {
-            cardContent = await BetterTables.prepareCardData(rolltable)
+            cardContent = await BetterTables.prepareCardData(rolltable);
           }
         }
-        await BetterTables.updateChatMessage(message, cardContent, {flags:cardContent.flags})
+        await BetterTables.updateChatMessage(message, cardContent, { flags: cardContent.flags });
       })
-      $(html).find('.message-delete').before(rerollButton)
+      $(html).find('.message-delete').before(rerollButton);
     }
 
     if (game.system.id === 'dnd5e'
-        && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_CURRENCY_SHARE_BUTTON)
-        && (message.data.flags.betterTables.loot.currency && Object.keys(message.data.flags.betterTables.loot.currency).length > 0)) {
+      && game.settings.get(MODULE.ns, BRTCONFIG.SHOW_CURRENCY_SHARE_BUTTON)
+      && (message.data.flags?.betterTables?.loot.currency && Object.keys(message.data.flags.betterTables.loot.currency).length > 0)) {
       // Currency share button
-      const currencyShareButton = $(`<a class="roll-table-share-currencies" title="${game.i18n.localize('BRT.Currency.Buttons.Share.Label')}">`).append("<i class='fas fa-coins'></i>")
+      const currencyShareButton = $(`<a class="roll-table-share-currencies" title="${game.i18n('BRT.Currency.Buttons.Share.Label')}">`).append("<i class='fas fa-coins'></i>")
       currencyShareButton.click(async () => BetterTables._toggleCurrenciesShareSection(message, html))
       $(html).find('.message-delete').before(currencyShareButton)
       const shareButton = html[0].querySelector("button.brt-share-currencies-button")
       shareButton.addEventListener('click', async (event) => {
-        await BetterTables._shareCurrenciesToPlayers(message, html)
+        await BetterTables._shareCurrenciesToPlayers(message, html);
       })
     }
 
-    if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_OPEN_BUTTONS)) {
+    if (game.settings.get(MODULE.ns, BRTCONFIG.SHOW_OPEN_BUTTONS)) {
       // Open link
       let document
       if (pack && id) {
@@ -385,7 +372,7 @@ export class BetterTables {
         document = game.tables.get(id)
       }
       if (document) {
-        const openLink = $(`<a class="roll-table-open-table" title="${game.i18n.localize('BRT.OpenRolltable')}">`).append("<i class='fas fa-th-list'></i>")
+        const openLink = $(`<a class="roll-table-open-table" title="${game.i18n('BRT.OpenRolltable')}">`).append("<i class='fas fa-th-list'></i>")
         if (id) openLink.data('id', id)
         if (pack) openLink.data('pack', pack)
         openLink.click(async () => document.sheet.render(true))
@@ -409,8 +396,8 @@ export class BetterTables {
     const currenciesToShare = message.data.flags.betterTables.loot.currency
     const usersCount = usersId.length
     const share = Object.keys(currenciesToShare)
-        .map(x => ({[x]: Math.floor(currenciesToShare[x] / usersCount)}))
-        .reduce((a, b) => Object.assign(a, b), {})
+      .map(x => ({ [x]: Math.floor(currenciesToShare[x] / usersCount) }))
+      .reduce((a, b) => Object.assign(a, b), {})
 
     for (const userId of usersId) {
       const user = game.users.get(userId)
@@ -421,21 +408,21 @@ export class BetterTables {
           currency[key] += increment
         }
       }
-      await user.character.update({"data.currency": currency})
+      await user.character.update({ "data.currency": currency })
     }
-    const newMessage = await BetterTables._renderMessage(mergeObject(message, {"data.flags.betterTables.loot.shared":true}))
+    const newMessage = await BetterTables._renderMessage(mergeObject(message, { "data.flags.betterTables.loot.shared": true }))
     await BetterTables.updateChatMessage(message, newMessage)
   }
 
 
-  static async _addRollButtonsToEntityLink (html) {
-    if (game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
+  static async _addRollButtonsToEntityLink(html) {
+    if (game.settings.get(MODULE.ns, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
       // handling rolltables imported in campaign
       $(html).find("a.entity-link[data-entity='RollTable']").each((index, link) => {
         const id = $(link).data('id')
         const rolltable = game.tables.get(id)
 
-        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
+        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
           .click(async () => {
             await game.betterTables.generateChatLoot(rolltable)
           })
@@ -452,7 +439,7 @@ export class BetterTables {
         const document = await pack.getDocument(id)
         if (!document || document.documentName !== 'RollTable') return
 
-        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
+        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
           .click(async () => {
             await game.betterTables.generateChatLoot(document)
           })
@@ -467,7 +454,7 @@ export class BetterTables {
      * @param {Object} html message content
      * @returns {Promise<void>}
      */
-  static async handleChatMessageButtons (message, html) {
+  static async handleChatMessageButtons(message, html) {
     if (game.user.isGM) {
       BetterTables._addButtonsToMessage(message, html)
       BetterTables._addRollButtonsToEntityLink(html)
@@ -481,13 +468,13 @@ export class BetterTables {
      * @param {Object} options
      * @returns {Promise<void>}
      */
-  static async updateChatMessage (message, content, options={}) {
+  static async updateChatMessage(message, content, options = {}) {
     if (game.user.isGM) {
-      if (!options.force && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.SHOW_WARNING_BEFORE_REROLL)) {
+      if (!options.force && game.settings.get(MODULE.ns, BRTCONFIG.SHOW_WARNING_BEFORE_REROLL)) {
         Dialog.confirm({
-          title: game.i18n.localize('BRT.Settings.RerollWarning.Title'),
-          content: game.i18n.localize('BRT.Settings.RerollWarning.Description'),
-          yes: () => BetterTables.updateChatMessage(message, content, {'force':true}),
+          title: game.i18n('BRT.Settings.RerollWarning.Title'),
+          content: game.i18n('BRT.Settings.RerollWarning.Description'),
+          yes: () => BetterTables.updateChatMessage(message, content, { 'force': true }),
           defaultYes: false
         })
       } else {
@@ -500,14 +487,14 @@ export class BetterTables {
     }
   }
 
-  static async handleRolltableLink (sheet, html) {
-    if (game.user.isGM && game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
+  static async handleRolltableLink(sheet, html) {
+    if (game.user.isGM && game.settings.get(MODULE.ns, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
       // handling rolltables imported in campaign
       $(html).find("a.entity-link[data-entity='RollTable']").each((index, link) => {
         const id = $(link).data('id')
         const rolltable = game.tables.get(id)
 
-        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
+        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
           .click(async () => {
             await game.betterTables.generateChatLoot(rolltable)
           })
@@ -524,7 +511,7 @@ export class BetterTables {
         const document = await pack.getDocument(id)
         if (!document || document.documentName !== 'RollTable') return
 
-        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
+        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
           .click(async () => {
             await game.betterTables.generateChatLoot(document)
           })

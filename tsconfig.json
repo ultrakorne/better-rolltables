@@ -1,8 +1,29 @@
 {
         "compilerOptions": {
-                "types": [
-                        "foundry-pc-types"
+                "module": "es2020",
+                "moduleResolution": "node",
+                "target": "es2020",
+                "lib": [
+                        "es2020",
+                        "es6",
+                        "es5",
+                        "dom"
                 ],
-                "allowJs": true
+                "outDir": "dist",	
+                "rootDir": "./",
+                "sourceMap": false,
+                "experimentalDecorators": true,
+                "strict": true,
+                "esModuleInterop": false,
+                "types": [
+                        "@league-of-foundry-developers/foundry-vtt-types",
+                        "node"
+                ],
+                "typeRoots": [
+                        "C:\\Users\\jackp\\AppData\\Local\\FoundryVTT\\Data\\systems\\dnd5e\\module"
+                ],
+                "allowJs": true,
+                "strictNullChecks": true,
+                "resolveJsonModule": true
         }
 }

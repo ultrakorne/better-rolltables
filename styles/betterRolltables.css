@@ -1,0 +1,244 @@
+/*
+* Tidy5e - Dark Mode Support
+*/
+.tidy5eDark .app.roll-table-config {
+  box-shadow: 0 0 0.5em var(--shadowcolor);
+}
+.tidy5eDark .app.roll-table-config input[type="text"] {
+  background: var(--background);
+  color: var(--primary-font);
+  border: 1px solid #7a7971;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+}
+.tidy5eDark .app.roll-table-config input[type="number"] {
+  background: var(--background);
+  color: var(--primary-font);
+  height: calc(100% - 2px);
+  border: 1px solid #7a7971;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+}
+.tidy5eDark .app.roll-table-config select {
+  background: var(--background);
+  color: var(--primary-font);
+  height: calc(100% - 2px);
+  border: 1px solid #7a7971;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+  height: calc(100% - 0.7em);
+}
+.tidy5eDark .app.roll-table-config select option {
+  background: var(--background);
+  color: var(--primary-font);
+}
+.tidy5eDark .app.roll-table-config textarea {
+  background: var(--background);
+  color: var(--primary-font);
+}
+.tidy5eDark .app.roll-table-config header fieldset {
+  border: 1px solid var(--header-border);
+  background: var(--header-background);
+  border-radius: 0.5em;
+  margin-bottom: 1em;
+}
+.tidy5eDark .app.roll-table-config .table-result:nth-child(2n) {
+  background: var(--faintest-color);
+}
+.tidy5eDark .app.roll-table-config .table-result.drawn {
+  opacity: 0.5;
+  z-index: 0;
+}
+.tidy5eDark .app.roll-table-config .table-result.drawn .lock-result {
+  color: #f00;
+}
+.tidy5eDark .app.roll-table-config .result-image {
+  flex: 0 0 calc(100% - 0.7em);
+  width: 36px;
+  height: calc(100% - 0.7em);
+}
+/** 
+* Sticky Mode
+*/
+.app.roll-table-config.brt-sticky-view {
+  height: fit-content !important;
+  min-height: 50vh;
+}
+.app.roll-table-config.brt-sticky-view .window-content {
+  overflow: hidden;
+  color: var(--primary-font);
+  padding: 0;
+}
+.app.roll-table-config.brt-sticky-view .window-content form {
+  background: var(--background);
+  padding: 0.5em;
+}
+.app.roll-table-config.brt-sticky-view header fieldset {
+  min-height: 1.5em;
+}
+.app.roll-table-config.brt-sticky-view header fieldset legend {
+  margin-bottom: -1em;
+}
+.app.roll-table-config.brt-sticky-view form > header {
+  margin-bottom: 0.5em;
+}
+.app.roll-table-config.brt-sticky-view form button {
+  color: var(--primary-font);
+  border: 1px solid var(--header-border);
+  background: var(--header-background);
+  border-radius: 0.5em;
+  height: calc(100% - 0.7em);
+}
+.app.roll-table-config.brt-sticky-view input[type="text"],
+.app.roll-table-config.brt-sticky-view input[type="number"],
+.app.roll-table-config.brt-sticky-view select {
+  border: 1px solid #7a7971;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+  height: calc(100% - 0.7em);
+}
+.app.roll-table-config.brt-sticky-view .results {
+  position: relative;
+  padding-bottom: 32px;
+}
+.app.roll-table-config.brt-sticky-view .results .table-results {
+  min-height: 40vh;
+  max-height: 52vh;
+  height: fit-content;
+}
+.app.roll-table-config.brt-sticky-view .results .table-results:nth-child(2n) {
+  background: var(--faintest-color);
+}
+.app.roll-table-config.brt-sticky-view .results .table-results .table-header {
+  background: var(--icon-background);
+  position: sticky;
+  align-self: flex-start;
+  top: 0;
+  z-index: 1;
+}
+.app.roll-table-config.brt-sticky-view .results .table-results .table-result {
+  border: unset;
+  border-bottom: 1px solid var(--header-border);
+}
+.app.roll-table-config.brt-sticky-view .results .table-results .table-result.drawn {
+  opacity: 0.5;
+  z-index: 0;
+}
+.app.roll-table-config.brt-sticky-view .results .table-results.expanded {
+  max-height: 70vh;
+}
+/*************\
+|** Results **|
+\*************/
+.roll-table-config {
+  min-height: fit-content;
+  height: unset!important;
+  max-height: 90vh;
+}
+.roll-table-config .toggler {
+  width: 100%;
+  cursor: pointer;
+}
+.roll-table-config .tagger {
+  position: absolute;
+  border: 1px solid var(--header-border);
+  border-radius: 0.5em;
+  padding: 0.8em;
+  top: 9.7em;
+  right: 1.4em;
+  background: var(--icon-background);
+  max-width: 30%;
+  z-index: 100;
+  box-shadow: 0 0 0.5em var(--shadowcolor);
+}
+.roll-table-config .tagger ul {
+  list-style: none;
+  align-items: flex-start;
+  max-height: 20vh;
+  overflow-y: auto;
+}
+.roll-table-config .tagger ul li {
+  border: 1px solid var(--header-border);
+  border-radius: 0.2em;
+  background: var(--faintest-color);
+  display: inline-block;
+  margin: 0.1em;
+  padding: 0.1em;
+}
+.roll-table-config .results {
+  padding-bottom: 40px;
+}
+.roll-table-config ol.table-results .table-result .result-details .result-target-short {
+  width: 43%;
+  margin-left: 3px;
+}
+.roll-table-config ol.table-results .table-result .result-details .result-brt-formula {
+  width: 14%;
+  margin-left: 3px;
+}
+.roll-table-config ol.table-results .table-result .result-details .result-brt-formula::placeholder {
+  font-size: 12px;
+}
+.roll-table-config ol.table-results .table-result .result-details .result-brt-formula::-webkit-input-placeholder {
+  font-size: 12px;
+}
+.roll-table-config ol.table-results .table-result .result-details .result-brt-formula::-moz-placeholder {
+  font-size: 12px;
+}
+.roll-table-config ol.table-results .table-result .result-details .result-brt-formula:-ms-input-placeholder {
+  font-size: 12px;
+}
+.roll-table-config ol.table-results .table-result .result-details .result-target-mid {
+  width: 84%;
+  margin-left: 3px;
+}
+.roll-table-config footer.sheet-footer {
+  background: var(--background);
+  position: absolute;
+  bottom: 0.3em;
+  margin-top: -2em;
+  padding-top: 0.3em;
+  width: calc(100% - 0.9em);
+}
+.story-text-selectable * {
+  user-select: text;
+  -moz-user-select: text;
+}
+.roll-table-reroll-button {
+  margin-right: 5px;
+}
+.roll-table-open-table {
+  margin-right: 5px;
+}
+.roll-table-share-currencies {
+  margin-right: 5px;
+}
+.brt-hidden {
+  display: none !important;
+}
+.roll-table-roll-link {
+  background: #DDD;
+  padding: 1px 2px;
+  margin-left: -1px;
+  border: 1px solid;
+  border-left: 0;
+}
+.brt-share-currencies {
+  border: 1px solid #b5b3a4;
+  padding: 5px;
+}
+.brt-share-currencies div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.brt-share-currencies div img {
+  border: none;
+  max-width: 48px;
+  margin-right: 5px;
+}
+.brt-currency-shared {
+  color: green;
+  font-weight: bold;
+  display: block;
+}

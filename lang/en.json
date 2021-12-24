@@ -1,48 +1,144 @@
 {
-    "BRT.TypeLabel": "Better Table Type",
-    "BRT.TypeDefault": "Default Table",
-    "BRT.BetterTable": "Better Table",
-    "BRT.TypeLoot": "Loot Table",
-    "BRT.StoryLoot": "Story Table",
-    "BRT.CurrencyLoot": "Currency Loot",
-    "BRT.Currency.Label": "Currency:",
-    "BRT.CurrencyLootPlaceholder": "Add comma separated formulas e.g.: 1d4[gp], (1d4+1)*10[sp]",
-    "BRT.LootActorName": "Add Loot to Actor",
-    "BRT.LootActorNamePlaceholder": "If empty it will create a new loot actor every time",
-    "BRT.GenerateLoot.Button": " Generate Loot",
-    "BRT.Settings.LootSheet.Title": "Sheet to use for Generated Loot",
-    "BRT.Settings.LootSheet.Description": "You can set an alternate npc sheets to be used for the generated loot to have upon creation",
-    "BRT.Settings.SpellCompendium.Title": "Spell compendium to use for Random scrolls",
-    "BRT.Settings.SpellCompendium.Description": "You can specify a spell compendium and when a scroll is picked from a loot table (they need to have a specific name) a random spell is rolled from this compendium",
-    "BRT.LootRollAmount": "Amount of Rolls",
-    "BRT.LootRollAmountPlaceholder" : "Roll the entire table multiple times",
-    "BRT.DrawResultPlural": "Draws {amount} results from {name}",
-    "BRT.DrawResultSingular": "Draw {amount} result from {name}",
-    "BRT.DrawResultZero": "Rolling on {name}",
-    "BRT.DrawReroll": "Reroll",
-    "BRT.Currency.Buttons.Share.Label": "Share",
-    "BRT.Currency.Shared.Label": "Shared!",
-    "BRT.OpenRolltable": "Open rolltable",
-    "BRT.Settings.RerollButtons.Title": "Show Reroll buttons",
-    "BRT.Settings.RerollButtons.Description": "Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected.",
-    "BRT.Settings.OpenButtons.Title": "Show Open buttons",
-    "BRT.Settings.OpenButtons.Description": "Display a open button on each result message of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected.",
-    "BRT.Settings.ShowWarningBeforeReroll.Title": "Confirm reroll ?",
-    "BRT.Settings.ShowWarningBeforeReroll.Description": "Show a confirm dialog before reroll message content.",
-    "BRT.Settings.UseCondensedBetterRoll.Title": "Use condensed roll output",
-    "BRT.Settings.UseCondensedBetterRoll.Description": "If enabled, this will aggregate same output with a multiplier to save space. This option may speed up rolltable draws. Default tables are not affected.",
-    "BRT.Settings.AddRollInRolltableContextMenu.Title": "Roll from rolltable contextmenu",
-    "BRT.Settings.AddRollInRolltableContextMenu.Description": "Add an option in rolltable's contextmenu to roll table without opening it. Work on all table type.",
-    "BRT.Settings.AddRollInCompediumContextMenu.Title": "Roll from compendium contextmenu",
-    "BRT.Settings.AddRollInCompediumContextMenu.Description": "Add an option in compendium's contextmenu to roll on this compendium without creating rolltable from it. Work on all non-empty compendiums.",
-    "BRT.Settings.RerollWarning.Title": "Reroll?",
-    "BRT.Settings.RerollWarning.Description": "Message content will be lost. Are you sure you want to reroll?",
-    "BRT.Settings.StickRolltableHeader.Title": "Stick rolltable header to top?",
-    "BRT.Settings.StickRolltableHeader.Description": "If enabled, roll table header will no more scroll with content.",
-    "BRT.Settings.RollTableFromJournal.Title": "Add roll button to tables in journal entries?",
-    "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries.",
-    "BRT.Settings.ShareCurrencyButton.Title": "Show share currency button?",
-    "BRT.Settings.ShareCurrencyButton.Description": "Show a button on mesage to share currency (if any) (dnde only)",
-    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Title": "Always show generated loot to actor as message",
-    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Description": "If enabled, generated loot added to an actor is also displayed as a message."
+    "BRT": {
+        "api": {
+            "msg": {
+                "compendiumEmpty": "Compendium named {title} ({name}) is empty.`",
+                "compendiumNotFound": "Compendium << {name} >> not found.",
+                "generateRolltableFromCompendium": "Generate rolltable.",
+                "startRolltableGeneration": "Starting generation of rolltable for {title} ({name}) with {compendiumSize} entries.",
+                "rolltableGenerationFinished": "Rolltable generation for {title} ({name}) finished.",
+                "rollCompendiumAsRolltable": "Rolling compendium as rolltable."
+            }            
+        },
+        "Buttons": {
+            "GenerateLoot": "Generate Loot",
+            "Currency": {
+                "label": "Currency",
+                "Share": "Share",
+                "Shared": "Shared!"
+            },
+            "ShareCurrency": "Share Currency",
+            "Reroll": {
+                "Title": "Show Reroll buttons",
+                "Description": "Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected."
+            },
+            "Open": {
+                "Title": "Show `Open` buttons",
+                "Description": "Display a open button on each result message of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected."
+            },
+            "Rolltable": {
+                "Configuration": {
+                    "Title": "Rolltable Configuration",
+                    "Description": "Configure the rolltable"
+                }
+            }
+        },
+        "Formula": "Formula",
+        "TypeLabel": "Better Tables Type",
+        "TypeDefault": "Default Table",
+        "BetterTable": "Better Table",
+        "TypeLoot": "Loot Table",
+        "StoryLoot": "Story Table",
+        "CurrencyLoot": "Currency Loot",
+        "CurrencyLootPlaceholder": "Add comma separated formulas e.g.: 1d4[gp], (1d4+1)*10[sp]",
+        "LootActorName": "Add Loot to Actor",
+        "LootActorNamePlaceholder": "If empty it will create a new loot actor every time",
+        "LootRollAmount": "Amount of Rolls",
+        "LootRollAmountPlaceholder": "Roll the entire table multiple times",
+        "DrawResultPlural": "Draws {amount} results from {name}",
+        "DrawResultSingular": "Draw {amount} result from {name}",
+        "DrawResultZero": "Rolling on {name}",
+        "DrawReroll": "Reroll",
+        "OpenRolltable": "Open rolltable",
+        "Settings": {
+            "Module":{
+                "AdvancedSettings": {
+                    "Title": "BetterRolltables Advanced Settings",
+                    "Description": "Some more advanced settings for BetterRolltables",
+                    
+                    "Menu": {
+                        "Base": {
+                            "Title": "Base Settings",
+                            "Description": "Basic settings for BetterRolltables"
+                        },
+                        "UI": {
+                            "Title": "UI Settings",
+                            "Description": "Settings for the UI of BetterRolltables"
+                        },
+                        "Loot": {
+                            "Title": "Loot Settings",
+                            "Description": "Settings for the Loot of BetterRolltables"
+                        },
+                        "Tags": {
+                            "Title": "Tags Settings",
+                            "Description": "Settings for the Tags of BetterRolltables"
+                        }
+                    }
+                }
+            },            
+            "LootSheet": {
+                "Title": "Sheet to use for Generated Loot",
+                "Description": "You can set an alternate npc sheets to be used for the generated loot to have upon creation"
+            },
+            "SpellCompendium": {
+                "Title": "Spell Compendium",
+                "Description": "You can specify a spell compendium and when a scroll is picked from a loot table (they need to have a specific name) a random spell is rolled from this compendium"
+            },
+            "ShowWarningBeforeReroll": {
+                "Title": "Confirm reroll ?",
+                "Description": "Show a confirm dialog before reroll message content."
+            },
+            "UseCondensedBetterRoll": {
+                "Title": "Use condensed roll output",
+                "Description": "If enabled, this will aggregate same output with a multiplier to save space. This option may speed up rolltable draws. Default tables are not affected."
+            },            
+            "AddRollInRolltableContextMenu": {
+                "Title": "Roll from rolltable contextmenu",
+                "Description": "Add an option in rolltable's contextmenu to roll table without opening it. Work on all table type."
+            },
+            "AddRollInCompediumContextMenu": {
+                "Title": "Roll from compendium contextmenu",
+                "Description": "Add an option in compendium's contextmenu to roll on this compendium without creating rolltable from it. Work on all non-empty compendiums."
+            },            
+            "RerollWarning": {
+                "Title": "Reroll?",
+                "Description": "Message content will be lost. Are you sure you want to reroll?"
+            },
+            "RollTableFromJournal": {
+                "Title": "Add roll button to tables in journal entries?",
+                "Description": "If enabled, a roll button is added to linked tables in journal entries."
+            },
+            "ShareCurrencyButton": {
+                "Title": "Show share currency button?",
+                "Description": "Show a button on mesage to share currency (if any) (dnde only)"
+            },
+            "AlwaysShowGeneratedLootAsMessage": {
+                "Title": "Always show generated loot to actor as message",
+                "Description": "If enabled, generated loot added to an actor is also displayed as a message."
+            },
+            "Tags": {
+                "Title": "Tags",
+                "Use": {
+                    "Title": "Use Tags",
+                    "Description": "Allow assigning tags rolltables with curstom tags."
+                },
+                "Defaults": {
+                    "Title": "Default Tags",
+                    "Description": "Default Tags to be assigned to tables. This could be useful if you work on alot of tables."
+                }
+            }
+        },
+        "Strings": {            
+            "Better": "Better",
+            "Loot": "Loot",
+            "Story": "Story",
+            "Tags": "Tags",
+            "Warnings": {
+                "NoFormula": "No rolltable formula found in {name}",
+                "MaxRecursion": "Recursion depth of {maxRecursions} exceeded when attempting to draw from RollTable {tableId}",
+                "NotTableByNameInPack": "No table named {tableName} found in compendium {packName}, did you misspell your table name in brackets?",
+                "CurrencyFormat": "Currency loot field contain wrong formatting, currencies need to be define as \"diceFormula[currencyType]\" => \"1d100[gp]\" but was {currencyString}"
+            }
+        }
+    }
 }

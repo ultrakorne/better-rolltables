@@ -1,5 +1,5 @@
 import { getItemFromCompendium } from '../core/utils.js'
-import { BRTCONFIG } from '../core/config.js'
+import { MODULE , BRTCONFIG } from '../core/config.js'
 import { LootManipulator } from './loot-manipulation.js'
 
 export class LootCreator {
@@ -15,19 +15,19 @@ export class LootCreator {
   }
 
   async createActor (table, overrideName = undefined) {
-    const actorName = overrideName || table.getFlag(BRTCONFIG.NAMESPACE, BRTCONFIG.ACTOR_NAME_KEY)
-    this.actor = game.actors.getName(actorName)
+    const actorName = overrideName || table.getFlag(MODULE.ns, BRTCONFIG.ACTOR_NAME_KEY);
+    this.actor = game.actors.getName(actorName);
     if (!this.actor) {
       this.actor = await Actor.create({
         name: actorName || 'New Loot',
         type: 'npc',
-        img: 'modules/better-rolltables/artwork/chest.png',
+        img: 'modules/better-rolltables/artwork/chest.webp',
         sort: 12000,
         token: { actorLink: true }
       });
     }
 
-    const lootSheet = game.settings.get(BRTCONFIG.NAMESPACE, BRTCONFIG.LOOT_SHEET_TO_USE_KEY)
+    const lootSheet = game.settings.get(MODULE.ns, BRTCONFIG.LOOT_SHEET_TO_USE_KEY)
     if (lootSheet in CONFIG.Actor.sheetClasses.npc) {
       await this.actor.setFlag('core', 'sheetClass', lootSheet);
     }
@@ -46,8 +46,13 @@ export class LootCreator {
     await this.actor.update({ 'data.currency': currencyData });
   }
 
+  /**
+   * 
+   * @param {boolean} stackSame Should same items be stacked together? Default = true
+   * @returns 
+   */
   async addItemsToActor (stackSame = true) {
-    const items = []
+    const items = [];
     for (const item of this.betterResults) {
       const newItem = await this._createLootItem(item, this.actor, stackSame);
       items.push(newItem);
@@ -60,29 +65,55 @@ export class LootCreator {
      * @param {object} item representation
      * @param {Actor} actor to which to add items to
      * @param {boolean} stackSame if true add quantity to an existing item of same name in the current actor
+     * @param {number} customLimit
      * @returns {Item} the create Item (foundry item)
      */
-  async _createLootItem (item, actor, stackSame = true) {
-    const itemData = await this.buildItemData(item)
-    const itemPrice = getProperty(itemData, BRTCONFIG.PRICE_PROPERTY_PATH) || 0
+  async _createLootItem (item, actor, stackSame = true, customLimit = 0) {
+    const newItemData = await this.buildItemData(item),
+          itemPrice = getProperty(newItemData, BRTCONFIG.PRICE_PROPERTY_PATH) || 0,
+          embeddedItems = [...actor.getEmbeddedCollection('Item').values()],
+          originalItem = embeddedItems.find(i => i.name === newItemData.name && itemPrice === getProperty(i.data, BRTCONFIG.PRICE_PROPERTY_PATH));
+    
     /** if the item is already owned by the actor (same name and same PRICE) */
-
-    const embeddedItems = [...actor.getEmbeddedCollection('Item').values()]
-    const sameItemOwnedAlready = embeddedItems.find(i => i.name === itemData.name && itemPrice === getProperty(i.data, BRTCONFIG.PRICE_PROPERTY_PATH));
-
-    if (sameItemOwnedAlready && stackSame) {
+    if (originalItem && stackSame) {
       /** add quantity to existing item */
-      const itemQuantity = getProperty(itemData, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1
-      const sameItemOwnedAlreadyQuantity = getProperty(sameItemOwnedAlready.data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1
-      const updateItem = { _id: sameItemOwnedAlready.id }
-      setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, +sameItemOwnedAlreadyQuantity + +itemQuantity)
-      await actor.updateEmbeddedDocuments('Item', [updateItem]);
+      const newItemQty = getProperty(newItemData, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1,
+            originalQty = getProperty(originalItem.data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1,
+            updateItem = { _id: originalItem.id },
+            newQty = this._handleLimitedQuantity(newItemQty, originalQty, customLimit);
 
-      return actor.items.get(sameItemOwnedAlready.id);
+      if (newQty != newItemQty){
+        setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, newQty);
+        await actor.updateEmbeddedDocuments('Item', [updateItem]);        
+      }
+      return actor.items.get(originalItem.id);
     } else {
       /** we create a new item if we don't own already */
-      return await actor.createEmbeddedDocuments('Item', [itemData]);
+      return await actor.createEmbeddedDocuments('Item', [newItemData]);
     }
+  }
+
+  /**
+   * 
+   * @param {number} currentQty Quantity of item we want to add
+   * @param {number} originalQty Quantity of the originalItem already in posession
+   * @param {number} customLimit A custom Limit 
+   * @returns 
+   */
+  _handleLimitedQuantity(currentQty, originalQty, customLimit = 0){
+    const newQty = Number(originalQty) + Number(currentQty);
+    
+    if (customLimit > 0 ){
+      // limit is bigger or equal to newQty
+      if(Number(customLimit) >= Number(newQty)){
+        return newQty;
+      }
+      //limit was reached, we stick to that limit
+      return customLimit;
+    }
+
+    //we don't care for the limit
+    return newQty;
   }
 
   /**
@@ -134,7 +165,7 @@ export class LootCreator {
       try {
         rolledValue = new Roll(cmd.arg).roll().total;
       } catch (error) {
-        continue
+        continue;
       }
       setProperty(itemData, `data.${cmd.command.toLowerCase()}`, rolledValue);
     }
@@ -144,13 +175,16 @@ export class LootCreator {
   /**
      *
      * @param {Token} token
+     * @param {Boolean} is the token passed as the token actor instead?
      */
-  async addCurrenciesToToken (token) {
+  async addCurrenciesToToken (token, isTokenActor = false) {
     // needed for base key set in the event that a token has no currency properties
     const currencyDataInitial = {cp: 0, ep: 0, gp: 0, pp: 0,sp: 0};
     let currencyData = currencyDataInitial;
 
-    if (token.data.actorData?.data?.currency) {
+    if(isTokenActor) {
+      currencyData = duplicate(token.data.data.currency);
+    } else if (token.data.actorData?.data?.currency) {
       currencyData = duplicate(token.data.actorData.data.currency);
     }
 
@@ -160,21 +194,24 @@ export class LootCreator {
       const amount = Number(currencyData[key] || 0) + Number(lootCurrency[key] || 0);
       currencyData[key] = amount;
     }
-    await token.update({ 'actorData.data.currency': currencyData })
+    await token.update({ 'actorData.data.currency': currencyData });
   }
 
   /**
      *
      * @param {token} token
      * @param {boolean} stackSame
+     * @param {boolean} isTokenActor - is the token already the token actor?
+     * @param {number} customLimit
      *
      * @returns {object[]} items
      */
-  async addItemsToToken (token, stackSame = true) {
-    const items = []
+  async addItemsToToken (token, stackSame = true, isTokenActor = false, customLimit = 0) {
+    const items = [];
     for (const item of this.betterResults) {
       // Create the item making sure to pass the token actor and not the base actor
-      const newItem = await this._createLootItem(item, token.actor, stackSame);
+      const targetActor = (isTokenActor)? token : token.actor;
+      const newItem = await this._createLootItem(item, targetActor, stackSame, customLimit);
       items.push(newItem);
     }
 

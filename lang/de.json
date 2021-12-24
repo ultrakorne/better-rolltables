@@ -1,48 +1,132 @@
 {
-    "BRT.TypeLabel": "`Better Table` Typ",
-    "BRT.TypeDefault": "Standard Tabelle",
-    "BRT.BetterTable": "`Better Table` Tabelle",
-    "BRT.TypeLoot": "Beute Tabelle (loot)",
-    "BRT.StoryLoot": "Story Tabelle",
-    "BRT.CurrencyLoot": "Währungsbeute",
-    "BRT.Currency.Label": "Währung:",
-    "BRT.CurrencyLootPlaceholder": "Komma separierte Formel(n) z.B.: 1d4[gp], (1d4+1)*10[sp]",
-    "BRT.LootActorName": "Beute zu Akteur hinzufügen",
-    "BRT.LootActorNamePlaceholder": "Wenn leer, wird immer ein neuer Akteur erzeugt",
-    "BRT.GenerateLoot.Button": " Beute generieren",
-    "BRT.Settings.LootSheet.Title": "Bogen der für generierte Beute genutzt wird",
-    "BRT.Settings.LootSheet.Description": "Du kannst einen alternativen Bogen für die Beuteerzeugung wählen.",
-    "BRT.Settings.SpellCompendium.Title": "Kompendium für zufällige Zauberrollen",
-    "BRT.Settings.SpellCompendium.Description": "Du kannst ein Kompendium wählen das für Zauber genutzt wenn zufällige Zauberschriftrollen erzeugt werden.",
-    "BRT.LootRollAmount": "Anzahl an Würfen",
-    "BRT.LootRollAmountPlaceholder" : "Mehrfach auf die Tabelle würfeln.",
-    "BRT.DrawResultPlural": "Zieht {amount} Ergebnisse aus {name}",
-    "BRT.DrawResultSingular": "Zieht {amount} Ergebnis aus {name}",
-    "BRT.DrawResultZero": "Würfle auf {name}",
-    "BRT.DrawReroll": "Reroll",
-    "BRT.Currency.Buttons.Share.Label": "Aufteilen",
-    "BRT.Currency.Shared.Label": "Aufgeteielt!",
-    "BRT.OpenRolltable": "Öffne Rolltable",
-    "BRT.Settings.RerollButtons.Title": "Show Reroll buttons",
-    "BRT.Settings.RerollButtons.Description": "Display a Reroll button on each result card of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected.",
-    "BRT.Settings.OpenButtons.Title": "Show Open buttons",
-    "BRT.Settings.OpenButtons.Description": "Display a open button on each result message of a roll on a rolltable (only for newly created cards). Work only on loot chat card or if condensed roll output is enabled. Default tables are not affected.",
-    "BRT.Settings.ShowWarningBeforeReroll.Title": "Confirm reroll ?",
-    "BRT.Settings.ShowWarningBeforeReroll.Description": "Show a confirm dialog before reroll message content.",
-    "BRT.Settings.UseCondensedBetterRoll.Title": "Zusammengefasste Ausgabe",
-    "BRT.Settings.UseCondensedBetterRoll.Description": "Wenn aktiviert werden bestimmte Werte mit einem Mengenangabe versehen um Platz zu sparen. Dies beschleunigt die Ergebnisse bei Ziehungen. Normale Rolltables sind nicht betroffen.",
-    "BRT.Settings.AddRollInRolltableContextMenu.Title": "Auf Rolltable würfeln Kontextmenü",
-    "BRT.Settings.AddRollInRolltableContextMenu.Description": "Erlaubt über das Kontextmenü auf einen Rolltable zu würfeln ohne diesen zu öffnen.",
-    "BRT.Settings.AddRollInCompediumContextMenu.Title": "auf Kompendium würfeln Kontextmenü",
-    "BRT.Settings.AddRollInCompediumContextMenu.Description": "Erlaubt über das Kontextmenü auf ein (nicht leeres) Kompendium zu würfeln ohne dieses zu öffnen.",
-    "BRT.Settings.RerollWarning.Title": "Reroll?",
-    "BRT.Settings.RerollWarning.Description": "Message content will be lost. Are you sure you want to reroll?",
-    "BRT.Settings.StickRolltableHeader.Title": "Stick rolltable header to top?",
-    "BRT.Settings.StickRolltableHeader.Description": "If enabled, roll table header will no more scroll with content.",
-    "BRT.Settings.RollTableFromJournal.Title": "Add roll button to tables in journal entries?",
-    "BRT.Settings.RollTableFromJournal.Description": "If enabled, a roll button is added to linked tables in journal entries.",
-    "BRT.Settings.ShareCurrencyButton.Title": "Show share currency button?",
-    "BRT.Settings.ShareCurrencyButton.Description": "Show a button on mesage to share currency (if any) (dnde only)",
-    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Title": "Always show generated loot to actor as message",
-    "BRT.Settings.AlwaysShowGeneratedLootAsMessage.Description": "If enabled, generated loot added to an actor is also displayed as a message."
+    "BRT": {
+        "api": {
+            "msg": {
+                "compendiumEmpty": "Compendium named {title} ({name}) is empty.`",
+                "compendiumNotFound": "Compendium << {name} >> not found.",
+                "generateRolltableFromCompendium": "Generate rolltable.",
+                "startRolltableGeneration": "Starting generation of rolltable for {title} ({name}) with {compendiumSize} entries.",
+                "rolltableGenerationFinished": "Rolltable generation for {title} ({name}) finished.",
+                "rollCompendiumAsRolltable": "Rolling compendium as rolltable."
+            }            
+        },
+        "Buttons": {
+            "GenerateLoot": "Beute generieren",
+            "Currency": {
+                "label": "Währung",
+                "Share": "Teilen",
+                "Shared": "Geteilt!"
+            },
+            "ShareCurrency": "Währung teilen",
+            "Reroll": {
+                "Title": "Zeige 'Neu Rollen' Schaltfläche",
+                "Description": "Zeigt einen Reroll-Button auf jeder Ergebniskarte eines Rolltabeln Wurfs an (nur für neu erstellte Karten). Wirkt nur mit Beute-Chat-Karten oder wenn die komprimierte Wurfausgabe aktiviert ist. Standardtabellen sind nicht betroffen."
+            },
+            "Open": {
+                "Title": "Zeige `Öffnen` Schaltfläche",
+                "Description": "Zeit in jeder Ergebniskarte eines Rolltabeln Wurfs eine Schaltfläche zum öffnen an (nur für neu erstellte Karten). Wirkt nur mit Beute-Chat-Karten oder wenn die komprimierte Wurfausgabe aktiviert ist. Standardtabellen sind nicht betroffen."
+            },
+            "Rolltable": {
+                "Configuration": {
+                    "Title": "Würfeltabellen Konfiguration",
+                    "Description": "konfiguration der Würfeltabellen"
+                }
+            }
+        },
+        "Formula": "Formel",
+        "Roll": "Würfeln",
+        "TypeLabel": "`Better Table` Typ",
+        "TypeDefault": "Standard Tabelle",
+        "BetterTable": "`Better Table` Tabelle",
+        "TypeLoot": "Beute Tabelle (loot)",
+        "StoryLoot": "Story Tabelle",
+        "CurrencyLoot": "Währungsbeute",
+        "CurrencyLootPlaceholder": "Komma separierte Formel(n) z.B.: 1d4[gp], (1d4+1)*10[sp]",
+        "LootActorName": "Beute zu Akteur hinzufügen",
+        "LootActorNamePlaceholder": "Wenn leer, wird immer ein neuer Akteur erzeugt",
+        "LootRollAmount": "Anzahl an Würfen",
+        "LootRollAmountPlaceholder" : "Mehrfach auf die Tabelle würfeln.",
+        "DrawResultPlural": "Zieht {amount} Ergebnisse aus {name}",
+        "DrawResultSingular": "Zieht {amount} Ergebnis aus {name}",
+        "DrawResultZero": "Würfle auf {name}",
+        "DrawReroll": "Reroll",
+        "OpenRolltable": "Öffne Würfeltabelle",
+        "Settings": {
+            "Module":{
+                "AdvancedSettings": {
+                    "Title": "Erweiterte Einstellungen",
+                    "Description": "Tiefergehende Einstellungen für die Würfeltabellen",
+
+                    "Menu": {
+                        "Base": {
+                            "Title": "Grundeinstellungen",
+                            "Description": " für BetterRolltables"
+                        },
+                        "UI": {
+                            "Title": "Integration",
+                            "Description": " mit der Foundry-UI"
+                        },
+                        "Loot": {
+                            "Title": "Beute",
+                            "Description": " für Beute (Loot) Charakterbogen"
+                        },
+                        "Tags": {
+                            "Title": "Tags",
+                            "Description": " für Tags an Würfeltabellen"
+                        }
+                    }
+                }
+            },
+            "LootSheet": {
+                "title": "Bogen für Beute",
+                "description": "Ein anderer Bogen kann individuell am Bogen eines Akteurs oder Tokens gesetzt werden."
+            },
+            "SpellCompendium": {
+                "Title": "Zauber Kompendium",
+                "Description": "You can specify a spell compendium and when a scroll is picked from a loot table (they need to have a specific name) a random spell is rolled from this compendium"
+            },
+            "ShowWarningBeforeReroll": {
+                "Title": "Neu rollen bestätigen?",
+                "Description": "Bestätigungsdialog vor dem neu rollen anzeigen?"
+            },
+            "UseCondensedBetterRoll": {
+                "Title": "komprimierte Wurfausgabe",
+                "Description": "Wenn diese Option aktiviert ist, wird dieselbe Ausgabe mit einem Multiplikator zusammengefasst, um Platz zu sparen. Diese Option kann Rolltable-Ziehungen beschleunigen. Standardtabellen sind nicht betroffen."
+            },            
+            "AddRollInRolltableContextMenu": {
+                "Title": "Würfeln über Kontextmenü",
+                "Description": "Fügt allen Würfeltabellen einen Kontextmenüeintrag hinzu der das Würfeln auf die Tabelle erlaubt."
+            },
+            "AddRollInCompediumContextMenu": {
+                "Title": "Würfeln auf Kompendium",
+                "Description": "Erlaubt das Würfeln auf ein (nicht leeres) Kompendium über das Kontextmenü"
+            },            
+            "RerollWarning": {
+                "Title": "Neu Würfeln?",
+                "Description": "Es wird neu gewürfelt, das bisherige Ergebnis geht verloren. Sind sie Sicher?"
+            },
+            "RollTableFromJournal": {
+                "Title": "Notizbücher erweitern",
+                "Description": "Würfeltabellen in Notizbucheinträge mit einer Schaltfläche zum würfeln erweitern."
+            },
+            "ShareCurrencyButton": {
+                "Title": "Währung teilen",
+                "Description": "Eine Schaltfläche in der Nachricht anzeigen, um die Währung zu teilen (falls vorhanden) (nur D&D5e)."
+            },
+            "AlwaysShowGeneratedLootAsMessage": {
+                "Title": "Benachrichtigung bei Beute",
+                "Description": "Wenn aktiviert, wird generierte Beute, die einem Aktuer hinzugefügt wurde, auch als Info Nachricht angezeigt."
+            },
+            "Tags": {
+                "Use": {
+                    "Title": "Tags verwenden",
+                    "Description": "Benutzerdefinierte Tags an Würfeltabellen verwenden."
+                },
+                "Defaults": {
+                    "Title": "Standard Tags",
+                    "Description": "Standard Tags die an jede bearbeitete Rolltable angehägt werden."
+                }
+            }
+        }    
+    }
 }

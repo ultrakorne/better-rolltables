@@ -1,4 +1,4 @@
-export const i18n = (key) => game.i18n && game.i18n.localize(key)
+export const i18n = (key) => game.i18n && game.i18n.localize(key);
 
 export function addRollModeToChatData (chatData, rollMode) {
   rollMode = rollMode ?? game.settings.get('core', 'rollMode') ;
@@ -84,7 +84,7 @@ export function getIconByEntityType(entityType) {
     case 'Actor': return 'fa-user'
     case 'Item': return 'fa-suitcase'
     case 'JournalEntry': return 'fa-book-open'
-    case 'Playlist': return 'fa-suitcase' // can't find correct icon 🙁
+    case 'Playlist': return 'fa-music'
     case 'Scene': return 'fa-map'
     case 'Macro': return 'fa-terminal'
     default: return ''

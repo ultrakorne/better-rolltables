@@ -53,7 +53,6 @@ class BetterRolltableHooks {
     if (game.user.isGM && VersionCheck.check(MODULE.ns)) {
       renderWelcomeScreen();
     }
-    await game.betterTables.updateSpellCache();
     
     /** Register Handlebar helpers **/
     /** checks if the first argument is equal to any of the subsequent arguments */
@@ -113,7 +112,9 @@ class BetterRolltableHooks {
       if (value == this.switch_value) {
         return options.fn(this)
       }
-    });    
+    });
+    
+    await game.betterTables.updateSpellCache();
   }
 
   static foundryInit() {

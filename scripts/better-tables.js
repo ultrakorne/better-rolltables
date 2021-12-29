@@ -187,16 +187,20 @@ export class BetterTables {
   }
 
   /**
-     * Update spell cache used for random spell scroll generation
-     * @returns {Promise<void>}
-     */
+   * Update spell cache used for random spell scroll generation
+   *
+   * @returns {Promise<void>}
+   */
   async updateSpellCache(pack) {
     if (game.user.isGM) {
-      const defaultPack = game.settings.get(MODULE.ns, BRTCONFIG.SPELL_COMPENDIUM_KEY);
-      if (!pack || pack === defaultPack) {
-        const spellCompendium = game.packs.get(defaultPack)
+      const defaultPack = game.settings.get(MODULE.ns, BRTCONFIG.SPELL_COMPENDIUM_KEY),
+            spellCompendium = game.packs.get(defaultPack);
+
+      if (!pack && spellCompendium || pack === defaultPack) {
         const spellCompendiumIndex = await spellCompendium.getIndex({ fields: ['data.level', 'img'] })
         this._spellCache = spellCompendiumIndex.filter(entry => entry.type === "spell").map(i => mergeObject(i, { collection: spellCompendium.collection }))
+      } else {
+        ui.notifications.error(MODULE.ns + `| Spell cache could not be initialized/updated.`);
       }
     }
   }

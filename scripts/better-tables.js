@@ -21,8 +21,8 @@ export class BetterTables {
   }
 
   /**
-   * 
-   * @param {*} tableEntity 
+   *
+   * @param {*} tableEntity
    */
   async generateLoot(tableEntity, options = {}) {
     const brtBuilder = new BRTBuilder(tableEntity),
@@ -45,11 +45,11 @@ export class BetterTables {
 
   /**
    * Roll a table an add the resulting loot to a given token.
-   * 
-   * @param {RollTable} tableEntity 
-   * @param {TokenDocument} token 
+   *
+   * @param {RollTable} tableEntity
+   * @param {TokenDocument} token
    * @param {options} object
-   * @returns 
+   * @returns
    */
   async addLootToSelectedToken(tableEntity, token = null, options = null) {
     let tokenstack = [];
@@ -147,7 +147,7 @@ export class BetterTables {
      * @param {string} compendiumName the name of the compendium to use for the table generation
      * @param {function(Document)} weightPredicate a function that returns a weight (number) that will be used
      * for the tableResult weight for that given entity. returning 0 will exclude the entity from appearing in the table
-     * 
+     *
      * @deprecated use api.createRolltableFromCompendium instead
      */
 
@@ -218,7 +218,7 @@ export class BetterTables {
         name: i18n('BRT.api.msg.generateRolltableFromCompendium'),
         icon: '<i class="fas fa-th-list"></i>',
         callback: li => {
-          api.createTableFromCompendium(li.data('pack'))
+          api.createRolltableFromCompendium(li.data('pack'))
         }
       })
 
@@ -262,11 +262,11 @@ export class BetterTables {
 
   /**
   * Create card content from compendium content
-  * 
+  *
   * @param {String} compendium compendium name
-  * 
+  *
   * @returns {Promise<{flavor: string, sound: string, user: *, content: *}>}
-  * 
+  *
   * @deprecated use api.rollCompendiumAsRolltable instead
   */
   static async rollCompendiumAsRolltable(compendium) {

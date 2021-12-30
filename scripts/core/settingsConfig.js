@@ -21,7 +21,7 @@ export class Settings {
             defaultSpellCompendium = 'dnd5e.spells';
 
         if (game.system.id === 'pf2e') {
-            defaultLootSheet = 'pf2e.LootSheetNPC';
+            defaultLootSheet = 'pf2e.LootSheetPF2e';
             defaultSpellCompendium = 'pf2e.spells-srd';
 
             BRTCONFIG.QUANTITY_PROPERTY_PATH = 'data.quantity.value';
@@ -33,7 +33,7 @@ export class Settings {
         }
 
         if (game.system.id === 'pf1') {
-            defaultLootSheet = 'pf1.LootSheetNPC';
+            defaultLootSheet = 'PF1.ActorSheetPFNPCLoot';
             defaultSpellCompendium = 'pf1.spells';
 
             BRTCONFIG.QUANTITY_PROPERTY_PATH = 'data.quantity';

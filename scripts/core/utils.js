@@ -17,6 +17,13 @@ export function addRollModeToChatData (chatData, rollMode) {
   }
 }
 
+/**
+ *
+ * @param {string} compendiumName
+ * @param {string} entityName
+ *
+ * @returns {Item}
+ */
 export async function findInCompendiumByName (compendiumName, entityName) {
   const compendium = game.packs.get(compendiumName)
   if (compendium) {

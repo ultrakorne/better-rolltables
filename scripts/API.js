@@ -9,26 +9,19 @@ import { getRandomItemFromCompendium } from './core/utils.js';
  * Create a new API class and export it as default
  */
 class API {
-    constructor(version, config) {
-        this.version = version;
-        this.config = config;
-        this.endpoints = {};
-        this.methods = {};
-    }
-
     /**
      * Get better rolltable tags from settings
-     * 
+     *
      */
-    getTags() {
+    static getTags() {
         return game.settings.get(MODULE.ns, BRTCONFIG.TAGS.USE);
     }
 
     /**
-   * 
-   * @param {*} tableEntity 
-   */
-    async generateLoot(tableEntity, options = {}) {
+     *
+     * @param {*} tableEntity
+     */
+    static async generateLoot(tableEntity, options = {}) {
         const builder = new BRTBuilder(tableEntity),
             results = await builder.betterRoll(),
             br = new BetterResults(results),
@@ -77,28 +70,28 @@ class API {
     }
 
     /**
-     * @module BetterRolltables.API.createTableFromCompendium
-     * 
+     * @module BetterRolltables.API.createRolltableFromCompendium
+     *
      * @description Create a new RollTable by extracting entries from a compendium.
      *
-     * @version 1.0.0
+     * @version 1.0.1
      * @since 1.8.7
-     * 
+     *
      * @param {string} compendiumName the name of the compendium to use for the table generation
      * @param {string} tableName the name of the table entity that will be created
      * @param {function(Document)} weightPredicate a function that returns a weight (number) that will be used
      * for the tableResult weight for that given entity. returning 0 will exclude the entity from appearing in the table
-     * 
+     *
      * @returns {Promise<Document>} the table entity that was created
      */
-    async createRolltableFromCompendium(
+    static async createRolltableFromCompendium(
         compendiumName,
         tableName = compendiumName + ' RollTable',
         { weightPredicate = null } = {}
     ) {
         const compendium = game.packs.get(compendiumName);
-        let msg = { name: compendiumName, tableName: tableName };
-        api_msg = MODULE.ns + '.api | ';
+        let msg = { name: compendiumName, tableName: tableName },
+            api_msg = MODULE.ns + '.api | ';
 
         if (compendium === undefined) {
             api.msg += game.i18n.format('BRT.api.msg.compendiumNotFound', msg);

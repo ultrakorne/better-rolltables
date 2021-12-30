@@ -2,7 +2,7 @@ import { MODULE , BRTCONFIG } from './config.js';
 import { i18n } from './utils.js';
 
 const WORLD = 'world',
-      GROUP_DEFAULT = 'defaults',      
+      GROUP_DEFAULT = 'defaults',
       GROUP_UI = 'UI',
       GROUP_LOOT = 'Loot',
       GROUP_TAGS = 'Tags';
@@ -21,7 +21,7 @@ export class Settings {
             defaultSpellCompendium = 'dnd5e.spells';
 
         if (game.system.id === 'pf2e') {
-            defaultLootSheet = 'pf2e.LootSheetNPC';
+            defaultLootSheet = 'pf2e.LootSheetPF2e';
             defaultSpellCompendium = 'pf2e.spells-srd';
 
             BRTCONFIG.QUANTITY_PROPERTY_PATH = 'data.quantity.value';
@@ -29,6 +29,17 @@ export class Settings {
             BRTCONFIG.SPELL_LEVEL_PATH = 'data.level.value';
             BRTCONFIG.ITEM_LOOT_TYPE = 'treasure';
             // pf2e scroll is "Scroll of 1st-level Spell"
+            BRTCONFIG.SCROLL_REGEX = /\s*Scroll\s*of\s*(\d+)/gi;
+        }
+
+        if (game.system.id === 'pf1') {
+            defaultLootSheet = 'PF1.ActorSheetPFNPCLoot';
+            defaultSpellCompendium = 'pf1.spells';
+
+            BRTCONFIG.QUANTITY_PROPERTY_PATH = 'data.quantity';
+            BRTCONFIG.PRICE_PROPERTY_PATH = 'data.price';
+            BRTCONFIG.SPELL_LEVEL_PATH = 'data.level';
+            BRTCONFIG.ITEM_LOOT_TYPE = 'loot';
             BRTCONFIG.SCROLL_REGEX = /\s*Scroll\s*of\s*(\d+)/gi;
         }
 
@@ -96,7 +107,7 @@ export class Settings {
             config: false,
             default: false,
             type: Boolean
-        });        
+        });
 
         game.settings.register(MODULE.ns, BRTCONFIG.SHOW_OPEN_BUTTONS, {
             name: i18n('BRT.Buttons.Open.Title'),
@@ -165,7 +176,7 @@ export class Settings {
     }
 
     /**
-     * 
+     *
      */
     static _registerTagsSettings() {
         game.settings.register(MODULE.ns, BRTCONFIG.TAGS.USE, {
@@ -210,7 +221,7 @@ class BetterRolltableSettingsConfig extends FormApplication {
             `${MODULE.path}/templates/partials/settings.hbs`,
             `${MODULE.path}/templates/partials/menu.hbs`,
         ]);
-        
+
         return this;
     }
 
@@ -277,7 +288,7 @@ class BetterRolltableSettingsConfig extends FormApplication {
         formData = expandObject(formData)[MODULE.ns];
         for(let [k,v] of Object.entries(formData)){
           await game.settings.set(MODULE.ns, k, v);
-        } 
+        }
     }
 
     /* -------------------------------------------- */
@@ -338,13 +349,13 @@ class BetterRolltableSettingsConfig extends FormApplication {
                     i18nName: i18n("BRT.Settings.Module.AdvancedSettings.Menu.UI.Title"),
                     class: "fas fa-cog", menus: [], settings: []
                 },
-                { 
+                {
                     name: GROUP_LOOT,
                     description: i18n("BRT.Settings.Module.AdvancedSettings.Menu.Loot.Description"),
                     i18nName: i18n("BRT.Settings.Module.AdvancedSettings.Menu.Loot.Title"),
                     class: "fas fa-cog", menus: [], settings: []
                 },
-                { 
+                {
                     name: GROUP_TAGS,
                     description: i18n("BRT.Settings.Module.AdvancedSettings.Menu.Tags.Description"),
                     i18nName: i18n("BRT.Settings.Module.AdvancedSettings.Menu.Tags.Title"),

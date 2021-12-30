@@ -1,35 +1,41 @@
 import { findInCompendiumById } from '../core/utils.js'
+import { MODULE, BRTCONFIG } from '../core/config.js'
 
 export class LootManipulator {
+
+  /**
+   *
+   * @param {number} level
+   *
+   * @returns {Item}
+   */
   async _getRandomSpell (level) {
-    const spells = game.betterTables.getSpellCache().filter(spell => spell.data.level === level)
-    const randomIndex = Math.floor(Math.random() * spells.length)
-    const spell = spells[randomIndex]
+    const spells = game.betterTables.getSpellCache().filter(spell => BRTCONFIG.SPELL_LEVEL_PATH === level),
+          spell = spells[Math.floor(Math.random() * spells.length)]
     return findInCompendiumById(spell.collection, spell._id)
   }
 
+  /**
+   *
+   * @param {*} itemData
+   *
+   * @returns
+   */
   async preItemCreationDataManipulation (itemData) {
-    // we duplicate item now in order to modify it
-    itemData = duplicate(itemData)
+    const match = BRTCONFIG.SCROLL_REGEX.exec(itemData.name);
 
-    // const match = BRTCONFIG.SCROLL_REGEX.exec(itemData.name);
-    let match = /\s*Spell\s*Scroll\s*(\d+|cantrip)/gi.exec(itemData.name)
-
-    if (!match) {
-      // pf2e temporary FIXME add this in a proper config
-      match = /\s*Scroll\s*of\s*(\d+)/gi.exec(itemData.name)
-    }
+    itemData = duplicate(itemData);
 
     if (!match) {
       return itemData
     }
 
-    // if its a scorll then open compendium
+    // If it is a scroll then open the compendium
     const level = match[1].toLowerCase() === 'cantrip' ? 0 : parseInt(match[1])
     const itemEntity = await this._getRandomSpell(level)
 
     if (!itemEntity) {
-      ui.notifications.warn(`no spell of level ${level} found in compendium  ${itemEntity.collection} `)
+      ui.notifications.warn(MODULE.ns + ` | No spell of level ${level} found in compendium  ${itemEntity.collection} `)
       return itemData
     }
 

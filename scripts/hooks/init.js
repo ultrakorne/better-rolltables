@@ -11,14 +11,14 @@ import { getIconByEntityType } from '../core/utils.js';
 /**
  * @module BetterRollTables.BetterRolltableHooks
  * @typicalname BetterRolltableHooks
- * 
+ *
  * @version 1.0.0
- * 
+ *
  */
 class BetterRolltableHooks {
 
   /**
-  * Hooks on game hooks and attaches methods 
+  * Hooks on game hooks and attaches methods
   */
   static init() {
     Hooks.once("init", BetterRolltableHooks.foundryInit);
@@ -29,11 +29,17 @@ class BetterRolltableHooks {
   }
 
   static foundrySetup() {
-    const moduleData = game.modules.get(MODULE.ns);
-    moduleData.public = { API };
+      const moduleData = game.modules.get(MODULE.ns);
 
-    // Freeze the public API so it can't be modified.
-    Object.freeze(moduleData.public);
+      /**
+       * @type {API}
+       */
+      moduleData.public = {
+          API
+      };
+
+      // Freeze the public API so it can't be modified.
+      Object.freeze(moduleData.public);
   }
 
   static async foundryReady() {
@@ -53,7 +59,7 @@ class BetterRolltableHooks {
     if (game.user.isGM && VersionCheck.check(MODULE.ns)) {
       renderWelcomeScreen();
     }
-    
+
     /** Register Handlebar helpers **/
     /** checks if the first argument is equal to any of the subsequent arguments */
     Handlebars.registerHelper('ifcontain', function () {
@@ -63,7 +69,7 @@ class BetterRolltableHooks {
       }
       return options.inverse(this)
     });
-    
+
     /** checks if the first argument is greater than the second argument */
     Handlebars.registerHelper('ifgt', function (a, b, options) {
       return a > b ? options.fn(this) : options.inverse(this)
@@ -113,7 +119,7 @@ class BetterRolltableHooks {
         return options.fn(this)
       }
     });
-    
+
     await game.betterTables.updateSpellCache();
   }
 
@@ -123,7 +129,7 @@ class BetterRolltableHooks {
 
   /**
    * Register with AIP
-   * 
+   *
    * Register fields with autocomplete inline properties
    */
   static async onAIPSetup() {

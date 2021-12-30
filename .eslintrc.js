@@ -38,5 +38,13 @@ module.exports = {
     Application: 'readonly'
   },
   rules: {
+    'no-unused-vars': ['error'],
+    'one-var': [2, 'consecutive'],
+    'comma-dangle': ['error', 'never'],
+    semi: [2, 'always'],
+    'semi-spacing': 2,
+    'no-extra-semi': 2,
+    'no-unexpected-multiline': 2,
+    indent: [4, 'error']
   }
 }

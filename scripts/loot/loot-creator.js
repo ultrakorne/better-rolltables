@@ -47,9 +47,9 @@ export class LootCreator {
   }
 
   /**
-   * 
+   *
    * @param {boolean} stackSame Should same items be stacked together? Default = true
-   * @returns 
+   * @returns
    */
   async addItemsToActor (stackSame = true) {
     const items = [];
@@ -73,7 +73,7 @@ export class LootCreator {
           itemPrice = getProperty(newItemData, BRTCONFIG.PRICE_PROPERTY_PATH) || 0,
           embeddedItems = [...actor.getEmbeddedCollection('Item').values()],
           originalItem = embeddedItems.find(i => i.name === newItemData.name && itemPrice === getProperty(i.data, BRTCONFIG.PRICE_PROPERTY_PATH));
-    
+
     /** if the item is already owned by the actor (same name and same PRICE) */
     if (originalItem && stackSame) {
       /** add quantity to existing item */
@@ -84,7 +84,7 @@ export class LootCreator {
 
       if (newQty != newItemQty){
         setProperty(updateItem, BRTCONFIG.QUANTITY_PROPERTY_PATH, newQty);
-        await actor.updateEmbeddedDocuments('Item', [updateItem]);        
+        await actor.updateEmbeddedDocuments('Item', [updateItem]);
       }
       return actor.items.get(originalItem.id);
     } else {
@@ -94,15 +94,15 @@ export class LootCreator {
   }
 
   /**
-   * 
+   *
    * @param {number} currentQty Quantity of item we want to add
    * @param {number} originalQty Quantity of the originalItem already in posession
-   * @param {number} customLimit A custom Limit 
-   * @returns 
+   * @param {number} customLimit A custom Limit
+   * @returns
    */
   _handleLimitedQuantity(currentQty, originalQty, customLimit = 0){
     const newQty = Number(originalQty) + Number(currentQty);
-    
+
     if (customLimit > 0 ){
       // limit is bigger or equal to newQty
       if(Number(customLimit) >= Number(newQty)){
@@ -122,25 +122,45 @@ export class LootCreator {
      * @returns
      */
   async buildItemData (item) {
-    let itemData;
-
+    let itemData = {},
+      existingItem = false;
     /** Try first to load item from compendium */
     if (item.collection) {
-      itemData = await getItemFromCompendium(item);
+      existingItem = await getItemFromCompendium(item);
     }
 
     /** Try first to load item from item list */
-    if (!itemData) {
+    if (!existingItem) {
       /** if an item with this name exist we load that item data, otherwise we create a new one */
-      const itemEntity = game.items.getName(item.text);
-      if (itemEntity) {
-        itemData = duplicate(itemEntity.data);
+      existingItem = game.items.getName(item.text);
+      if (existingItem) {
+        itemData = duplicate(existingItem.data);
       }
     }
 
+    const itemConversions = {
+      Actor: {
+        text: `${item.text} Portrait`,
+        img: existingItem?.img || "icons/svg/mystery-man.svg"
+      },
+      Scene: {
+        text: 'Map of '+ existingItem?.data?.name,
+        img: existingItem?.data?.thumb || "icons/svg/direction.svg",
+        price: new Roll('1d20 + 10').roll().total || 1
+      }
+    };
+
+    const convert = itemConversions[existingItem.entity] ?? false;
     /** Create item from text since the item does not exist */
-    if (!itemData) {
-      itemData = { name: item.text, type: BRTCONFIG.ITEM_LOOT_TYPE, img: item.img }; // "icons/svg/mystery-man.svg"
+    const createNewItem = !itemData || convert;
+
+    if (createNewItem) {
+      const name = convert?.text || item.text,
+        type = BRTCONFIG.ITEM_LOOT_TYPE,
+        img = convert?.img || item.img,
+        price = convert?.price || item.price || 0;
+
+      itemData = { name: name, type, img: img, data: { price: price }}; // "icons/svg/mystery-man.svg"
     }
 
     if (Object.getOwnPropertyDescriptor(item, 'commands') && item.commands) {
@@ -174,7 +194,7 @@ export class LootCreator {
 
   /**
      *
-     * @param {Token} token
+     * @param {Token|Actor} token
      * @param {Boolean} is the token passed as the token actor instead?
      */
   async addCurrenciesToToken (token, isTokenActor = false) {
@@ -194,7 +214,13 @@ export class LootCreator {
       const amount = Number(currencyData[key] || 0) + Number(lootCurrency[key] || 0);
       currencyData[key] = amount;
     }
-    await token.update({ 'actorData.data.currency': currencyData });
+
+    if(isTokenActor) {
+      // @type {Actor}
+      return await token.update({'actorData.data.currency': currencyData});
+    } else {
+      return await token.actor.update({'data.currency': currencyData});
+    }
   }
 
   /**

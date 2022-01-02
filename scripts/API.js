@@ -18,6 +18,45 @@ class API {
     }
 
     /**
+     * Roll a table an add the resulting loot to a given token.
+     *
+     * @param {RollTable} tableEntity
+     * @param {TokenDocument} token
+     * @param {options} object
+     * @returns
+     */
+    async addLootToSelectedToken(tableEntity, token = null, options = null) {
+    let tokenstack = [];
+    const isTokenActor = (options && options?.isTokenActor),
+      stackSame = (options && options?.stackSame) ? options.stackSame : true,
+      customRoll = (options && options?.customRole) ? options.customRole : undefined,
+      itemLimit = (options && options?.itemLimit) ? Number(options.itemLimit) : 0;
+
+    if (null == token && (canvas.tokens.controlled.length === 0)) {
+      return ui.notifications.error('Please select a token first');
+    } else {
+      tokenstack = (token) ? (token.length >= 0) ? token : [token] : canvas.tokens.controlled;
+    }
+
+    ui.notifications.info(MODULE.ns + ' | API | Loot generation started.');
+
+    const brtBuilder = new BRTBuilder(tableEntity);
+
+    for (const token of tokenstack) {
+      const results = await brtBuilder.betterRoll(customRoll);
+      const br = new BetterResults(results);
+      const betterResults = await br.buildResults(tableEntity);
+      const currencyData = br.getCurrencyData();
+      const lootCreator = new LootCreator(betterResults, currencyData);
+
+      await lootCreator.addCurrenciesToToken(token, isTokenActor);
+      await lootCreator.addItemsToToken(token, stackSame, isTokenActor, itemLimit);
+    }
+
+    return ui.notifications.info(MODULE.ns + ' | API | Loot generation complete.');
+  }
+
+    /**
      *
      * @param {*} tableEntity
      */

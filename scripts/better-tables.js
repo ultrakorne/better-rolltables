@@ -333,7 +333,7 @@ export class BetterTables {
 
     if (game.settings.get(MODULE.ns, BRTCONFIG.SHOW_REROLL_BUTTONS)) {
       // reroll button
-      const rerollButton = $(`<a class="roll-table-reroll-button" title="${game.i18n('BRT.DrawReroll')}">`).append("<i class='fas fa-dice-d20'></i>")
+      const rerollButton = $(`<a class="roll-table-reroll-button" title="${game.i18n.localize('BRT.DrawReroll')}">`).append("<i class='fas fa-dice-d20'></i>")
       rerollButton.click(async () => {
         let cardContent
         if (pack && !id) {
@@ -358,7 +358,7 @@ export class BetterTables {
       && game.settings.get(MODULE.ns, BRTCONFIG.SHOW_CURRENCY_SHARE_BUTTON)
       && (message.data.flags?.betterTables?.loot.currency && Object.keys(message.data.flags.betterTables.loot.currency).length > 0)) {
       // Currency share button
-      const currencyShareButton = $(`<a class="roll-table-share-currencies" title="${game.i18n('BRT.Currency.Buttons.Share.Label')}">`).append("<i class='fas fa-coins'></i>")
+      const currencyShareButton = $(`<a class="roll-table-share-currencies" title="${game.i18n.localize('BRT.Currency.Buttons.Share.Label')}">`).append("<i class='fas fa-coins'></i>")
       currencyShareButton.click(async () => BetterTables._toggleCurrenciesShareSection(message, html))
       $(html).find('.message-delete').before(currencyShareButton)
       const shareButton = html[0].querySelector("button.brt-share-currencies-button")
@@ -376,7 +376,7 @@ export class BetterTables {
         document = game.tables.get(id)
       }
       if (document) {
-        const openLink = $(`<a class="roll-table-open-table" title="${game.i18n('BRT.OpenRolltable')}">`).append("<i class='fas fa-th-list'></i>")
+        const openLink = $(`<a class="roll-table-open-table" title="${game.i18n.localize('BRT.OpenRolltable')}">`).append("<i class='fas fa-th-list'></i>")
         if (id) openLink.data('id', id)
         if (pack) openLink.data('pack', pack)
         openLink.click(async () => document.sheet.render(true))
@@ -426,7 +426,7 @@ export class BetterTables {
         const id = $(link).data('id')
         const rolltable = game.tables.get(id)
 
-        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
+        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
           .click(async () => {
             await game.betterTables.generateChatLoot(rolltable)
           })
@@ -443,7 +443,7 @@ export class BetterTables {
         const document = await pack.getDocument(id)
         if (!document || document.documentName !== 'RollTable') return
 
-        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
+        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
           .click(async () => {
             await game.betterTables.generateChatLoot(document)
           })
@@ -476,8 +476,8 @@ export class BetterTables {
     if (game.user.isGM) {
       if (!options.force && game.settings.get(MODULE.ns, BRTCONFIG.SHOW_WARNING_BEFORE_REROLL)) {
         Dialog.confirm({
-          title: game.i18n('BRT.Settings.RerollWarning.Title'),
-          content: game.i18n('BRT.Settings.RerollWarning.Description'),
+          title: game.i18n.localize('BRT.Settings.RerollWarning.Title'),
+          content: game.i18n.localize('BRT.Settings.RerollWarning.Description'),
           yes: () => BetterTables.updateChatMessage(message, content, { 'force': true }),
           defaultYes: false
         })
@@ -498,7 +498,7 @@ export class BetterTables {
         const id = $(link).data('id')
         const rolltable = game.tables.get(id)
 
-        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
+        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
           .click(async () => {
             await game.betterTables.generateChatLoot(rolltable)
           })
@@ -515,7 +515,7 @@ export class BetterTables {
         const document = await pack.getDocument(id)
         if (!document || document.documentName !== 'RollTable') return
 
-        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
+        const rollNode = $(`<a class="roll-table-roll-link" title="${game.i18n.localize('BRT.DrawReroll')}"><i class="fas fa-dice-d20"></i></a>`)
           .click(async () => {
             await game.betterTables.generateChatLoot(document)
           })

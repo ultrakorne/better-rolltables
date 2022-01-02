@@ -127,18 +127,14 @@ export class LootCreator {
     /** Try first to load item from compendium */
     if (item.collection) {
       existingItem = await getItemFromCompendium(item);
-      itemData = duplicate(existingItem.data);
-      itemData.type =  BRTCONFIG.ITEM_LOOT_TYPE;
-    }
-
-    /** Try first to load item from item list */
-    if (!existingItem) {
+    } else {
       /** if an item with this name exist we load that item data, otherwise we create a new one */
       existingItem = game.items.getName(item.text);
-      if (existingItem) {
-        itemData = duplicate(existingItem.data);
-        itemData.type =  BRTCONFIG.ITEM_LOOT_TYPE;
-      }
+    }
+
+    if (existingItem) {
+      itemData = duplicate(existingItem.data);
+      itemData.type =  BRTCONFIG.ITEM_LOOT_TYPE;
     }
 
     const itemConversions = {
@@ -153,7 +149,7 @@ export class LootCreator {
       }
     };
 
-    const convert = itemConversions[existingItem.entity] ?? false;
+    const convert = itemConversions[existingItem.documentName] ?? false;
     /** Create item from text since the item does not exist */
     const createNewItem = !itemData || convert;
 

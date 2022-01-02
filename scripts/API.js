@@ -25,7 +25,7 @@ class API {
      * @param {options} object
      * @returns
      */
-    async addLootToSelectedToken(tableEntity, token = null, options = null) {
+    static async addLootToSelectedToken(tableEntity, token = null, options = null) {
     let tokenstack = [];
     const isTokenActor = (options && options?.isTokenActor),
       stackSame = (options && options?.stackSame) ? options.stackSame : true,

@@ -127,6 +127,8 @@ export class LootCreator {
     /** Try first to load item from compendium */
     if (item.collection) {
       existingItem = await getItemFromCompendium(item);
+      itemData = duplicate(existingItem.data);
+      itemData.type =  BRTCONFIG.ITEM_LOOT_TYPE;
     }
 
     /** Try first to load item from item list */
@@ -135,6 +137,7 @@ export class LootCreator {
       existingItem = game.items.getName(item.text);
       if (existingItem) {
         itemData = duplicate(existingItem.data);
+        itemData.type =  BRTCONFIG.ITEM_LOOT_TYPE;
       }
     }
 
@@ -155,10 +158,10 @@ export class LootCreator {
     const createNewItem = !itemData || convert;
 
     if (createNewItem) {
-      const name = convert?.text || item.text,
-        type = BRTCONFIG.ITEM_LOOT_TYPE,
-        img = convert?.img || item.img,
-        price = convert?.price || item.price || 0;
+      const name = convert ? convert?.text : item.text,
+        type =  BRTCONFIG.ITEM_LOOT_TYPE,
+        img = convert ?  convert?.img : item.img,
+        price = convert ? convert?.price : item.price || 0;
 
       itemData = { name: name, type, img: img, data: { price: price }}; // "icons/svg/mystery-man.svg"
     }

@@ -10,7 +10,7 @@ export class LootManipulator {
    * @returns {Item}
    */
   async _getRandomSpell (level) {
-    const spells = game.betterTables.getSpellCache().filter(spell => BRTCONFIG.SPELL_LEVEL_PATH === level),
+    const spells = game.betterTables.getSpellCache().filter(spell => getProperty(spell,BRTCONFIG.SPELL_LEVEL_PATH) === level),
           spell = spells[Math.floor(Math.random() * spells.length)]
     return findInCompendiumById(spell.collection, spell._id)
   }

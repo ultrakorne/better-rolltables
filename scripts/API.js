@@ -8,7 +8,7 @@ import { getRandomItemFromCompendium } from './core/utils.js';
 /**
  * Create a new API class and export it as default
  */
-class API {
+export class API {
     /**
      * Get better rolltable tags from settings
      *
@@ -171,5 +171,3 @@ class API {
             });
     }
 }
-
-export { API };

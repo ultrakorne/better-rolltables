@@ -31,8 +31,9 @@ export async function findInCompendiumByName (compendiumName, entityName) {
     if (entry) {
       return await compendium.getDocument(entry._id)
     }
-  } else {
+  } else {    
     switch (compendiumName) {
+
       case 'RollTable': return game.tables.getName(entityName)
       case 'Actor': return game.actors.getName(entityName)
       case 'Item': return game.items.getName(entityName)

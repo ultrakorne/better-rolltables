@@ -37,12 +37,11 @@ export class LootCreator {
     const currencyData = duplicate(this.actor.data.data.currency);
     const lootCurrency = this.currencyData;
 
-    for (const key in lootCurrency) {
-      if (Object.getOwnPropertyDescriptor(currencyData, key)) {
-        const amount = Number(currencyData[key].value || 0) + Number(lootCurrency[key]);
-        currencyData[key] = { value: amount.toString() };
-      }
+    for (const key in currencyData) {
+      const amount = Number(currencyData[key] || 0) + Number(lootCurrency[key] || 0);
+      currencyData[key] = amount;
     }
+
     await this.actor.update({ 'data.currency': currencyData });
   }
 

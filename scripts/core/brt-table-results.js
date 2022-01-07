@@ -164,7 +164,7 @@ export class BetterResults {
      * @returns
      */
   async _generateCurrency (currencyString) {
-    const currenciesToAdd = {}
+    const currenciesToAdd = {};
     if (currencyString) {
       const currenciesPieces = currencyString.split(',')
       for (const currency of currenciesPieces) {

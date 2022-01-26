@@ -21,12 +21,12 @@ export class BetterRT {
       selectedTableType = tableEntity.getFlag(MODULE.ns, BRTCONFIG.TABLE_TYPE_KEY) || BRTCONFIG.TABLE_TYPE_NONE,
       app = document.querySelector(`[data-appid="${rollTableConfig.appId}"]`),
       tableViewClass = app.getElementsByClassName(tableClassName)[0],
-      headerElement = document.createElement('header'),      
+      headerElement = document.createElement('header'),
       brtData = duplicate(tableEntity.data.flags);
 
     headerElement.classList.add('configuration');
     brtData.disabled = !rollTable.editable;
-    
+
     let renderedExtraConfig = await renderTemplate('modules/better-rolltables/templates/select-table-type.hbs', brtData);
     headerElement.insertAdjacentHTML('beforeend', renderedExtraConfig);
 
@@ -88,7 +88,7 @@ export class BetterRT {
           const toggleIconElement = e.currentTarget.querySelector('.toggleicon');
           e.currentTarget.nextElementSibling.classList.toggle('brt-hidden');
           ['fa-expand-alt','fa-compress-alt'].map(c => toggleIconElement.classList.toggle(c));
-        });  
+        });
       });
     }
   }
@@ -141,7 +141,7 @@ export class BetterRT {
         DOMInput,
         DOMHiddenInput = document.querySelector(dataCarrier),
         arrayOfList = listOfTags || DOMHiddenInput.value.split(',').filter(tag => tag !== "");
-  
+
     function DOMCreate() {
       const ul = document.createElement('ul'),
             //li = document.createElement('li'),
@@ -151,11 +151,11 @@ export class BetterRT {
       DOMList = DOMParent.firstElementChild;
       DOMInput = DOMParent.lastElementChild;
     }
-  
+
     function DOMRender() {
-      // clear the entire <li> inside <ul> 
+      // clear the entire <li> inside <ul>
       DOMList.innerHTML = '';
-      
+
       // render each <li> to <ul>
       arrayOfList.forEach(function (currentValue, index) {
         var li = document.createElement('li');
@@ -170,14 +170,14 @@ export class BetterRT {
         DOMList.appendChild(li);
       });
     }
-  
+
     function onKeyUp() {
       DOMInput.addEventListener('keyup', function (event) {
         event.preventDefault();
         const text = this.value.trim(),
               sepperator = ',',
-              keycodes = [13,32]; 
-        
+              keycodes = [13,32];
+
         if (text.includes(sepperator) || keycodes.includes(event.keyCode)) {
           const inputText = text.replace(sepperator, '');
           // check if empty text
@@ -190,22 +190,22 @@ export class BetterRT {
         } else {
           return;
         }
-  
+
         DOMRender();
       });
     }
-  
+
     function onDelete(id) {
       arrayOfList = arrayOfList.filter(function (currentValue, index) {
         if (index == id) {
           return false;
         }
-  
+
         return currentValue;
       });
       DOMRender();
     }
-  
+
     DOMCreate();
     DOMRender();
     onKeyUp();
@@ -231,7 +231,7 @@ export class BetterRT {
      */
   static async showGenerateLootButton(htmlElement, tableEntity) {
     const generateLootBtn = document.createElement('button');
-    
+
     generateLootBtn.setAttribute('class', 'generate');
     generateLootBtn.setAttribute('type', 'button');
 

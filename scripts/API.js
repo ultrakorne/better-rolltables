@@ -8,7 +8,7 @@ import { getRandomItemFromCompendium } from './core/utils.js';
 /**
  * Create a new API class and export it as default
  */
-class API {
+export class API {
     /**
      * Get better rolltable tags from settings
      *
@@ -25,40 +25,43 @@ class API {
      * @param {options} object
      * @returns
      */
-    async addLootToSelectedToken(tableEntity, token = null, options = null) {
-    let tokenstack = [];
-    const isTokenActor = (options && options?.isTokenActor),
-      stackSame = (options && options?.stackSame) ? options.stackSame : true,
-      customRoll = (options && options?.customRole) ? options.customRole : undefined,
-      itemLimit = (options && options?.itemLimit) ? Number(options.itemLimit) : 0;
+    static async addLootToSelectedToken(tableEntity, token = null, options = null) {
+        let tokenstack = [];
+        const isTokenActor = (options && options?.isTokenActor),
+            stackSame = (options && options?.stackSame) ? options.stackSame : true,
+            customRoll = (options && options?.customRole) ? options.customRole : undefined,
+            itemLimit = (options && options?.itemLimit) ? Number(options.itemLimit) : 0,
+            verboseCall = options.verbose ?? false;
 
-    if (null == token && (canvas.tokens.controlled.length === 0)) {
-      return ui.notifications.error('Please select a token first');
-    } else {
-      tokenstack = (token) ? (token.length >= 0) ? token : [token] : canvas.tokens.controlled;
+        if (null == token && (canvas.tokens.controlled.length === 0)) {
+            return ui.notifications.error('Please select a token first');
+        } else {
+            tokenstack = (token) ? (token.length >= 0) ? token : [token] : canvas.tokens.controlled;
+        }
+
+        if (verboseCall) ui.notifications.info(MODULE.ns + ' | API | Loot generation started.');
+
+        const brtBuilder = new BRTBuilder(tableEntity);
+
+        for (const token of tokenstack) {
+            const results = await brtBuilder.betterRoll(customRoll);
+            const br = new BetterResults(results);
+            const betterResults = await br.buildResults(tableEntity);
+            const currencyData = br.getCurrencyData();
+            const lootCreator = new LootCreator(betterResults, currencyData);
+
+            await lootCreator.addCurrenciesToToken(token, isTokenActor);
+            await lootCreator.addItemsToToken(token, stackSame, isTokenActor, itemLimit);
+        }
+
+        return ui.notifications.info(MODULE.ns + ' | API | Loot generation complete.');
     }
-
-    ui.notifications.info(MODULE.ns + ' | API | Loot generation started.');
-
-    const brtBuilder = new BRTBuilder(tableEntity);
-
-    for (const token of tokenstack) {
-      const results = await brtBuilder.betterRoll(customRoll);
-      const br = new BetterResults(results);
-      const betterResults = await br.buildResults(tableEntity);
-      const currencyData = br.getCurrencyData();
-      const lootCreator = new LootCreator(betterResults, currencyData);
-
-      await lootCreator.addCurrenciesToToken(token, isTokenActor);
-      await lootCreator.addItemsToToken(token, stackSame, isTokenActor, itemLimit);
-    }
-
-    return ui.notifications.info(MODULE.ns + ' | API | Loot generation complete.');
-  }
 
     /**
      *
-     * @param {*} tableEntity
+     * @param {RollTable} tableEntity
+     * @param {object} options
+     *
      */
     static async generateLoot(tableEntity, options = {}) {
         const builder = new BRTBuilder(tableEntity),
@@ -169,5 +172,3 @@ class API {
             });
     }
 }
-
-export { API };

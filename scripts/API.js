@@ -39,8 +39,7 @@ export class API {
             tokenstack = (token) ? (token.length >= 0) ? token : [token] : canvas.tokens.controlled;
         }
 
-        if (verboseCall)
-            ui.notifications.info(MODULE.ns + ' | API | Loot generation started.');
+        if (verboseCall) ui.notifications.info(MODULE.ns + ' | API | Loot generation started.');
 
         const brtBuilder = new BRTBuilder(tableEntity);
 
@@ -60,7 +59,9 @@ export class API {
 
     /**
      *
-     * @param {*} tableEntity
+     * @param {RollTable} tableEntity
+     * @param {object} options
+     *
      */
     static async generateLoot(tableEntity, options = {}) {
         const builder = new BRTBuilder(tableEntity),

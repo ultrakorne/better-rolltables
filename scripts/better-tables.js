@@ -422,7 +422,7 @@ export class BetterTables {
   static async _addRollButtonsToEntityLink(html) {
     if (game.settings.get(MODULE.ns, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
       // handling rolltables imported in campaign
-      $(html).find("a.entity-link[data-entity='RollTable']").each((index, link) => {
+      $(html).find("a.content-link[data-entity='RollTable']").each((index, link) => {
         const id = $(link).data('id')
         const rolltable = game.tables.get(id)
 
@@ -434,7 +434,7 @@ export class BetterTables {
       })
 
       // handling rolltables in compendiums
-      $(html).find('a.entity-link[data-pack]').each(async (index, link) => {
+      $(html).find('a.content-link[data-pack]').each(async (index, link) => {
         const packName = $(link).data('pack')
         const pack = game.packs.get(packName)
         if (!pack) return
@@ -494,7 +494,7 @@ export class BetterTables {
   static async handleRolltableLink(sheet, html) {
     if (game.user.isGM && game.settings.get(MODULE.ns, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL)) {
       // handling rolltables imported in campaign
-      $(html).find("a.entity-link[data-entity='RollTable']").each((index, link) => {
+      $(html).find("a.content-link[data-entity='RollTable']").each((index, link) => {
         const id = $(link).data('id')
         const rolltable = game.tables.get(id)
 
@@ -506,7 +506,7 @@ export class BetterTables {
       })
 
       // handling rolltables in compendiums
-      $(html).find('a.entity-link[data-pack]').each(async (index, link) => {
+      $(html).find('a.content-link[data-pack]').each(async (index, link) => {
         const packName = $(link).data('pack')
         const pack = game.packs.get(packName)
         if (!pack) return
@@ -530,11 +530,11 @@ export class BetterTables {
     if (!item.type || item.type > 0) {
       const id = item.id;
       const text = item.name || item.text;
-      const entity = item.documentName;
+      const doc = item.documentName;
       const pack = item.pack || game.collections.get(item.collectionName)?.documentName || "";
       const packPart = pack !== "" ? `data-pack="${pack}"` : "";
-      const icon = getIconByEntityType(entity);
-      return `<a class="entity-link" draggable="true" ${packPart} data-entity="${entity}" data-id="${id}"><i class="fas ${icon}"></i>${text}</a>`
+      const icon = getIconByEntityType(doc);
+      return `<a class="content-link" draggable="true" ${packPart} data-entity="${doc}" data-id="${id}" data-uuid"${item.uuid}"><i class="fas ${icon}"></i>${text}</a>`
     }
 
     return item.text

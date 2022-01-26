@@ -4,7 +4,7 @@
     {{/if}}
     {{#unlessEmpty currency}}
         <div class="table-description" style="font-size: 15px; text-align: center; font-weight:bold;">{{localize 'BRT.Buttons.Currency.label'}} {{format-currencies currency}}
-            {{#if shared}}<span class="brt-currency-shared">{{ localize 'BRT.Buttons.Currency.Shared' }}</span>{{/if}}
+            {{#if shared}}<span class="brt-currency-shared">{{localize 'BRT.Buttons.Currency.Shared' }}</span>{{/if}}
         </div>
     <section class="brt-share-currencies brt-hidden">
         {{#each users as |user|}}
@@ -28,7 +28,7 @@
                 {{/case}}
                 {{#case 1}}
                     <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
-                        <a class="entity-link" draggable="true"
+                        <a class="entity-link content-link" draggable="true"
                            data-entity="{{itemData.documentName}}"
                            data-id="{{itemData.item.id}}">
                             <i class="fas {{entity-icon itemData.documentName}}"></i> {{{itemData.item.name}}}
@@ -38,7 +38,7 @@
                 {{/case}}
                 {{#case 2}}
                     <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
-                        <a class="entity-link" draggable="true"
+                        <a class="entity-link content-link" draggable="true"
                            data-pack="{{#if itemData.compendiumName}}{{itemData.compendiumName}}{{else}}{{itemData.item.pack}}{{/if}}"
                            data-id="{{itemData.item.id}}">
                             <i class="fas {{entity-icon itemData.documentName}}"></i> {{{itemData.item.name}}}

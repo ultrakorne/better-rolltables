@@ -63,7 +63,12 @@ export class LootChatCard {
 
   addToItemData (itemEntity, data) {
     const existingItem = this.itemsData.find(i => i.item.id === itemEntity.id)
-    const quantity = getProperty(data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1
+    let quantity = getProperty(data, BRTCONFIG.QUANTITY_PROPERTY_PATH) || 1
+
+    // the quantity property may return bogus things on an actor. Override to 1
+    if(itemEntity instanceof Actor){
+       quantity = 1;
+    }
 
     if (existingItem) {
       existingItem.quantity = +existingItem.quantity + +quantity

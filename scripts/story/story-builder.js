@@ -180,7 +180,8 @@ export class StoryBuilder {
       if (rollMatch) {
         const rollFormula = rollMatch[1]
         try {
-          valueResult = new Roll(rollFormula).roll().total || 0
+          let rollResult = await new Roll(rollFormula).evaluate({async: true});
+          valueResult = rollResult.total || 0;
         } catch (error) {
           valueResult = 0
         }

@@ -36,7 +36,7 @@ export class StoryBuilder {
         const entity = await Utils.findInCompendiumByName(entry.data.collection, entry.data.text)
         if (!entity) {
           errorString = `entity ${entry.data.text} not found in compendium ${entry.data.collection}`
-        } else if (entity.entity === 'JournalEntry') {
+        } else if (entity.documentName === 'JournalEntry') {
           journalContent = entity.data.content
         } else {
           errorString = 'Only Journal entries are supported in the story generation as table results'
@@ -169,10 +169,17 @@ export class StoryBuilder {
       }
 
       const tableResult = draw.results[0]
-      if (tableResult.data.type !== 0) {
-        ui.notifications.warn(`only text result from table are supported at the moment, check table ${table.name}`)
+
+      if(tableResult.data.type == 1){
+        valueResult = `@Actor[${tableResult.data.resultId}]{${tableResult.data.text}}`;
       }
-      valueResult = tableResult.data.text
+      // Compendium
+      else if(tableResult.data.type == 2) {
+        valueResult = `@Compendium[${tableResult.data.collection}.${tableResult.data.resultId}]{${tableResult.data.text}}`;
+      }
+      else {
+        valueResult = tableResult.data.text;
+      }
     } else {
       const regexRoll = /\s*\[\[ *([^\]]*?) *\]\]/
       /** if no table match, lets check for a formula */

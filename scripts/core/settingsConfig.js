@@ -42,6 +42,17 @@ export class Settings {
             BRTCONFIG.ITEM_LOOT_TYPE = 'loot';
             BRTCONFIG.SCROLL_REGEX = /\s*Scroll\s*of\s*(\d+)/gi;
         }
+          
+        if (game.system.id === 'D35E') {
+            defaultLootSheet = 'D35E.LootSheetD35ENPC';
+            defaultSpellCompendium = 'D35E.spells';
+
+            BRTCONFIG.QUANTITY_PROPERTY_PATH = 'data.quantity';
+            BRTCONFIG.PRICE_PROPERTY_PATH = 'data.price';
+            BRTCONFIG.SPELL_LEVEL_PATH = 'data.level';
+            BRTCONFIG.ITEM_LOOT_TYPE = 'loot';
+            BRTCONFIG.SCROLL_REGEX = /\s*Scroll\s*of\s*(\d+)/gi;
+        }
 
         game.settings.registerMenu(MODULE.ns, "helpersOptions", {
             name: i18n("User Interface Integration"),

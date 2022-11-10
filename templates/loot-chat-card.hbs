@@ -28,9 +28,11 @@
                 {{/case}}
                 {{#case 1}}
                     <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
-                        <a class="entity-link" draggable="true"
+                        <a class="content-link" draggable="true"
                            data-entity="{{itemData.documentName}}"
-                           data-id="{{itemData.item.id}}">
+                           data-id="{{itemData.item.id}}"
+                           data-uuid="{{itemData.documentName}}.{{itemData.item.id}}"
+                           data-tooltip="Loot Item">
                             <i class="fas {{entity-icon itemData.documentName}}"></i> {{{itemData.item.name}}}
                         </a>
                         {{#ifgt itemData.quantity 1 }}<strong>&nbsp; &#xD7; {{itemData.quantity}}</strong>{{/ifgt}}
@@ -38,9 +40,11 @@
                 {{/case}}
                 {{#case 2}}
                     <div class="result-text" style="font-size: {{itemData.fontSize}}%;">
-                        <a class="entity-link" draggable="true"
+                        <a class="content-link" draggable="true"
                            data-pack="{{#if itemData.compendiumName}}{{itemData.compendiumName}}{{else}}{{itemData.item.pack}}{{/if}}"
-                           data-id="{{itemData.item.id}}">
+                           data-id="{{itemData.item.id}}"
+                           data-uuid="Compendium.{{itemData.compendiumName}}.{{itemData.item.id}}"
+                           data-tooltip="Loot Item">
                             <i class="fas {{entity-icon itemData.documentName}}"></i> {{{itemData.item.name}}}
                         </a>
                         {{#ifgt itemData.quantity 1 }}<strong>&nbsp; &#xD7; {{itemData.quantity}}</strong>{{/ifgt}}

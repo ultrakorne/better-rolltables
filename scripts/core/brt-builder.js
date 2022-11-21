@@ -95,12 +95,12 @@ export class BRTBuilder {
         let innerTable;
         if (
           entry.type === CONST.TABLE_RESULT_TYPES.ENTITY &&
-          entry.collection === 'RollTable'
+          entry.documentCollection === 'RollTable'
         ) {
           innerTable = game.tables.get(entry.data.resultId);
         } else if (entry.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM) {
           const entityInCompendium = await Utils.findInCompendiumByName(
-            entry.collection,
+            entry.documentCollection,
             entry.text
           );
           if (

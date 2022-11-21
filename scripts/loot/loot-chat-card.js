@@ -136,7 +136,7 @@ export class LootChatCard {
         .map((user) => ({
           id: user.id,
           name: user.character.name,
-          img: user.character.data.token?.img || user.avatar,
+          img: user.character.token?.img || user.avatar,
         })),
     };
 

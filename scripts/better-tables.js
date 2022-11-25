@@ -430,7 +430,7 @@ export class BetterTables {
       // Currency share button
       const currencyShareButton = $(
         `<a class="roll-table-share-currencies" title="${game.i18n.localize(
-          'BRT.Currency.Buttons.Share.Label'
+          'BRT.Buttons.Currency.Share'
         )}">`
       ).append("<i class='fas fa-coins'></i>");
       currencyShareButton.click(async () =>
@@ -491,14 +491,14 @@ export class BetterTables {
 
     for (const userId of usersId) {
       const user = game.users.get(userId);
-      const currency = user.character.data.data.currency;
+      const currency = user.character.system.currency;
       for (let key of Object.keys(currency)) {
         const increment = share[key] || 0;
         if (increment > 0) {
           currency[key] += increment;
         }
       }
-      await user.character.update({ 'data.currency': currency });
+      await user.character.update({ 'currency': currency });
     }
     const newMessage = await BetterTables._renderMessage(
       mergeObject(message, { 'flags.betterTables.loot.shared': true })

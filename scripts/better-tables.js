@@ -337,7 +337,7 @@ export class BetterTables {
       'modules/better-rolltables/templates/loot-chat-card.hbs',
       message.flags.betterTables.loot
     );
-    message.data.content = cardHtml;
+    message.content = cardHtml;
     return message;
     /*
     return {
@@ -584,7 +584,7 @@ export class BetterTables {
         });
       } else {
         message.update({
-          content: content.data?.content || content.content,
+          content: content.content,
           flags: options.flags,
           timestamp: Date.now(),
         });

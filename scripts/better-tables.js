@@ -303,7 +303,7 @@ export class BetterTables {
         name: 'Roll table',
         icon: '<i class="fas fa-dice-d20"></i>',
         callback: (li) => {
-          BetterTables.menuCallBackRollTable(li.data('entityId'));
+          BetterTables.menuCallBackRollTable(li.data('documentId'));
         },
       });
     }

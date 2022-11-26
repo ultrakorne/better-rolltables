@@ -13,6 +13,39 @@ export class Settings {
   }
 
   /**
+   * Register the game settings during InitHook required by contextmenues
+   */
+  registerSettingsDuringInit() {
+    game.settings.register(
+      MODULE.ns,
+      BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU,
+      {
+        name: i18n('BRT.Settings.AddRollInCompediumContextMenu.Title'),
+        hint: i18n('BRT.Settings.AddRollInCompediumContextMenu.Description'),
+        scope: WORLD,
+        group: GROUP_UI,
+        config: false,
+        default: false,
+        type: Boolean,
+      }
+    );
+    game.settings.register(
+      MODULE.ns,
+      BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU,
+      {
+        name: i18n('BRT.Settings.AddRollInRolltableContextMenu.Title'),
+        hint: i18n('BRT.Settings.AddRollInRolltableContextMenu.Description'),
+        scope: WORLD,
+        group: GROUP_UI,
+        config: false,
+        default: false,
+        type: Boolean,
+      }
+    );
+  }
+
+
+  /**
    * Register the game settings
    */
   registerSettings() {
@@ -122,40 +155,12 @@ export class Settings {
       type: Boolean,
     });
 
-    game.settings.register(
-      MODULE.ns,
-      BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU,
-      {
-        name: i18n('BRT.Settings.AddRollInRolltableContextMenu.Title'),
-        hint: i18n('BRT.Settings.AddRollInRolltableContextMenu.Description'),
-        scope: WORLD,
-        group: GROUP_UI,
-        config: false,
-        default: false,
-        type: Boolean,
-      }
-    );
-
-    game.settings.register(
-      MODULE.ns,
-      BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU,
-      {
-        name: i18n('BRT.Settings.AddRollInCompediumContextMenu.Title'),
-        hint: i18n('BRT.Settings.AddRollInCompediumContextMenu.Description'),
-        scope: WORLD,
-        group: GROUP_UI,
-        config: true,
-        default: false,
-        type: Boolean,
-      }
-    );
-
     game.settings.register(MODULE.ns, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL, {
       name: i18n('BRT.Settings.RollTableFromJournal.Title'),
       hint: i18n('BRT.Settings.RollTableFromJournal.Description'),
       scope: WORLD,
       group: GROUP_UI,
-      config: true,
+      config: false,
       default: false,
       type: Boolean,
     });
@@ -199,7 +204,7 @@ export class Settings {
       hint: i18n('BRT.Settings.Tags.Use.Description'),
       scope: WORLD,
       group: GROUP_TAGS,
-      config: true,
+      config: false,
       default: true,
       type: Boolean,
     });

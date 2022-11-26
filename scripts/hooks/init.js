@@ -47,8 +47,6 @@ class BetterRolltableHooks {
     moduleSettings.registerSettings();
 
     Hooks.on('renderRollTableConfig', BetterRT.enhanceRollTableView);
-    Hooks.on('getCompendiumDirectoryEntryContext', BetterTables.enhanceCompendiumContextMenu);
-    Hooks.on('getRollTableDirectoryEntryContext', BetterTables.enhanceRolltableContextMenu);
     Hooks.on('renderChatMessage', BetterTables.handleChatMessageButtons);
     Hooks.on('renderJournalSheet', BetterTables.handleRolltableLink);
     Hooks.on('renderItemSheet', BetterTables.handleRolltableLink);
@@ -125,6 +123,11 @@ class BetterRolltableHooks {
 
   static foundryInit() {
     game.betterTables = new BetterTables();
+    const moduleSettingsInit = new Settings();
+    moduleSettingsInit.registerSettingsDuringInit();
+
+    Hooks.on('getCompendiumDirectoryEntryContext', BetterTables.enhanceCompendiumContextMenu);
+    Hooks.on('getRollTableDirectoryEntryContext', BetterTables.enhanceRolltableContextMenu);
   }
 
   /**

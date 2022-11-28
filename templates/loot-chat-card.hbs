@@ -43,7 +43,7 @@
                         <a class="content-link" draggable="true"
                            data-pack="{{#if itemData.compendiumName}}{{itemData.compendiumName}}{{else}}{{itemData.item.pack}}{{/if}}"
                            data-id="{{itemData.item.id}}"
-                           data-uuid="Compendium.{{itemData.compendiumName}}.{{itemData.item.id}}"
+                           data-uuid="Compendium.{{itemData.compendiumName}}{{itemData.item.pack}}.{{itemData.item.id}}"
                            data-tooltip="Loot Item">
                             <i class="fas {{entity-icon itemData.documentName}}"></i> {{{itemData.item.name}}}
                         </a>

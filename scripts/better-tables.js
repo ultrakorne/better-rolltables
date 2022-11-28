@@ -328,7 +328,7 @@ export class BetterTables {
    * @deprecated use api.rollCompendiumAsRolltable instead
    */
   static async rollCompendiumAsRolltable(compendium) {
-    api = game.modules.get(MODULE.ns).public.API;
+    const api = game.modules.get(MODULE.ns).public.API;
     api.rollCompendiumAsRolltable(compendium);
   }
 
@@ -402,7 +402,8 @@ export class BetterTables {
       rerollButton.click(async () => {
         let cardContent;
         if (pack && !id) {
-          cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
+           const api = game.modules.get(MODULE.ns).public.API;
+           cardContent = await api.rollCompendiumAsRolltable(pack,MODULE.ns);
         } else {
           let rolltable;
           if (pack && id) {

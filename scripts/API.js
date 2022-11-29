@@ -105,7 +105,7 @@ class API {
    *
    * @param {String} compendium ID of the compendium to roll
    */
-  static async rollCompendiumAsRolltable(compendium = null, createChatMessage) {
+  static async rollCompendiumAsRolltable(compendium = null, hideChatMessage) {
     if (!game.user.isGM || !compendium) return;
 
     // Get random item from compendium
@@ -128,7 +128,7 @@ class API {
       content: cardHtml,
     };
 
-    if (!createChatMessage)
+    if (!hideChatMessage)
       ChatMessage.create(chatData);
     return chatData;
   }

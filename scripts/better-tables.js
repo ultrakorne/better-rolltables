@@ -600,7 +600,7 @@ export class BetterTables {
     ) {
       // handling rolltables imported in campaign
       $(html)
-        .find("a.content-link[data-type='RollTable']")
+        .find("a.content-link[data-uuid^='RollTable']")
         .each((index, link) => {
           const id = $(link).data('id');
           const rolltable = game.tables.get(id);

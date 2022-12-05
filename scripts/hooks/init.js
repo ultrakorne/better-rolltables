@@ -48,7 +48,7 @@ class BetterRolltableHooks {
 
     Hooks.on('renderRollTableConfig', BetterRT.enhanceRollTableView);
     Hooks.on('renderChatMessage', BetterTables.handleChatMessageButtons);
-    Hooks.on('renderJournalSheet', BetterTables.handleRolltableLink);
+    Hooks.on('renderJournalPageSheet', BetterTables.handleRolltableLink);
     Hooks.on('renderItemSheet', BetterTables.handleRolltableLink);
     if (game.system.id === 'dnd5e') {
       Hooks.on('renderActorSheet', BetterTables.handleChatMessageButtons);

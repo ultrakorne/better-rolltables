@@ -1,17 +1,20 @@
-import * as Utils from './utils.js'
-import * as BRTHelper from './brt-helper.js'
-import { BRTBuilder } from './brt-builder.js'
-import { MODULE , BRTCONFIG } from './config.js'
+import * as Utils from './utils.js';
+import * as BRTHelper from './brt-helper.js';
+import { BRTBuilder } from './brt-builder.js';
+import { MODULE, BRTCONFIG } from './config.js';
 
 export class BetterResults {
-  constructor (tableResults) {
+  constructor(tableResults) {
     this.results = [];
-    this.currencyData = {cp: 0, ep: 0, gp: 0, pp: 0,sp: 0};
+    this.currencyData = { cp: 0, ep: 0, gp: 0, pp: 0, sp: 0 };
     this.tableResults = tableResults;
   }
 
-  async buildResults (table) {
-    const currencyString = table.getFlag(MODULE.ns, BRTCONFIG.LOOT_CURRENCY_KEY);
+  async buildResults(table) {
+    const currencyString = table.getFlag(
+      MODULE.ns,
+      BRTCONFIG.LOOT_CURRENCY_KEY
+    );
     this.currencyData = await this._generateCurrency(currencyString);
 
     for (let i = 0; i < this.tableResults.length; i++) {
@@ -25,14 +28,14 @@ export class BetterResults {
     return this.results;
   }
 
-  getCurrencyData () {
+  getCurrencyData() {
     return this.currencyData;
   }
 
-  async _parseResult (result) {
-    const betterResults = []
-    if (result.data.type === CONST.TABLE_RESULT_TYPES.TEXT) {
-      const textResults = result.data.text.split('|');
+  async _parseResult(result) {
+    const betterResults = [];
+    if (result.type === CONST.TABLE_RESULT_TYPES.TEXT) {
+      const textResults = result.text.split('|');
 
       for (let t of textResults) {
         // if the text is a currency, we process that first
@@ -65,18 +68,27 @@ export class BetterResults {
             const tableCompendiumName = out.compendiumName;
 
             if (tableCompendiumName) {
-              table = await Utils.findInCompendiumByName(tableCompendiumName, tableName);
+              table = await Utils.findInCompendiumByName(
+                tableCompendiumName,
+                tableName
+              );
             } else {
               table = game.tables.getName(tableName);
             }
 
             if (!table) {
-              msg = game.i18n.format(NotTableByNameInPack, { tableName: tableName, packName: tableCompendiumName });
+              msg = game.i18n.format(NotTableByNameInPack, {
+                tableName: tableName,
+                packName: tableCompendiumName,
+              });
               ui.notifications.warn(MODULE.ns + ' | ' + msg);
             }
-            break
+            break;
           } else if (commandName) {
-            commands.push({ command: commandName.toLowerCase(), arg: matches[3] });
+            commands.push({
+              command: commandName.toLowerCase(),
+              arg: matches[3],
+            });
             if (commandName.toLowerCase() === 'compendium') {
               betterResult.collection = matches[3];
             }
@@ -92,8 +104,10 @@ export class BetterResults {
           this.tableResults = this.tableResults.concat(innerResults);
         } else if (textString) {
           // if no table definition is found, the textString is the item name
-          console.log(`results text ${textString.trim()} and commands ${commands}`);
-          betterResult.img = result.data.img;
+          console.log(
+            `results text ${textString.trim()} and commands ${commands}`
+          );
+          betterResult.img = result.img;
           betterResult.text = textString.trim();
           // if there is command, then it's not a pure text but a generated item
           if (!commands || commands.length === 0) {
@@ -105,9 +119,9 @@ export class BetterResults {
       }
     } else {
       const betterResult = {};
-      betterResult.img = result.data.img;
-      betterResult.collection = result.data.collection;
-      betterResult.text = result.data.text;
+      betterResult.img = result.img;
+      betterResult.collection = result.documentCollection;
+      betterResult.text = result.text;
       betterResults.push(betterResult);
     }
 
@@ -115,72 +129,79 @@ export class BetterResults {
   }
 
   /**
-     *
-     * @param {String} tableText
-     * @returns
-     */
-  async _processTextAsCurrency (tableText) {
-    const regex = /{([^}]+)}/g
-    let matches
+   *
+   * @param {String} tableText
+   * @returns
+   */
+  async _processTextAsCurrency(tableText) {
+    const regex = /{([^}]+)}/g;
+    let matches;
 
     while ((matches = regex.exec(tableText)) != null) {
-      this._addCurrency(await this._generateCurrency(matches[1]))
+      this._addCurrency(await this._generateCurrency(matches[1]));
     }
 
-    return tableText.replace(regex, '')
+    return tableText.replace(regex, '');
   }
 
   /**
-     * Add given currency to existing currency
-     *
-     * @param {array} currencyData
-     */
-  _addCurrency (currencyData) {
+   * Add given currency to existing currency
+   *
+   * @param {array} currencyData
+   */
+  _addCurrency(currencyData) {
     for (const key in currencyData) {
-      this.currencyData[key] = (this.currencyData[key] || 0) + currencyData[key]
+      this.currencyData[key] =
+        (this.currencyData[key] || 0) + currencyData[key];
     }
   }
 
   /**
-     *
-     * @param {string} tableText
-     * @returns
-     */
-  async _rollInlineDice (tableText) {
-    const regex = /\[{2}(\w*[^\]])\]{2}/g
-    let matches
+   *
+   * @param {string} tableText
+   * @returns
+   */
+  async _rollInlineDice(tableText) {
+    const regex = /\[{2}(\w*[^\]])\]{2}/g;
+    let matches;
     while ((matches = regex.exec(tableText)) != null) {
-      tableText = tableText.replace(matches[0], await BRTHelper.tryRoll(matches[1]))
+      tableText = tableText.replace(
+        matches[0],
+        await BRTHelper.tryRoll(matches[1])
+      );
     }
 
-    return tableText
+    return tableText;
   }
 
   /**
-     * Check given string and parse it against a regex to generate currency array
-     *
-     * @param {String} currencyString
-     *
-     * @returns
-     */
-  async _generateCurrency (currencyString) {
-    const currenciesToAdd = {}
+   * Check given string and parse it against a regex to generate currency array
+   *
+   * @param {String} currencyString
+   *
+   * @returns
+   */
+  async _generateCurrency(currencyString) {
+    const currenciesToAdd = {};
     if (currencyString) {
-      const currenciesPieces = currencyString.split(',')
+      const currenciesPieces = currencyString.split(',');
       for (const currency of currenciesPieces) {
-        const match = /(.*)\[(.*?)\]/g.exec(currency) // capturing 2 groups, the formula and then the currency symbol in brakets []
+        const match = /(.*)\[(.*?)\]/g.exec(currency); // capturing 2 groups, the formula and then the currency symbol in brakets []
         if (!match || match.length < 3) {
-          let msg = game.i18n.format("BRT.Strings.Warnings.CurrencyFormat", { currencyString: currency });
+          let msg = game.i18n.format('BRT.Strings.Warnings.CurrencyFormat', {
+            currencyString: currency,
+          });
           ui.notifications.warn(MODULE.ns + ' | ' + msg);
-          continue
+          continue;
         }
-        const rollFormula = match[1]
-        const currencyString = match[2]
-        const amount = await BRTHelper.tryRoll(rollFormula)
+        const rollFormula = match[1];
+        const currencyString = match[2];
+        const amount = await BRTHelper.tryRoll(rollFormula);
 
-        currenciesToAdd[currencyString] = (currenciesToAdd[currencyString] || 0) + amount
+        currenciesToAdd[currencyString] =
+          (currenciesToAdd[currencyString] || 0) + amount;
       }
     }
-    return currenciesToAdd
+    return currenciesToAdd;
   }
 }

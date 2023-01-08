@@ -1,87 +1,100 @@
 {
-  "name": "better-rolltables",
+  "id": "better-rolltables",
   "title": "Better Roll Tables",
   "description": "Adding functionality to roll tables, especially to roll treasure and magic items",
-  "version": "1.8.95",
-  "manifestPlusVersion": "1.2.0",
+  "version": "1.9.01",
   "authors": [
     {
       "name": "Ultrakorne",
       "url": "https://github.com/ultrakorne/",
-      "discord": "Ultrakorne#6240"
+      "discord": "Ultrakorne#6240",
+      "flags": {}
     },
     {
       "name": "Daniel Böttner",
       "url": "https://github.com/DanielBoettner/",
-      "discord": "JackPrince#0494"
+      "discord": "JackPrince#0494",
+      "flags": {}
     },
     {
       "name": "Daimakaicho",
-      "url": "https://github.com/Daimakaicho"
+      "url": "https://github.com/Daimakaicho",
+      "flags": {}
     }
   ],
-  "esmodules": [
-    "./scripts/brt-main.js"
-  ],
-  "styles": [
-    "./styles/brt.css"
-  ],
+  "esmodules": ["scripts/brt-main.js"],
+  "styles": ["styles/brt.css"],
   "packs": [
     {
       "name": "brt-loot",
       "label": "Loot Tables",
       "system": "dnd5e",
-      "path": "./packs/loot-tables.db",
-      "entity": "RollTable"
+      "path": "packs/loot-tables.db",
+      "type": "RollTable",
+      "private": false,
+      "flags": {}
     },
     {
       "name": "brt-story",
       "label": "Story Tables",
-      "path": "./packs/story-tables.db",
-      "entity": "RollTable"
+      "path": "packs/story-tables.db",
+      "type": "RollTable",
+      "private": false,
+      "flags": {}
     },
     {
       "name": "brt-gen",
       "label": "Story Generators",
-      "path": "./packs/story-generators.db",
-      "entity": "JournalEntry"
+      "path": "packs/story-generators.db",
+      "type": "JournalEntry",
+      "private": false,
+      "flags": {}
     }
   ],
-  "minimumCoreVersion": "0.8.6",
-  "compatibleCoreVersion": "0.8.9",
   "languages": [
     {
       "lang": "de",
       "name": "Deutsch (German)",
-      "path": "lang/de.json"
+      "path": "lang/de.json",
+      "flags": {}
     },
     {
       "lang": "en",
       "name": "English",
-      "path": "lang/en.json"
+      "path": "lang/en.json",
+      "flags": {}
     },
     {
       "lang": "ko",
       "name": "Korean",
-      "path": "lang/ko.json"
+      "path": "lang/ko.json",
+      "flags": {}
     },
     {
       "lang": "pt-BR",
       "name": "Português (Brasil)",
-      "path": "lang/pt-BR.json"
+      "path": "lang/pt-BR.json",
+      "flags": {}
     },
     {
       "lang": "es-ES",
       "name": "Castellano",
-      "path": "lang/es-ES.json"
+      "path": "lang/es-ES.json",
+      "flags": {}
     },
     {
       "lang": "fr",
       "name": "Français",
-      "path": "lang/fr.json"
+      "path": "lang/fr.json",
+      "flags": {}
     }
   ],
   "url": "https://github.com/ultrakorne/better-rolltables",
   "manifest": "https://raw.githubusercontent.com/ultrakorne/better-rolltables/master/module.json",
-  "download": "https://github.com/ultrakorne/better-rolltables/releases/latest/download/better-rolltables.zip"
+  "download": "https://github.com/ultrakorne/better-rolltables/releases/latest/download/better-rolltables.zip",
+  "compatibility": {
+    "minimum": 10,
+    "verified": 10.291,
+    "maximum": 10
+  }
 }

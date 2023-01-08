@@ -303,7 +303,7 @@ export class BetterTables {
         name: 'Roll table',
         icon: '<i class="fas fa-dice-d20"></i>',
         callback: (li) => {
-          BetterTables.menuCallBackRollTable(li.data('entityId'));
+          BetterTables.menuCallBackRollTable(li.data('documentId'));
         },
       });
     }
@@ -328,7 +328,7 @@ export class BetterTables {
    * @deprecated use api.rollCompendiumAsRolltable instead
    */
   static async rollCompendiumAsRolltable(compendium) {
-    api = game.modules.get(MODULE.ns).public.API;
+    const api = game.modules.get(MODULE.ns).public.API;
     api.rollCompendiumAsRolltable(compendium);
   }
 
@@ -337,7 +337,7 @@ export class BetterTables {
       'modules/better-rolltables/templates/loot-chat-card.hbs',
       message.flags.betterTables.loot
     );
-    message.data.content = cardHtml;
+    message.content = cardHtml;
     return message;
     /*
     return {
@@ -402,7 +402,8 @@ export class BetterTables {
       rerollButton.click(async () => {
         let cardContent;
         if (pack && !id) {
-          cardContent = await BetterTables.rollCompendiumAsRolltable(pack);
+           const api = game.modules.get(MODULE.ns).public.API;
+           cardContent = await api.rollCompendiumAsRolltable(pack,MODULE.ns);
         } else {
           let rolltable;
           if (pack && id) {
@@ -430,7 +431,7 @@ export class BetterTables {
       // Currency share button
       const currencyShareButton = $(
         `<a class="roll-table-share-currencies" title="${game.i18n.localize(
-          'BRT.Currency.Buttons.Share.Label'
+          'BRT.Buttons.Currency.Share'
         )}">`
       ).append("<i class='fas fa-coins'></i>");
       currencyShareButton.click(async () =>
@@ -491,14 +492,14 @@ export class BetterTables {
 
     for (const userId of usersId) {
       const user = game.users.get(userId);
-      const currency = user.character.data.data.currency;
+      const currency = user.character.system.currency;
       for (let key of Object.keys(currency)) {
         const increment = share[key] || 0;
         if (increment > 0) {
           currency[key] += increment;
         }
       }
-      await user.character.update({ 'data.currency': currency });
+      await user.character.update({ 'currency': currency });
     }
     const newMessage = await BetterTables._renderMessage(
       mergeObject(message, { 'flags.betterTables.loot.shared': true })
@@ -584,7 +585,7 @@ export class BetterTables {
         });
       } else {
         message.update({
-          content: content.data?.content || content.content,
+          content: content.content,
           flags: options.flags,
           timestamp: Date.now(),
         });
@@ -599,7 +600,7 @@ export class BetterTables {
     ) {
       // handling rolltables imported in campaign
       $(html)
-        .find("a.content-link[data-entity='RollTable']")
+        .find("a.content-link[data-uuid^='RollTable']")
         .each((index, link) => {
           const id = $(link).data('id');
           const rolltable = game.tables.get(id);

@@ -13,6 +13,39 @@ export class Settings {
   }
 
   /**
+   * Register the game settings during InitHook required by contextmenues
+   */
+  registerSettingsDuringInit() {
+    game.settings.register(
+      MODULE.ns,
+      BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU,
+      {
+        name: i18n('BRT.Settings.AddRollInCompediumContextMenu.Title'),
+        hint: i18n('BRT.Settings.AddRollInCompediumContextMenu.Description'),
+        scope: WORLD,
+        group: GROUP_UI,
+        config: false,
+        default: false,
+        type: Boolean,
+      }
+    );
+    game.settings.register(
+      MODULE.ns,
+      BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU,
+      {
+        name: i18n('BRT.Settings.AddRollInRolltableContextMenu.Title'),
+        hint: i18n('BRT.Settings.AddRollInRolltableContextMenu.Description'),
+        scope: WORLD,
+        group: GROUP_UI,
+        config: false,
+        default: false,
+        type: Boolean,
+      }
+    );
+  }
+
+
+  /**
    * Register the game settings
    */
   registerSettings() {
@@ -122,40 +155,12 @@ export class Settings {
       type: Boolean,
     });
 
-    game.settings.register(
-      MODULE.ns,
-      BRTCONFIG.ADD_ROLL_IN_ROLLTABLE_CONTEXTMENU,
-      {
-        name: i18n('BRT.Settings.AddRollInRolltableContextMenu.Title'),
-        hint: i18n('BRT.Settings.AddRollInRolltableContextMenu.Description'),
-        scope: WORLD,
-        group: GROUP_UI,
-        config: false,
-        default: false,
-        type: Boolean,
-      }
-    );
-
-    game.settings.register(
-      MODULE.ns,
-      BRTCONFIG.ADD_ROLL_IN_COMPENDIUM_CONTEXTMENU,
-      {
-        name: i18n('BRT.Settings.AddRollInCompediumContextMenu.Title'),
-        hint: i18n('BRT.Settings.AddRollInCompediumContextMenu.Description'),
-        scope: WORLD,
-        group: GROUP_UI,
-        config: true,
-        default: false,
-        type: Boolean,
-      }
-    );
-
     game.settings.register(MODULE.ns, BRTCONFIG.ROLL_TABLE_FROM_JOURNAL, {
       name: i18n('BRT.Settings.RollTableFromJournal.Title'),
       hint: i18n('BRT.Settings.RollTableFromJournal.Description'),
       scope: WORLD,
       group: GROUP_UI,
-      config: true,
+      config: false,
       default: false,
       type: Boolean,
     });
@@ -199,14 +204,14 @@ export class Settings {
       hint: i18n('BRT.Settings.Tags.Use.Description'),
       scope: WORLD,
       group: GROUP_TAGS,
-      config: true,
+      config: false,
       default: true,
       type: Boolean,
     });
 
     game.settings.register(MODULE.ns, BRTCONFIG.TAGS.DEFAULTS, {
-      name: i18n('BRT.Settings.Tags.Default.Title'),
-      hint: i18n('BRT.Settings.Tags.Default.Description'),
+      name: i18n('BRT.Settings.Tags.Defaults.Title'),
+      hint: i18n('BRT.Settings.Tags.Defaults.Description'),
       scope: WORLD,
       group: GROUP_TAGS,
       config: false,
@@ -268,7 +273,7 @@ class BetterRolltableSettingsConfig extends FormApplication {
     // Classify all settings
     for (let setting of game.settings.settings.values()) {
       // Only concerned about loot populator settings
-      if (setting.module !== MODULE.ns) continue;
+      if (setting.namespace !== MODULE.ns) continue;
 
       // Exclude settings the user cannot change
       if (!game.user.isGM) continue;
@@ -277,14 +282,14 @@ class BetterRolltableSettingsConfig extends FormApplication {
       const s = duplicate(setting);
       s.name = i18n(s.name);
       s.hint = i18n(s.hint);
-      s.value = game.settings.get(s.module, s.key);
+      s.value = game.settings.get(s.namespace, s.key);
       s.type = setting.type instanceof Function ? setting.type.name : 'String';
       s.isCheckbox = setting.type === Boolean;
       s.isSelect = s.choices !== undefined;
       s.isRange = setting.type === Number && s.range;
 
       // Classify setting
-      const name = s.module;
+      const name = s.namespace;
       if (name === MODULE.ns) {
         const group = s.group;
         let groupTab = data.tabs.find((tab) => tab.name === group) ?? false;
@@ -304,9 +309,9 @@ class BetterRolltableSettingsConfig extends FormApplication {
   /** @override */
   async _updateObject(event, formData) {
     event.preventDefault();
-    formData = expandObject(formData)[MODULE.ns];
+    // formData = expandObject(formData)[MODULE.ns];
     for (let [k, v] of Object.entries(formData)) {
-      await game.settings.set(MODULE.ns, k, v);
+      await game.settings.set(MODULE.ns, k.substring(k.indexOf('.') + 1), v);
     }
   }
 

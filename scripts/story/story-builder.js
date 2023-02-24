@@ -33,11 +33,11 @@ export class StoryBuilder {
         }
       } else if (entry.data.type === 2) {
         /** entity type 2 is when an entity inside a compendium is linked */
-        const entity = await Utils.findInCompendiumByName(entry.data.collection, entry.data.text)
+        const entity = await Utils.findInCompendiumByName(entry.data.documentCollection, entry.data.text)
         if (!entity) {
-          errorString = `entity ${entry.data.text} not found in compendium ${entry.data.collection}`
-        } else if (entity.entity === 'JournalEntry') {
-          journalContent = entity.data.content
+          errorString = `entity ${entry.data.text} not found in compendium ${entry.data.documentCollection}`
+        } else if (entity.documentName === 'JournalEntry') {
+          journalContent = entity.collections.pages.contents[0].text.content
         } else {
           errorString = 'Only Journal entries are supported in the story generation as table results'
         }
@@ -169,10 +169,10 @@ export class StoryBuilder {
       }
 
       const tableResult = draw.results[0]
-      if (tableResult.data.type !== 0) {
+      if (tableResult.type !== 0) {
         ui.notifications.warn(`only text result from table are supported at the moment, check table ${table.name}`)
       }
-      valueResult = tableResult.data.text
+      valueResult = tableResult.text
     } else {
       const regexRoll = /\s*\[\[ *([^\]]*?) *\]\]/
       /** if no table match, lets check for a formula */
@@ -180,7 +180,8 @@ export class StoryBuilder {
       if (rollMatch) {
         const rollFormula = rollMatch[1]
         try {
-          valueResult = new Roll(rollFormula).roll().total || 0
+          const rollResult = await new Roll(rollFormula).evaluate();
+          valueResult = rollResult.total;
         } catch (error) {
           valueResult = 0
         }
